@@ -22,7 +22,7 @@
       </div>
 
       <ul v-else class="mt-4">
-        <!-- <li v-for="(patient, index) in patients" :key="patient.id">
+        <li v-for="(patient, index) in patients" :key="patient.id">
           <div class="mb-4 mt-5">
             <div class="flex justify-between">
               <h2 class="text-xl font-semibold">ข้อมูลคุณ {{ patient.firstname }} {{ patient.lastname }}</h2>
@@ -50,10 +50,10 @@
               </div>
             </div>
           </div>
-        </li> -->
+        </li>
 
         <!-- Display Patient Data in Divs -->
-        <div v-for="(patient, index) in patients" :key="'patient-' + patient.id" class="grid grid-cols-2 gap-4 mt-5">
+        <!-- <div v-for="(patient, index) in patients" :key="'patient-' + patient.id" class="grid grid-cols-2 gap-4 mt-5">
           <div class="shadow-md rounded-md p-4 flex flex-col h-full font-sarabun">
             <div class="flex">
               <div class="flex items-start">
@@ -81,7 +81,7 @@
                 @click="goToWaitCheck(patient.id)">ซักประวัติ</button>
             </div>
           </div>
-        </div>
+        </div> -->
 
 
 

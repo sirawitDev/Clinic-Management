@@ -27,6 +27,7 @@
     "@pinia/nuxt": "^0.5.3",
     "@prisma/client": "^5.18.0",
     "@vercel/postgres": "^0.9.0",
+    "@vercel/speed-insights": "^1.0.12",
     "@vuepic/vue-datepicker": "^9.0.2",
     "apexcharts": "^3.52.0",
     "axios": "^1.7.4",
