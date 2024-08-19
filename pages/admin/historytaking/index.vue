@@ -22,38 +22,7 @@
       </div>
 
       <ul v-else class="mt-4">
-        <li v-for="(patient, index) in patients" :key="patient.id">
-          <div class="mb-4 mt-5">
-            <div class="flex justify-between">
-              <h2 class="text-xl font-semibold">ข้อมูลคุณ {{ patient.firstname }} {{ patient.lastname }}</h2>
-            </div>
-            <div v-if="showDetails[index]" class="mt-5">
-              <div class="grid grid-cols-3 gap-4">
-                <div v-for="field in fields" :key="field.model" class="col-span-1">
-                  <label :for="field.model" class="block font-medium">{{ field.label }}</label>
-                  <input :type="field.type" :id="field.model" :placeholder="field.placeholder"
-                    :value="field.model === 'birthdate' ? formatDate(patient[field.model]) : patient[field.model]"
-                    class="input input-bordered w-full" disabled />
-                </div>
-              </div>
-              <h2 class="text-xl font-semibold mt-5">ที่อยู่</h2>
-              <div class="grid grid-cols-3 gap-4 mt-5">
-                <div v-for="field in addressFields" :key="field.model" class="col-span-1">
-                  <label :for="field.model" class="block font-medium">{{ field.label }}</label>
-                  <input :type="field.type" :id="field.model" :placeholder="field.placeholder"
-                    :value="patient[field.model]" class="input input-bordered w-full" disabled />
-                </div>
-              </div>
-              <div>
-                <button class="btn btn-accent text-white mt-5 w-full"
-                  @click="goToWaitCheck(patient.id)">ซักประวัติ</button>
-              </div>
-            </div>
-          </div>
-        </li>
-
-        <!-- Display Patient Data in Divs -->
-        <!-- <div v-for="(patient, index) in patients" :key="'patient-' + patient.id" class="grid grid-cols-2 gap-4 mt-5">
+        <div v-for="(patient, index) in patients" :key="'patient-' + patient.id" class="grid grid-cols-2 gap-4 mt-5">
           <div class="shadow-md rounded-md p-4 flex flex-col h-full font-sarabun">
             <div class="flex">
               <div class="flex items-start">
@@ -81,7 +50,7 @@
                 @click="goToWaitCheck(patient.id)">ซักประวัติ</button>
             </div>
           </div>
-        </div> -->
+        </div>
 
 
 
