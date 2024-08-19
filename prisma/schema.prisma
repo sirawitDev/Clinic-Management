@@ -1,0 +1,102 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model patients {
+  id          Int      @id @default(autoincrement())
+  title       String // คำนำหน้า เช่น นาย, นาง, นางสาว , อื่นๆ
+  firstname   String
+  lastname    String
+  age         Int
+  weight      Float
+  height      Float
+  blood_type  String
+  congenital  String
+  allergy     String
+  birthdate   DateTime //วันเกิด 
+  houseNumber Int // บ้านเลขที่ 
+  village     Int // หมู่ 
+  subdistrict String
+  district    String
+  province    String
+  postalCode  Int // เลขไปรษณีย์ 
+  phoneNumber String // เบอร์โทรศัพท์ 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  patientHistories PatientHistory[]
+  diagnoses        Diagnosis[] // เพิ่มฟิลด์นี้เพื่อสะท้อนความสัมพันธ์
+}
+
+// ซักประวัติ // ตรวจรักษา
+model PatientHistory {
+  id             Int      @id @default(autoincrement())
+  patientId      Int
+  physicianId    Int?
+  weight         Float
+  height         Float
+  temperature    Float
+  bloodPressure  Float
+  pulse          Float
+  respiration    Float
+  chiefComplaint String
+  symptoms       String
+  physicalExam   String
+  status         String   @default("close")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  patient patients @relation(fields: [patientId], references: [id])
+  diagnoses      Diagnosis[]
+}
+
+// ข้อมูลแพทย์
+model Physician {
+  id         Int      @id @default(autoincrement())
+  title      String
+  first_name String
+  last_name  String
+  about      String?
+  email      String   @unique
+  phone      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  diagnoses Diagnosis[] // เพิ่มฟิลด์นี้เพื่อสะท้อนความสัมพันธ์
+}
+
+model Diagnosis {
+  id             Int      @id @default(autoincrement())
+  patient_id     Int // เปลี่ยนเป็น Int
+  createdAt      DateTime @default(now())
+  patientHistoryId Int?
+  updatedAt      DateTime @updatedAt
+  diagnosis      String
+  treatment_plan String?
+  notes          String?
+  physician_id   Int
+
+  patient   patients  @relation(fields: [patient_id], references: [id])
+  physician Physician @relation(fields: [physician_id], references: [id])
+  patientHistory PatientHistory? @relation(fields: [patientHistoryId], references: [id])
+}
+
+model Products {
+  id             Int      @id @default(autoincrement())
+  name        String
+  imageUrl    String
+  about       String
+  price       Int
+  quantity    Int
+  remainQuantity    Int
+  status      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
