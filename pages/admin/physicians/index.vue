@@ -7,6 +7,7 @@ import Trash from '~/components/admin/Trash.vue'
 import Edit from '~/components/admin/Edit.vue'
 
 const physicians = ref([]);
+const isLoading = ref(true);
 const router = useRouter();
 
 const fetchPhysicians = async () => {
@@ -20,6 +21,8 @@ const fetchPhysicians = async () => {
     physicians.value = await response.json();
   } catch (error) {
     console.error('Error fetching physicians:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -46,7 +49,6 @@ const editPhysician = (id: number) => {
 onMounted(fetchPhysicians);
 </script>
 
-
 <template>
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
@@ -60,7 +62,13 @@ onMounted(fetchPhysicians);
       </div>
 
       <div class="overflow-x-auto">
-        <table class="table">
+        <!-- Display Loading message if data is still loading -->
+        <div v-if="isLoading" class="flex justify-center items-center h-32">
+          <p class="text-xl font-semibold">Loading...</p>
+        </div>
+
+        <!-- Display table once data is fetched -->
+        <table v-else class="table">
           <thead>
             <tr>
               <th>

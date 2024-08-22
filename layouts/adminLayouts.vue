@@ -15,6 +15,7 @@ const pageData = [
 
 const currentPath = ref(route.path)
 const historyTakingCompleted = ref(false)
+const drawerOpen = ref(false)  // Added for controlling sidebar on small screens
 
 const updateCurrentPathAndStatus = () => {
   currentPath.value = route.path
@@ -30,12 +31,13 @@ onMounted(updateCurrentPathAndStatus)
 <template>
   <div class="h-14">
     <div class="p-3 border-b-2 w-full flex h-16 items-center">
+      <button @click="drawerOpen = !drawerOpen" class="lg:hidden p-2 focus:outline-none">
+        <font-awesome-icon :icon="['fa', 'bars']" class="text-xl text-zinc-600"></font-awesome-icon>
+      </button>
       <RouterLink to="/admin" class="flex-1 flex items-center">
         <img class="w-[130px] h-12 mx-2" src="https://img2.pic.in.th/pic/-removebg-preview344b007cb6dec167.png" alt="logo">
       </RouterLink>
       <div class="flex-1 flex justify-end">
-        <div class="mt-1 mr-3">
-        </div>
         <div class="dropdown dropdown-end">
           <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
             <div class="w-10 h-10 rounded-full overflow-hidden">
@@ -52,16 +54,16 @@ onMounted(updateCurrentPathAndStatus)
     </div>
   </div>
 
-  <div class="drawer drawer-open">
-    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+  <div class="drawer lg:drawer-open">
+    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" v-model="drawerOpen" />
     <div class="drawer-content bg-zinc-50 mt-2">
-      <div class=" mx-auto max-w-full pr-10 pl-10">
+      <div class="mx-auto max-w-full pr-10 pl-10">
         <slot></slot>
       </div>
     </div>
     <div class="drawer-side">
-      <label for="my-drawer-2" class="drawer-overlay"></label>
-      <ul class="menu p-4 w-72 h-full text-base-content border-r-2 my-2 ">
+      <label for="my-drawer-2" class="drawer-overlay lg:hidden" @click="drawerOpen = false"></label>
+      <ul class="menu p-4 w-72 h-full text-base-content border-r-2 my-2 bg-white">
         <li v-for="page in pageData" :key="page.route">
           <RouterLink :to="page.route" :class="currentPath.value === page.route ? 'active' : ''"
             class="flex items-center mt-2 p-2 rounded hover:bg-gray-100 transition-colors duration-200">
@@ -130,8 +132,8 @@ onMounted(updateCurrentPathAndStatus)
 }
 
 .drawer-side {
-  overflow: hidden; /* หรือ overflow: auto; */
-  height: 100vh; /* กำหนดความสูงให้เต็มจอ */
+  overflow: hidden; 
+  height: 100vh;
 }
 
 .dropdown-content {

@@ -83,7 +83,7 @@ onMounted(() => {
         </div>
       </div>
       <button @click="ToggleClick" class="btn">กด</button>
-      <div>
+      <div class="mt-5 ">
         <nuxt-link to="/admin/products/create"
           class="btn btn-accent w-full font-light text-white">เพิ่มข้อมูลสินค้า</nuxt-link>
       </div>
