@@ -5,13 +5,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url = env("POSTGRES_PRISMA_URL") 
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model patients {
   id          Int      @id @default(autoincrement())
-  title       String // คำนำหน้า เช่น นาย, นาง, นางสาว , อื่นๆ
+  title       String
   firstname   String
   lastname    String
   age         Int
@@ -32,7 +32,7 @@ model patients {
   updatedAt   DateTime @updatedAt
 
   patientHistories PatientHistory[]
-  diagnoses        Diagnosis[] // เพิ่มฟิลด์นี้เพื่อสะท้อนความสัมพันธ์
+  diagnoses        Diagnosis[]
 }
 
 // ซักประวัติ // ตรวจรักษา
@@ -57,7 +57,7 @@ model PatientHistory {
   diagnoses      Diagnosis[]
 }
 
-// ข้อมูลแพทย์
+
 model Physician {
   id         Int      @id @default(autoincrement())
   title      String
@@ -69,12 +69,12 @@ model Physician {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  diagnoses Diagnosis[] // เพิ่มฟิลด์นี้เพื่อสะท้อนความสัมพันธ์
+  diagnoses Diagnosis[] 
 }
 
 model Diagnosis {
   id             Int      @id @default(autoincrement())
-  patient_id     Int // เปลี่ยนเป็น Int
+  patient_id     Int
   createdAt      DateTime @default(now())
   patientHistoryId Int?
   updatedAt      DateTime @updatedAt
@@ -86,6 +86,7 @@ model Diagnosis {
   patient   patients  @relation(fields: [patient_id], references: [id])
   physician Physician @relation(fields: [physician_id], references: [id])
   patientHistory PatientHistory? @relation(fields: [patientHistoryId], references: [id])
+  payments         Payment[]
 }
 
 model Products {
@@ -99,4 +100,81 @@ model Products {
   status      String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  promotions Promotion[]
+}
+
+model Promotion {
+  id        Int     @id @default(autoincrement())
+  productId   Int
+  name      String
+  imageUrl    String
+  price     Int
+  startDate   DateTime
+  endDate     DateTime
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  products  Products @relation(fields: [productId], references: [id])
+}
+
+model Drug {
+  id          Int      @id @default(autoincrement())
+  name        String   // ชื่อยา
+  type        String   // ประเภทของยา (เช่น ยาฆ่าเชื้อ, ยาแก้ปวด)
+  price       Int      // ราคา
+  dosage      Float?   // ปริมาณยา (อาจเป็นค่า null ได้)
+  imageUrl    String   // URL ของภาพยา
+  unit        String?  // หน่วยของปริมาณ (เช่น mg, ml)
+  about       String   // ข้อมูลเกี่ยวกับยา
+  status      String   // สถานะ (เช่น active, inactive)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  orderNumber    String
+  totalAmount    Int
+  quantity       Int?
+  paymentMethod  String?  
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  diagnosisId    Int?
+  diagnosis      Diagnosis? @relation(fields: [diagnosisId], references: [id])
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  password    String
+  firstname       String?
+  lastname    String?
+  role        String   @default("user")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // สร้างความสัมพันธ์กับ Address
+  addresses    Address[]
+}
+
+model Address {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  country     String   // ประเทศ
+  houseNumber Int // บ้านเลขที่ 
+  village     Int // หมู่ 
+  subdistrict String
+  district    String
+  province    String
+  postalCode  Int // เลขไปรษณีย์ 
+  phoneNumber String // เบอร์โทรศัพท์ 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // สร้างความสัมพันธ์กับโมเดล User
+  user        User     @relation(fields: [userId], references: [id])
 }

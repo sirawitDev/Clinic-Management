@@ -9,9 +9,9 @@
         </div>
       </div>
 
-      <div v-for="(item, index) in patientHistories" :key="item.id"
-        class="grid grid-cols-2 gap-4 mt-5 bg-white rounded-md font-sarabun">
-        <div class="shadow-md border-black rounded-md p-4 flex flex-col h-60 font-sarabun bg-orange-200 mx-5 my-5">
+      <div class="grid grid-cols-2 mt-5 rounded-md font-sarabun">
+        <div v-for="(item, index) in patientHistories" :key="item.id"
+          class="shadow-lg border-black rounded-md p-4 flex flex-col h-64 font-sarabun bg-white mx-5 my-5">
           <div class="flex">
             <div class="flex items-start ">
               <div class="avatar">
@@ -35,7 +35,8 @@
               </div>
               <div class="flex gap-1 my-5">
                 <div class="flex-1 flex justify-end">
-                  <button class="btn btn-accent text-white font-thin w-full" @click="handleCheck(item.patient.id, item.id)">
+                  <button class="btn btn-accent text-white font-thin w-full"
+                    @click="handleCheck(item.patient.id, item.id)">
                     ตรวจ
                   </button>
                 </div>
@@ -46,10 +47,10 @@
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
+
     </div>
   </AdminLayout>
 </template>
@@ -57,7 +58,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import AdminLayout from '~/layouts/adminLayouts.vue';
+import AdminLayout from '~/layouts/adminLayout2.vue';
 
 const patientHistories = ref([]);
 const router = useRouter();

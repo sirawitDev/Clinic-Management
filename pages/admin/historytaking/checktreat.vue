@@ -148,7 +148,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePatientHistoryStore } from '~/stores/patientHistory';
-import AdminLayout from '~/layouts/adminLayouts.vue';
+import AdminLayout from '~/layouts/adminLayout2.vue';
 
 const store = usePatientHistoryStore();
 const route = useRoute();

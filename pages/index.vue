@@ -1,10 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import adminLayouts from '~/layouts/adminLayouts.vue';
+import adminLayouts from '~/layouts/adminLayout2.vue';
 import { useUserStore } from '~/stores/user.ts';
 import ApexBarChart from '~/components/admin/ApexBarChart.vue'
-
-
 
 const userStore = useUserStore();
 const totalPatients = ref(0);

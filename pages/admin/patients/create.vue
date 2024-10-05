@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore } from '~/stores/user.ts'
-import adminLayouts from '~/layouts/adminLayouts.vue'
+import adminLayouts from '~/layouts/adminLayout2.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'

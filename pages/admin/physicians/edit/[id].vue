@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import AdminLayout from '~/layouts/adminLayouts.vue';
+import AdminLayout from '~/layouts/adminLayout2.vue';
 import axios from 'axios';
 
 const router = useRouter();
@@ -77,26 +77,29 @@ onMounted(() => {
             <option>อื่นๆ</option>
           </select>
         </label>
-        
+
         <label class="form-control w-full mt-3">
           <div class="label">
             <span class="label-text">ชื่อ</span>
           </div>
-          <input type="text" v-model="form.first_name" placeholder="Type here" class="input input-bordered w-full" required />
+          <input type="text" v-model="form.first_name" placeholder="Type here" class="input input-bordered w-full"
+            required />
         </label>
 
         <label class="form-control w-full mt-3">
           <div class="label">
             <span class="label-text">นามสกุล</span>
           </div>
-          <input type="text" v-model="form.last_name" placeholder="Type here" class="input input-bordered w-full" required />
+          <input type="text" v-model="form.last_name" placeholder="Type here" class="input input-bordered w-full"
+            required />
         </label>
 
         <label class="form-control w-full mt-3">
           <div class="label">
             <span class="label-text">อีเมล</span>
           </div>
-          <input type="email" v-model="form.email" placeholder="Type here" class="input input-bordered w-full" required />
+          <input type="email" v-model="form.email" placeholder="Type here" class="input input-bordered w-full"
+            required />
         </label>
 
         <label class="form-control w-full mt-3">
@@ -106,11 +109,16 @@ onMounted(() => {
           <input type="tel" v-model="form.phone" placeholder="Type here" class="input input-bordered w-full" />
         </label>
 
-        <label class="form-control w-full mt-3">
+        <label class="form-control w-full">
           <div class="label">
             <span class="label-text">อื่นๆ</span>
           </div>
-          <input type="text" v-model="form.about" placeholder="Type here" class="input input-bordered w-full" />
+          <select class="select select-bordered" v-model="form.about">
+            <option disabled selected>Pick one</option>
+            <option>แพทย์</option>
+            <option>แคชเชียร์</option>
+            <option>พยาบาล</option>
+          </select>
         </label>
 
         <div>

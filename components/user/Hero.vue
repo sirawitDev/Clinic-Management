@@ -19,11 +19,11 @@
                 </div>
                 <div class="flex flex-col my-5">
                     <div>
-                        <div
+                        <RouterLink to="/user/reservation"
                             class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 w-48 hover:bg-slate-50 hover:bg-opacity-50"
                             role="button">
                             <span class="relative z-10 text-white font-light text-lg">จองคิวออนไลน์</span>
-                        </div>
+                        </RouterLink>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,7 @@ const generateRandomData = (length, min, max) => {
 const series = ref([
   {
     name: 'รายได้',
-    data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+    data: [1, 85, 101, 98, 87, 105, 91, 114, 94],
   },
 ])
 
@@ -66,7 +66,7 @@ const chartOptions = ref({
   },
   yaxis: {
     title: {
-      text: '$ (thousands)',
+      text: '฿ (บาท)',
     },
   },
   fill: {

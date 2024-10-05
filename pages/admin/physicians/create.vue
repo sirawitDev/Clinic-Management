@@ -70,7 +70,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import AdminLayout from '~/layouts/adminLayouts.vue'
+import AdminLayout from '~/layouts/adminLayout2.vue'
 import { usePhysicianStore } from '~/stores/physicianStore'
 
 const physicianStore = usePhysicianStore()

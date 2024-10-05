@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import AdminLayout from '~/layouts/adminLayouts.vue';
+import AdminLayout from '~/layouts/adminLayout2.vue';
 
 import Trash from '~/components/admin/Trash.vue'
 import Edit from '~/components/admin/Edit.vue'
@@ -64,7 +64,7 @@ onMounted(fetchPhysicians);
       <div class="overflow-x-auto">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
-          <p class="text-xl font-semibold">Loading...</p>
+          <span class="loading loading-spinner text-accent"></span>
         </div>
 
         <!-- Display table once data is fetched -->

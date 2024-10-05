@@ -1,5 +1,5 @@
 <script setup>
-import adminLayouts from '~/layouts/adminLayouts.vue'
+import adminLayouts from '~/layouts/adminLayout2.vue'
 
 const router = useRouter()
 

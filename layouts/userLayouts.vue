@@ -1,66 +1,120 @@
 <template>
-  <div class=" container mx-auto">
+  <div class="container mx-auto">
     <div
       class="navbar bg-base-100 mb-5 bg-[#FAFAFA] rounded-full my-3 shadow-lg sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <div class="flex-1 mx-3">
-        <RouterLink to="/home" class="btn btn-ghost text-xl rounded-full">AIRPORT CLINIC</RouterLink>
+        <RouterLink to="/user" class="flex-1 flex items-center">
+          <img class="w-[130px] h-12 mx-2" src="https://img2.pic.in.th/pic/-removebg-preview344b007cb6dec167.png"
+            alt="logo">
+        </RouterLink>
       </div>
 
       <div class="mx-5 menu">
         <ul class="flex items-center">
           <li class="mx-4 sm:mx-2">
-            <RouterLink to="/home">หน้าแรก</RouterLink>
+            <RouterLink to="/user">หน้าแรก</RouterLink>
           </li>
           <li class="mx-4 sm:mx-2">
-            <RouterLink to="/promotion">โปรโมชั่น</RouterLink>
+            <RouterLink to="/user/promotion">โปรโมชั่น</RouterLink>
           </li>
           <li class="mx-4 sm:mx-2">
-            <RouterLink to="/product">สินค้า</RouterLink>
-          </li>
-          <li class="mx-4 sm:mx-2">
-            <RouterLink to="/about">เกี่ยวกับเรา</RouterLink>
+            <RouterLink to="/user/about">เกี่ยวกับเรา</RouterLink>
           </li>
         </ul>
       </div>
 
-      <div class="flex-none">
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-            <div class="indicator">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span class="badge badge-sm indicator-item">8</span>
-            </div>
-          </div>
-          <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow">
-            <div class="card-body">
-              <span class="text-lg font-bold">8 ชิ้น</span>
-              <span class="text-info">ยอดทั้งหมด: $999</span>
-              <div class="card-actions">
-                <button class="btn btn-primary btn-block">ดูตระกร้า</button>
+      <div class="flex-none gap-3">
+        <form class="relative mx-auto w-max" @submit.prevent="handleSearch">
+          <input type="search"
+            class="peer cursor-pointer relative z-10 h-12 w-12 rounded-full border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-orange-300 focus:pl-16 focus:pr-4"
+            v-model="searchText" @keyup="handleSearch" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+            class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-orange-300 peer-focus:stroke-orange-500"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </form>
+
+        <div v-if="authStore.isAuthenticated">
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                <img alt="User Avatar" src="https://img2.pic.in.th/pic/volunteer_11077481.png" />
               </div>
             </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              <li><RouterLink to="/user/profile">โปรไฟล์</RouterLink></li>
+              <li><a>ตั้งค่า</a></li>
+              <li><a @click="authStore.logout()">ออกจากระบบ</a></li>
+            </ul>
           </div>
         </div>
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              <img alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+
+        <div v-else class="mr-5">
+          <button class="btn btn-accent font-light text-white" onclick="my_modal_3.showModal()">เข้าสู่ระบบ</button>
+          <dialog id="my_modal_3" class="modal">
+            <div class="modal-box">
+              <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              </form>
+
+              <div>
+                <h3 class="text-4xl font-bold text-center">Airport Clinic</h3>
+              </div>
+
+              <div class="flex gap-1 w-full mx-auto justify-center mt-3">
+                <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">เข้าสู่ระบบ</button>
+                <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">สมัครสมาชิก</button>
+              </div>
+
+              <div v-if="isLoginForm" class="mt-4">
+                <form @submit.prevent="login">
+                  <div class="form-control">
+                    <label>อีเมล</label>
+                    <input v-model="email" type="email" placeholder="" class="input input-bordered" />
+                  </div>
+                  <div class="form-control mt-5">
+                    <label>รหัสผ่าน</label>
+                    <input v-model="password" type="password" placeholder="" class="input input-bordered" />
+                  </div>
+                  <div class="form-control mt-5">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                  </div>
+                </form>
+              </div>
+
+              <div v-else class="mt-4">
+                <form @submit.prevent="register">
+                  <div class="form-control">
+                    <label class="text-lg mx-1">อีเมล</label>
+                    <input v-model="registerEmail" type="email" placeholder="" class="input input-bordered" />
+                  </div>
+
+                  <div class="form-control mt-5">
+                    <label class="text-lg mx-1">รหัสผ่าน</label>
+                    <input v-model="registerPassword" type="password" placeholder="" class="input input-bordered" />
+                  </div>
+
+                  <div class="form-control mt-5">
+                    <label class="text-lg mx-1">รหัสผ่านอีกครั้ง</label>
+                    <input v-model="confirmPassword" type="password" placeholder="" class="input input-bordered" />
+                  </div>
+                  <div class="form-control mt-5">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                  </div>
+                </form>
+              </div>
+
             </div>
-          </div>
-          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-            <li>
-              <a class="justify-between">
-                โปรไฟล์
-              </a>
-            </li>
-            <li><a>ตั้งค่า</a></li>
-            <li><a>ออกจากระบบ</a></li>
-          </ul>
+            <div v-if="showSuccessMessage" role="alert" class="alert alert-success absolute bottom-5 right-10 w-60">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-white">สมัครสมาชิกเสร็จสิ้น</span>
+            </div>
+          </dialog>
         </div>
       </div>
     </div>
@@ -79,37 +133,80 @@
             โบท็อกซ์ ฟิลเลอร์ ร้อยไหม วิตามินผิว
             เปิดบริการทุกวัน 11.00 - 20.00
           </p>
-          <!-- Social-->
-          <div class="flex space-x-2 justify-center opacity-75">
-            <!-- Instagram -->
-            <button>
-              <Location></Location>
-            </button>
-            <!-- Twitter -->
-            <button>
-              <Call></Call>
-            </button>
-            <!-- Facebook -->
-            <button>
-              <svg
-                height="36"
-                width="36"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                class="text-blue-700">
-                <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.325v21.351c0 .729.597 1.324 1.325 1.324h11.491v-9.284h-3.117v-3.622h3.117V8.413c0-3.1 1.893-4.788 4.657-4.788 1.325 0 2.463.099 2.795.143v3.241l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.324-.595 1.324-1.324V1.325C24 .597 23.404 0 22.675 0z" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
-import Location from '../components/user/Location.vue';
-import Call from '../components/user/Call.vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '~/stores/auth.ts';
+
+const authStore = useAuthStore();
+const router = useRouter();
+const searchText = ref('');
+const isLoginForm = ref(true);
+const showSuccessMessage = ref(false);
+
+const email = ref('');
+const password = ref('');
+const registerEmail = ref('');
+const registerPassword = ref('');
+const confirmPassword = ref('');
+
+const toggleForm = () => {
+  isLoginForm.value = !isLoginForm.value;
+};
+
+const login = async () => {
+  try {
+    const response = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: { email: email.value, password: password.value }
+    });
+
+    if (response.success) {
+      authStore.login({ token: response.token, user: response.user });
+      alert('Login success');
+      router.push('/user');
+    } else {
+      alert('ล็อคอินไม่สำเร็จ');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Login failed');
+  }
+};
+
+const register = async () => {
+  if (registerPassword.value !== confirmPassword.value) {
+    alert("รหัสผ่านไม่ตรงกัน");
+    return;
+  }
+
+  try {
+    const response = await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: { email: registerEmail.value, password: registerPassword.value }
+    });
+
+    if (response.success) {
+      showSuccessMessage.value = true;
+      setTimeout(() => showSuccessMessage.value = false, 3000);
+    } else {
+      alert('สมัครสมาชิกไม่สำเร็จ');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Register failed');
+  }
+};
+
+const handleSearch = () => {
+  router.push({ path: '/user/search', query: { search: searchText.value } });
+};
+
+authStore.initializeAuth();
 </script>

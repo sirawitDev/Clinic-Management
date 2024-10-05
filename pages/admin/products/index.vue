@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import adminLayouts from '~/layouts/adminLayouts.vue'
+import adminLayouts from '~/layouts/adminLayout2.vue'
 
 const products = ref([])
 const selectedProduct = ref(null)
@@ -75,11 +75,14 @@ onMounted(() => {
   <adminLayouts>
     <div class="bg-white w-full h-full pl-5 pt-3 shadow-md rounded-md mt-5">
       <div class="mb-4 flex justify-center">
-        <div v-if="!ToggleTitle" class="flex justify-center items-center bg-[#FFD600] w-[60%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <div v-if="!ToggleTitle"
+          class="flex justify-center items-center bg-[#FFD600] w-[60%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
           <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลสินค้า</h2>
         </div>
         <div v-if="ToggleTitle" class="flex w-full flex-col">
-          <div class="divider"><p class="text-4xl font-sarabun">ข้อมูลสินค้า</p></div>
+          <div class="divider">
+            <p class="text-4xl font-sarabun">ข้อมูลสินค้า</p>
+          </div>
         </div>
       </div>
       <button @click="ToggleClick" class="btn">กด</button>
@@ -90,41 +93,48 @@ onMounted(() => {
       <div class="mx-auto p-4">
 
         <!-- <div class="overflow-x-auto">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>รูปภาพ</th>
-        <th>ชื่อสินค้า</th>
-        <th>สถานะ</th>
-        <th>จำนวน</th>
-        <th><p class="text-center">about</p></th>
-        <th><p class="text-center"></p></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="product in products" :key="product.id">
-        <th>{{ product.id }}</th>
-        <th><img class="w-24 h-24" :src="product.imageUrl" alt="pic"></th>
-        <td>{{ product.name }}</td>
-        <td>
-          <div :class="['badge', product.status === 'open' ? 'badge-success' : 'badge-error', 'pb-1']">
-            <p class="text-white">{{ product.status }}</p>
-          </div>
-        </td>
-        <td>{{ product.quantity }} / {{ product.remainQuantity }}</td>
-        <td><p class="text-center">{{ truncateText(product.about) }}</p></td>
-        <td>
-          <div class="flex justify-center gap-2">
-            <button @click="deleteProduct(product.id)" class="btn btn-accent text-white font-light">ลบ</button>
-            <button class="btn btn-accent text-white font-light">แก้ไข</button>
-            <button @click="openModal(product)" class="btn btn-accent text-white font-light">ดูเพิ่มเติม</button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div> -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>รูปภาพ</th>
+                <th>ชื่อสินค้า</th>
+                <th>สถานะ</th>
+                <th>จำนวน</th>
+                <th>
+                  <p class="text-center">about</p>
+                </th>
+                <th>
+                  <p class="text-center"></p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="product in products" :key="product.id">
+                <th>{{ product.id }}</th>
+                <th><img class="w-24 h-24" :src="product.imageUrl" alt="pic"></th>
+                <td>{{ product.name }}</td>
+                <td>
+                  <div :class="['badge', product.status === 'open' ? 'badge-success' : 'badge-error', 'pb-1']">
+                    <p class="text-white">{{ product.status }}</p>
+                  </div>
+                </td>
+                <td>{{ product.quantity }} / {{ product.remainQuantity }}</td>
+                <td>
+                  <p class="text-center">{{ truncateText(product.about) }}</p>
+                </td>
+                <td>
+                  <div class="flex justify-center gap-2">
+                    <button @click="deleteProduct(product.id)" class="btn btn-accent text-white font-light">ลบ</button>
+                    <button class="btn btn-accent text-white font-light">แก้ไข</button>
+                    <button @click="openModal(product)"
+                      class="btn btn-accent text-white font-light">ดูเพิ่มเติม</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <div v-for="product in products" :key="product.id"
@@ -157,43 +167,43 @@ onMounted(() => {
 
     <!-- Modal Overlay -->
     <div v-if="selectedProduct" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-lg relative w-[55%] max-h-[70%] flex flex-col overflow-hidden">
-    <!-- Header with close button -->
-    <div class="p-4 flex justify-center items-center bg-orange-300 sticky top-0 z-10 relative">
-      <div>
-        <h3 class="text-4xl font-bold text-white">ข้อมูลเพิ่มเติม</h3>
-      </div>
-      <div class="absolute right-4 top-4">
-        <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost text-white">✕</button>
-      </div>
-    </div>
+      <div class="bg-white rounded-lg relative w-[55%] max-h-[70%] flex flex-col overflow-hidden">
+        <!-- Header with close button -->
+        <div class="p-4 flex justify-center items-center bg-orange-300 sticky top-0 z-10 relative">
+          <div>
+            <h3 class="text-4xl font-bold text-white">ข้อมูลเพิ่มเติม</h3>
+          </div>
+          <div class="absolute right-4 top-4">
+            <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost text-white">✕</button>
+          </div>
+        </div>
 
-    <!-- Scrollable Content Area -->
-    <div class="overflow-y-auto p-4">
-      <div class="flex">
-        <div class="flex-2 p-4">
-          <div class="avatar flex justify-center">
-            <div class="w-48 rounded">
-              <img :src="selectedProduct.imageUrl" alt="product image" />
+        <!-- Scrollable Content Area -->
+        <div class="overflow-y-auto p-4">
+          <div class="flex">
+            <div class="flex-2 p-4">
+              <div class="avatar flex justify-center">
+                <div class="w-48 rounded">
+                  <img :src="selectedProduct.imageUrl" alt="product image" />
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 p-4">
+              <div>
+                <h1 class="font-bold text-2xl">รายละเอียดสินค้า</h1>
+              </div>
+              <div class="mt-4">
+                <p><strong>ชื่อสินค้า:</strong> {{ selectedProduct.name }}</p>
+                <p class="mt-2"><strong>สถานะ:</strong> {{ selectedProduct.status }}</p>
+                <p class="mt-2"><strong>จำนวน:</strong> {{ selectedProduct.quantity }} / {{
+                  selectedProduct.remainQuantity }}</p>
+                <p class="mt-2"><strong>รายละเอียด:</strong> {{ selectedProduct.about }}</p>
+              </div>
             </div>
           </div>
         </div>
-        <div class="flex-1 p-4">
-          <div>
-            <h1 class="font-bold text-2xl">รายละเอียดสินค้า</h1>
-          </div>
-          <div class="mt-4">
-            <p><strong>ชื่อสินค้า:</strong> {{ selectedProduct.name }}</p>
-            <p class="mt-2"><strong>สถานะ:</strong> {{ selectedProduct.status }}</p>
-            <p class="mt-2"><strong>จำนวน:</strong> {{ selectedProduct.quantity }} / {{
-              selectedProduct.remainQuantity }}</p>
-            <p class="mt-2"><strong>รายละเอียด:</strong> {{ selectedProduct.about }}</p>
-          </div>
-        </div>
       </div>
     </div>
-  </div>
-</div>
 
   </adminLayouts>
 </template>

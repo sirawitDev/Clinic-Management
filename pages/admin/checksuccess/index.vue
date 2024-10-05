@@ -44,7 +44,7 @@
                 <div class="flex justify-center gap-2">
                   <button @click="deleteDiagnosis(diagnosis.id)" class="btn btn-accent text-white font-light">ลบ</button>
                   <button class="btn btn-accent text-white font-light">แก้ไข</button>
-                  <button class="btn btn-accent text-white font-light">ชำระเงิน</button>
+                  <RouterLink to='/cashier' class="btn btn-accent text-white font-light">จ่ายยา</RouterLink>
                 </div>
               </td>
             </tr>
@@ -57,11 +57,12 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import AdminLayout from '~/layouts/adminLayouts.vue';
+import AdminLayout from '~/layouts/adminLayout2.vue';
 
 const diagnoses = ref([]);
 const patients = ref([]);
 const physicians = ref([]);
+
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
