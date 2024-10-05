@@ -1,5 +1,5 @@
 <script setup>
-import userLayouts from '../../layouts/userLayouts.vue';
+import userLayouts from '~/layouts/userLayouts.vue';
 import { ref, onMounted } from 'vue';
 
 import { useUserCartStore } from '~/stores/users/cart.ts'
