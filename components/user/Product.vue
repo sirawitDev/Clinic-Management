@@ -45,11 +45,11 @@ const truncatedText = (product) => product.about.substring(0, maxLength);
                         {{ product.status }}
                     </div>
                 </div>
-                <div class="card-actions justify-end mt-4">
+                <!-- <div class="card-actions justify-end mt-4">
                     <button @click="addToCart(product)"
                         class="btn btn-ghost w-full text-white bg-[#FFD600] bg-opacity-50 border border-gray-200 shadow-sm">Buy
                         Now</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

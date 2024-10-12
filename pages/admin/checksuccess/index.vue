@@ -164,6 +164,9 @@ onMounted(() => {
   console.log(patients.value)
 })
 
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

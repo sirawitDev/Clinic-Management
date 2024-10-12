@@ -1,89 +1,72 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import adminLayouts from '~/layouts/adminLayout2.vue';
-import { useUserStore } from '~/stores/user.ts';
-import ApexBarChart from '~/components/admin/ApexBarChart.vue'
+import UserLayout from '~/layouts/userLayouts.vue';
+import Hero from '~/components/user/Hero.vue';
+import Coutdown from '~/components/user/Countdown.vue';
+import ImageSlider from '~/components/user/ImageSlider.vue';
 
-const userStore = useUserStore();
-const totalPatients = ref(0);
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore(); 
 
 onMounted(() => {
-  userStore.fetchUsers().then(() => {
-    totalPatients.value = userStore.users.length;
-  });
+  console.log(authStore.user)
 })
+
 </script>
 
 <template>
-  <adminLayouts>
-    <div class="flex justify-center items-center bg-[#FFD600] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-      <h2 class="text-6xl font-bold text-[#fefeff] text-stroke tracking-wide">DASHBOARD</h2>
-    </div>
-    <div class="flex justify-center mt-5 p-5 bg-white shadow-md rounded-md">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-        <div class="card bg-[#2584FF] w-full shadow-xl h-44 transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">ผู้ป่วยทั้งหมด</h2>
-          <div class="flex mt-8">
-            <div class="flex-1 ml-5">
-              <p class="text-white text-6xl mt-2">{{ totalPatients }} คน</p>
-            </div>
-            <div class="flex-1 flex justify-end mr-5">
-              <img src="https://img2.pic.in.th/pic/users_391194.png" alt="logo_user">
-            </div>
+  <UserLayout>
+    <!-- Hero -->
+    <Hero></Hero>
+
+    <!-- Number Content -->
+    <div class="promotion-container p-4 mt-5 rounded-lg h-92">
+      <div class="flex">
+        <div class="flex-1">
+          <div class="mx-2">
+            <h2 class="text-7xl font-bold text-[#fefeff] text-stroke tracking-wide">Promotion</h2>
           </div>
         </div>
-        <div class="card bg-[#00AC97] w-full h-44 shadow-xl transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">คนใช้บริการวันนี้</h2>
-          <div class="flex mt-8">
-            <div class="flex-1 ml-5">
-              <p class="text-white text-6xl mt-2">{{ totalPatients }} คน</p>
-            </div>
-            <div class="flex-1 flex justify-end mr-5">
-              <img src="https://img2.pic.in.th/pic/qc_8790314-1.png" alt="logo_user">
-            </div>
-          </div>
-        </div>
-        <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">นัดหมายวันนี้</h2>
-          <div class="flex mt-8">
-            <div class="flex-1 ml-5">
-              <p class="text-white text-6xl mt-2">{{ totalPatients }} คน</p>
-            </div>
-            <div class="flex-1 flex justify-end mr-5">
-              <img src="https://img2.pic.in.th/pic/job_10485121.png" alt="logo_user">
-            </div>
-          </div>
-        </div>
+
+        <!-- Countdown -->
+        <Coutdown></Coutdown>
+
       </div>
+      <ImageSlider></ImageSlider>
 
     </div>
-    <div class="flex gap-3">
-      <div class="flex-1">
-        <div class="p-4 bg-white mt-5 shadow-md rounded-md">
-          <ApexBarChart />
-        </div>
-      </div>
-      <div class="flex-1">
-        <div class="p-4 bg-white mt-5 shadow-md rounded-md">
-          asdasd
-        </div>
-      </div>
-    </div>
-  </adminLayouts>
+  </UserLayout>
 </template>
 
 <style scoped>
-.card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.promotion-container {
+  background-image: url('https://img.freepik.com/free-photo/blurred-common-room_1203-106.jpg');
+  background-size: cover;
+  /* Ensure image covers the entire container */
+  background-position: center;
+  /* Center the background image */
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.button-name {
+  box-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px, rgba(45, 35, 66, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transition: box-shadow .15s, transform .15s;
+}
+
+.button-name:hover {
+  box-shadow: rgba(45, 35, 66, 0.3) 0 4px 8px, rgba(45, 35, 66, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-name:focus {
+  box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.button-name:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
 }
 
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
-
 </style>

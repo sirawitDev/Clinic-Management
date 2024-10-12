@@ -1,3 +1,4 @@
+//store/auth.ts
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -7,11 +8,10 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const router = useRouter();
 
-  // Load token from local storage on page load
   const initializeAuth = () => {
     const savedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
-    
+  
     if (savedUser && token) {
       isAuthenticated.value = true;
       user.value = JSON.parse(savedUser);
@@ -21,10 +21,19 @@ export const useAuthStore = defineStore('auth', () => {
   const login = (userData) => {
     isAuthenticated.value = true;
     user.value = userData;
-    // Save the user data and token in local storage
     localStorage.setItem('user', JSON.stringify(userData.user));
     localStorage.setItem('token', userData.token);
+  
+    // Redirect based on user role
+    if (userData.user.role === 'admin') {
+      router.push('/admin');  // Redirect to admin page
+    } else if (userData.user.role === 'cashier') {
+      router.push('/cashier');  // Redirect to cashier page
+    } else {
+      router.push('/user');  // Redirect to user page
+    }
   };
+  
 
   const logout = () => {
     isAuthenticated.value = false;
@@ -34,11 +43,14 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/user');
   };
 
+  const isAdmin = computed(() => user.value?.role === 'admin');
+
   return {
     isAuthenticated,
     user,
     login,
     logout,
     initializeAuth,
+    isAdmin
   };
 });

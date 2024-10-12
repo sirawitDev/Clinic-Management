@@ -69,6 +69,10 @@ const ToggleClick = () => {
 onMounted(() => {
   fetchProducts()
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <template>

@@ -89,6 +89,10 @@ const exportToExcel = () => {
 onMounted(() => {
   userStore.fetchUsers()
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 
@@ -99,7 +103,7 @@ onMounted(() => {
       <div class="mb-4">
         <div
           class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลคนไข้</h2>
+          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลผู้ป่วย</h2>
         </div>
       </div>
 

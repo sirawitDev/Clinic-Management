@@ -18,6 +18,12 @@
             <RouterLink to="/user/promotion">โปรโมชั่น</RouterLink>
           </li>
           <li class="mx-4 sm:mx-2">
+            <RouterLink to="/user/course">คอร์ส</RouterLink>
+          </li>
+          <li class="mx-4 sm:mx-2">
+            <RouterLink to="/user/product">สินค้า</RouterLink>
+          </li>
+          <li class="mx-4 sm:mx-2">
             <RouterLink to="/user/about">เกี่ยวกับเรา</RouterLink>
           </li>
         </ul>
@@ -43,8 +49,9 @@
               </div>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              <li><RouterLink to="/user/profile">โปรไฟล์</RouterLink></li>
-              <li><a>ตั้งค่า</a></li>
+              <li>
+                <RouterLink to="/user/profile">โปรไฟล์</RouterLink>
+              </li>
               <li><a @click="authStore.logout()">ออกจากระบบ</a></li>
             </ul>
           </div>
@@ -58,14 +65,18 @@
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
               </form>
 
-              <div>
-                <h3 class="text-4xl font-bold text-center">Airport Clinic</h3>
+              <div class="flex justify-center w-full">
+                <!-- <h3 class="text-5xl text-white font-bold text-center text-stroke font-kanit">แอร์พอร์ต เมดิคอล คลินิก</h3> -->
+                <img src="https://img5.pic.in.th/file/secure-sv1/AIRPORT-removebg-preview.png" alt="logo" class=" w-72">
               </div>
 
-              <div class="flex gap-1 w-full mx-auto justify-center mt-3">
+              <div class="divider"></div>
+
+              <div class="flex gap-1 w-full mx-auto justify-center">
                 <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">เข้าสู่ระบบ</button>
                 <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">สมัครสมาชิก</button>
               </div>
+
 
               <div v-if="isLoginForm" class="mt-4">
                 <form @submit.prevent="login">
@@ -78,7 +89,7 @@
                     <input v-model="password" type="password" placeholder="" class="input input-bordered" />
                   </div>
                   <div class="form-control mt-5">
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
                   </div>
                 </form>
               </div>
@@ -100,13 +111,14 @@
                     <input v-model="confirmPassword" type="password" placeholder="" class="input input-bordered" />
                   </div>
                   <div class="form-control mt-5">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary">สร้างบัญชี</button>
                   </div>
                 </form>
               </div>
 
             </div>
-            <div v-if="showSuccessMessage" role="alert" class="alert alert-success absolute bottom-5 right-10 w-60">
+            <div v-if="showSuccessMessageRegister" role="alert"
+              class="alert alert-success absolute bottom-5 right-10 w-60">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -115,6 +127,15 @@
               <span class="text-white">สมัครสมาชิกเสร็จสิ้น</span>
             </div>
           </dialog>
+
+          <div v-if="showSuccessMessageLogin" role="alert" class="alert alert-success absolute bottom-5 right-10 w-60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-white">ล็อคอินสำเร็จ</span>
+          </div>
         </div>
       </div>
     </div>
@@ -142,13 +163,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import auth from '~/middleware/auth';
 import { useAuthStore } from '~/stores/auth.ts';
 
 const authStore = useAuthStore();
 const router = useRouter();
 const searchText = ref('');
 const isLoginForm = ref(true);
-const showSuccessMessage = ref(false);
+const showSuccessMessageLogin = ref(false);
+const showSuccessMessageRegister = ref(false);
 
 const email = ref('');
 const password = ref('');
@@ -156,57 +179,75 @@ const registerEmail = ref('');
 const registerPassword = ref('');
 const confirmPassword = ref('');
 
-const toggleForm = () => {
-  isLoginForm.value = !isLoginForm.value;
-};
-
-const login = async () => {
-  try {
-    const response = await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: { email: email.value, password: password.value }
-    });
-
-    if (response.success) {
-      authStore.login({ token: response.token, user: response.user });
-      alert('Login success');
-      router.push('/user');
-    } else {
-      alert('ล็อคอินไม่สำเร็จ');
-    }
-  } catch (error) {
-    console.error(error);
-    alert('Login failed');
-  }
-};
-
 const register = async () => {
   if (registerPassword.value !== confirmPassword.value) {
-    alert("รหัสผ่านไม่ตรงกัน");
+    alert('Passwords do not match.');
     return;
   }
 
   try {
     const response = await $fetch('/api/auth/register', {
       method: 'POST',
-      body: { email: registerEmail.value, password: registerPassword.value }
+      body: {
+        email: registerEmail.value,
+        password: registerPassword.value,
+        confirmPassword: confirmPassword.value,
+      },
     });
 
-    if (response.success) {
-      showSuccessMessage.value = true;
-      setTimeout(() => showSuccessMessage.value = false, 3000);
-    } else {
-      alert('สมัครสมาชิกไม่สำเร็จ');
-    }
+    showSuccessMessageRegister.value = true;
+    setTimeout(() => {
+      showSuccessMessageRegister.value = false;
+      window.location.reload()
+    }, 3000);
+    console.log('User registered successfully', response);
   } catch (error) {
-    console.error(error);
-    alert('Register failed');
+    console.error('Registration failed', error);
   }
+};
+
+const login = async () => {
+  try {
+    const response = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: {
+        email: email.value,
+        password: password.value,
+      },
+    });
+
+    authStore.login(response);
+    showSuccessMessageLogin.value = true;
+    setTimeout(() => {
+      showSuccessMessageLogin.value = false;
+    }, 3000);
+  } catch (error) {
+    console.error('Login failed', error);
+  }
+};
+
+
+const toggleForm = () => {
+  isLoginForm.value = !isLoginForm.value;
 };
 
 const handleSearch = () => {
   router.push({ path: '/user/search', query: { search: searchText.value } });
 };
 
-authStore.initializeAuth();
+authStore.initializeAuth()
+
+definePageMeta({
+  middleware: ['redirectAdmin']
+});
 </script>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+
+.font-kanit {
+  font-family: 'Kanit', sans-serif;
+}
+</style>

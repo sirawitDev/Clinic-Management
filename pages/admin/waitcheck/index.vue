@@ -111,6 +111,10 @@ function handleCheck(patientId, patientHistoryId) {
 onMounted(() => {
   fetchPatientHistories();
 });
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

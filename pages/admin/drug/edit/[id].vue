@@ -106,6 +106,10 @@ const updateDrug = async () => {
 };
 
 onMounted(fetchDrug);
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

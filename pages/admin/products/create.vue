@@ -43,6 +43,10 @@ const submitForm = async () => {
     alert('An unexpected error occurred')
   }
 }
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <template>

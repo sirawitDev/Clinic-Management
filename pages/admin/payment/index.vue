@@ -44,6 +44,10 @@ const deletePayment = async (id: number) => {
 onMounted(() => {
   fetchPayments();
 });
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <template>

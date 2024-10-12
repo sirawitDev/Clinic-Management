@@ -9,8 +9,20 @@
         </div>
         <div>
           <label for="type" class="block text-sm font-medium">ประเภทของยา</label>
-          <input v-model="type" id="type" type="text" required class="input input-bordered w-full" />
+          <select v-model="type" id="type" class="select select-bordered w-full" required>
+            <option value="ยาสามัญประจำบ้าน">ยาสามัญประจำบ้าน</option>
+            <option value="ยาใส่แผล/นวด/ใช้ภายนอก">ยาใส่แผล/นวด/ใช้ภายนอก</option>
+            <option value="ยาน้ำสำหรับเด็ก">ยาน้ำสำหรับเด็ก</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
         </div>
+
+        <!-- ช่อง input จะปรากฏเมื่อเลือก "อื่นๆ" -->
+        <div v-if="type === 'อื่นๆ'">
+          <label for="customType" class="block text-sm font-medium">ประเภทอื่นๆ</label>
+          <input v-model="customType" id="customType" type="text" placeholder="กรุณาระบุประเภท" class="input input-bordered w-full" />
+        </div>
+
         <div>
           <label for="price" class="block text-sm font-medium">ราคา</label>
           <input v-model.number="price" id="price" type="number" required class="input input-bordered w-full" />
@@ -38,8 +50,8 @@
               <span class="label-text">Status</span>
             </div>
             <select class="select select-bordered" v-model="status">
-              <option selected>active</option>
-              <option>inactive</option>
+              <option value="active">active</option>
+              <option value="inactive">inactive</option>
             </select>
           </div>
 
@@ -53,12 +65,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import adminLayouts from '~/layouts/adminLayout2.vue'
 
 const name = ref('')
-const type = ref('')
+const type = ref('ยาสามัญประจำบ้าน') // Default value
+const customType = ref('') // สำหรับกรอกประเภทอื่นๆ
 const price = ref('')
 const dosage = ref('')
 const imageUrl = ref('')
@@ -68,10 +81,19 @@ const status = ref('active')
 
 const router = useRouter()
 
+// Watch เมื่อ type เปลี่ยน
+watch(type, (newType) => {
+  if (newType !== 'อื่นๆ') {
+    customType.value = '' // เคลียร์ค่าเมื่อไม่ได้เลือก "อื่นๆ"
+  }
+})
+
 const submitForm = async () => {
+  const finalType = type.value === 'อื่นๆ' ? customType.value : type.value
+
   const data = {
     name: name.value,
-    type: type.value,
+    type: finalType, // ใช้ finalType ในการบันทึกประเภท
     dosage: parseInt(dosage.value),
     imageUrl: imageUrl.value,
     price: parseInt(price.value),
@@ -79,7 +101,7 @@ const submitForm = async () => {
     status: status.value,
     about: about.value,
   }
-  console.log('data' , data)
+  console.log('data', data)
 
   try {
     const response = await fetch('/api/drug', {
@@ -104,6 +126,10 @@ const submitForm = async () => {
     alert('An unexpected error occurred')
   }
 }
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

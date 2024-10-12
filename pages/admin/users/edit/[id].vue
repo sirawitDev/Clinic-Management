@@ -7,7 +7,14 @@
           <div class="label">
             <span class="label-text">ชื่อ</span>
           </div>
-          <input type="text" v-model="form.name" class="input input-bordered w-full" required />
+          <input type="text" v-model="form.firstname" class="input input-bordered w-full" required />
+        </label>
+
+        <label class="form-control w-full mt-3">
+          <div class="label">
+            <span class="label-text">นามสกุล</span>
+          </div>
+          <input type="text" v-model="form.lastname" class="input input-bordered w-full" required />
         </label>
 
         <label class="form-control w-full mt-3">
@@ -48,7 +55,8 @@ const loading = ref(true);
 const form = ref({
   email: '',
   role: '',
-  name: '',
+  firstname: '',
+  lastname: ''
 });
 
 const fetchUser = async (id) => {
@@ -62,9 +70,9 @@ const fetchUser = async (id) => {
     const userData = await response.json();
     form.value = {
       email: userData.email,
-      password: '',  // Leave it empty for now
       role: userData.role,
-      name: userData.name,
+      firstname: userData.firstname,
+      lastname: userData.lastname,
     };
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -99,5 +107,9 @@ const submitForm = async () => {
     console.error('Error updating user:', error);
   }
 };
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 

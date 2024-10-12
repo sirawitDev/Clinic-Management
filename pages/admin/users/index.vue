@@ -29,7 +29,10 @@
                 <p class="text-center">Password</p>
               </th>
               <th>
-                <p class="text-center">Name</p>
+                <p class="text-center">Firstname</p>
+              </th>
+              <th>
+                <p class="text-center">Lastname</p>
               </th>
               <th>
                 <p class="text-center">Role</p>
@@ -38,7 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(user, index) in users" :key="user.id">
+            <tr v-for="(user, index) in useres" :key="user.id">
               <th>{{ index + 1 }}</th>
               <td>{{ user.email }}</td>
               <td>
@@ -46,11 +49,12 @@
                   <span class="text-gray-500">••••••</span> <!-- Placeholder for password -->
                 </div>
               </td>
-              <td>{{ user.name }}</td>
+              <td><p class="text-center">{{ user.firstname }}</p></td>
+              <td><p class="text-center">{{ user.lastname }}</p></td>
               <td><p class="text-center">{{ user.role }}</p></td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deleteUser(user.id)">
+                  <button class="btn" @click="deleteUser(user.email)">
                     <Trash />
                   </button>
                   <button class="btn btn-accent" @click="editUser(user.id)">
@@ -66,56 +70,66 @@
   </AdminLayout>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
+<script setup>
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
 
 import Trash from '~/components/admin/Trash.vue';
 import Edit from '~/components/admin/Edit.vue';
 
-const users = ref([]);
-const isLoading = ref(true);
 const router = useRouter();
-const error = ref(null);
+const isLoading = ref(true);
+const useres = ref([]); // เก็บข้อมูลผู้ใช้
 
-const fetchUsers = async () => {
-  isLoading.value = true; // Set loading to true
+const fetchUser = async () => {
+  isLoading.value = true;
   try {
-    const response = await fetch('/api/users', {
+    const response = await fetch('/api/admin/useres', {
       method: 'GET',
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch users');
+      throw new Error('Failed to fetch promotions');
     }
-    users.value = await response.json();
+    useres.value = await response.json();
   } catch (err) {
-    console.error('Error fetching users:', err);
-    error.value = "Error fetching users.";
+    console.error('Error fetching promotions:', err);
   } finally {
-    isLoading.value = false; // Set loading to false
+    isLoading.value = false;
   }
 };
 
-const deleteUser = async (userId) => {
+const deleteUser = async (email) => {
+  const confirmed = confirm('คุณต้องการลบผู้ใช้นี้หรือไม่?');
+  if (!confirmed) return;
+
   try {
-    const response = await fetch(`/api/users?id=${userId}`, {
+    const response = await fetch(`/api/admin/useres?email=${email}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
       throw new Error('Failed to delete user');
     }
-    await fetchUsers();
+    // ลบผู้ใช้จากรายการ useres ในหน้านี้
+    useres.value = useres.value.filter(user => user.email !== email);
   } catch (err) {
-    error.value = err.message;
+    console.error('Error deleting user:', err);
   }
 };
 
-const editUser = (userId) => {
-  router.push(`/admin/users/edit/${userId}`);
+const editUser = (id) => {
+  router.push(`/admin/users/edit/${id}`); // Navigate to the edit page with the user's ID
 };
 
-onMounted(fetchUsers);
+
+definePageMeta({
+  middleware: 'auth',
+});
+
+onMounted(async() => {
+  await fetchUser()
+  console.log('user' , useres.value)
+})
 </script>
 
 <style scoped>

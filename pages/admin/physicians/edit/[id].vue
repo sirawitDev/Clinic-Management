@@ -48,6 +48,10 @@ onMounted(() => {
     fetchPhysician(id);
   }
 });
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 

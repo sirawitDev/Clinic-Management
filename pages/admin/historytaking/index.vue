@@ -97,6 +97,10 @@ const searchPatients = async () => {
 const goToWaitCheck = (patientId) => {
   router.push(`/admin/historytaking/checktreat?id=${patientId}&historyComplete=true`)
 }
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 

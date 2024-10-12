@@ -243,6 +243,10 @@ watch(() => newUser.value.postalCode, async (newPostalCode) => {
   }
 })
 
+definePageMeta({
+  middleware: 'auth',
+});
+
 </script>
 
 <template>

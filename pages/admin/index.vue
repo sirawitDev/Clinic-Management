@@ -11,15 +11,17 @@ import Edit from '~/components/admin/Edit.vue';
 const userStore = useUserStore();
 const totalPatients = ref(0);
 const payment = ref([])
+const totalRevenue = ref(0);
 
 const fetchPayments = async () => {
   try {
-    const response = await fetch('/api/payment', {
+    const response = await fetch('/api/admin/payment', {
       method: 'GET',
     });
     const data = await response.json();
     console.log('Payments:', data);
     payment.value = data.body;
+    totalRevenue.value = payment.value.reduce((sum, p) => sum + p.totalAmount, 0);
   } catch (error) {
     console.error('Error fetching payments:', error);
   }
@@ -35,6 +37,7 @@ const deletePayment = async (id) => {
       // Remove the payment from the list
       payment.value = payment.value.filter(p => p.id !== id);
       console.log('Payment deleted successfully');
+      totalRevenue.value = payment.value.reduce((sum, p) => sum + p.totalAmount, 0);
     } else {
       console.error('Error deleting payment');
     }
@@ -43,13 +46,15 @@ const deletePayment = async (id) => {
   }
 };
 
+definePageMeta({
+  middleware: 'auth',
+});
 
 onMounted(() => {
   userStore.fetchUsers().then(() => {
     totalPatients.value = userStore.users.length;
   });
   fetchPayments()
-  console.log(payment.value)
 })
 </script>
 
@@ -64,7 +69,7 @@ onMounted(() => {
           <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">รายได้ทั้งหมด</h2>
           <div class="flex mt-8">
             <div class="flex ml-5 w-full mt-8">
-              <p class="text-white text-4xl mt-1">10,000 บาท</p>
+              <p class="text-white text-4xl mt-1">{{ totalRevenue }} บาท</p>
             </div>
             <div class=" absolute bottom-3 right-1 justify-end mr-5">
               <img src="https://img2.pic.in.th/pic/users_391194.png" alt="logo_user" class="w-[75px]">

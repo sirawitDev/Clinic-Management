@@ -79,10 +79,6 @@
                               <p>{{ useFormData.cdnumber }}</p>
                           </div>
                           <div class="flex justify-between mt-2">
-                              <p>เบอร์โทรศัพท์</p>
-                              <p>{{ useFormData.phonenumber }}</p>
-                          </div>
-                          <div class="flex justify-between mt-2">
                               <p>หมวดหมู่</p>
                               <p>{{ useFormData.category }}</p>
                           </div>
@@ -122,10 +118,6 @@
                               <p>{{ useFormData.cdnumber }}</p>
                           </div>
                           <div class="flex justify-between mt-2">
-                              <p>เบอร์โทรศัพท์</p>
-                              <p>{{ useFormData.phonenumber }}</p>
-                          </div>
-                          <div class="flex justify-between mt-2">
                               <p>หมวดหมู่</p>
                               <p>{{ useFormData.category }}</p>
                           </div>
@@ -163,12 +155,17 @@ import { onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router'; // Import useRouter for routing
 import UserLayout from '~/layouts/userLayouts.vue';
 import { useUserReservatioStore } from '~/stores/reservatio';
+import { useAuthStore} from '~/stores/auth'
 import { ref, reactive } from 'vue';
+import axios from 'axios';
+
+const authStore = useAuthStore()
 
 const currentStep = ref(1);
 const userReservation = useUserReservatioStore();
 const router = useRouter(); // Initialize router
 const steps = ["หมวดหมู่", "เลือกวันที่และเวลา", "ยืนยันการจอง"];
+const addresses = ref([])
 
 const formData = reactive([
     {
@@ -183,17 +180,12 @@ const formData = reactive([
         name: 'เลขประจำตัวประชาชน',
         field: 'cdnumber'
     },
-    {
-        name: 'เบอร์โทรศัพท์',
-        field: 'phonenumber'
-    },
 ]);
 
 const useFormData = reactive({
     firstname: '',
     lastname: '',
     cdnumber: '',
-    phonenumber: '',
     email: '',
     address: '',
     note: '',
@@ -202,9 +194,23 @@ const useFormData = reactive({
     time: ''
 });
 
+const fetchAddresses = async () => {
+  try {
+    const response = await axios.get(`/api/users/address?userId=${authStore.user.id}`);
+    if (response.data.success) {
+      addresses.value = response.data.addresses;
+    } else {
+      alert('Failed to fetch addresses');
+    }
+  } catch (error) {
+    console.error('Error fetching addresses:', error);
+    alert('An error occurred while fetching addresses');
+  }
+};
+
 // Validation function for required fields in step 1
 const validateStepOne = () => {
-    return useFormData.firstname && useFormData.lastname && useFormData.cdnumber && useFormData.phonenumber;
+    return useFormData.firstname && useFormData.lastname && useFormData.cdnumber;
 };
 
 const nextStepCurrentstep = () => {
@@ -231,6 +237,13 @@ const prevStep = () => {
         currentStep.value--;
     }
 };
+
+authStore.initializeAuth();
+
+onMounted(async() => {
+  await fetchAddresses()
+  console.log('address : ' , addresses.value)
+})
 
 // Clear localStorage when leaving the route
 onBeforeUnmount(() => {

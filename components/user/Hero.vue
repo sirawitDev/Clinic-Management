@@ -1,23 +1,37 @@
 <script setup>
+import { useAdminDashboardStore } from '~/stores/admin/dashboard';
+
+const AdminDashboardStore = useAdminDashboardStore()
+const statusStore = ref('')
+
+onMounted(() => {
+    if (AdminDashboardStore.ToggleOpenClose == true) {
+        statusStore.value = 'เปิดร้าน'
+    } else {
+        statusStore.value = 'ปิดร้าน'
+    }
+})
 
 </script>
 
 <template>
-    <div class="hero h-screen rounded-lg"
-        style="background-image: url(https://img.freepik.com/free-photo/blur-hospital_1203-7972.jpg?t=st=1719026335~exp=1719029935~hmac=e7e875465af8178b6aaa99946fe20441f051ce12c3a5882b06556b56fbaffb79&w=826);">
-        <div class="hero-overlay bg-opacity-10 rounded-lg"></div>
-        <div class="hero-content text-center text-neutral-content">
+    <div class="hero h-screen rounded-lg bg-opacity-90"
+        style="background-image: url(https://img2.pic.in.th/pic/file-hlrGqoYKwViJigphm4CFBz1j.png);">
+        <div class="hero-overlay bg-opacity-50 rounded-lg bg-orange-100"></div> <!-- Increased opacity here -->
+        <div class="hero-content text-center text-neutral-content ">
             <div
-                class="flex flex-col bg-[#FF791A] rounded-lg h-72 w-11/12 md:w-[500px] bg-opacity-50 justify-between items-center mx-auto">
-                <div class="mt-7">
-                    <div class="mb-5 text-3xl md:text-5xl font-bold text-white">
-                        Yourname
+                class="flex flex-col bg-[#FF8128] bg-opacity-70 rounded-lg h-[420px] w-11/12 md:w-[500px] justify-between items-center mx-auto ">
+                <div class="bg-orange-300 shadow-md bg-opacity-80 rounded-t-lg rounded-b-lg"> <!-- Changed this -->
+                    <div class="mt-2 mb-5 text-3xl md:text-5xl font-bold text-white font-kanit">
+                        <p class="mt-5 text-stroke">แอร์พอร์ต เมดิคอล คลินิก</p>
                     </div>
                 </div>
-                <div class="mb-5 text-center">
-                    <p class="text-white text-sm md:text-base">Your Description.</p>
+                <div class="mb-5 mt-5 text-center bg-orange-300 bg-opacity-70 shadow-md p-5 rounded-md">
+                    <p class="text-white text-sm md:text-lg font-kanit">คลินิกสุขภาพ ความงาม และศัลยกรรม</p>
+                    <p class="text-white text-sm md:text-lg font-kanit">โบท็อกซ์ ฟิลเลอร์ ร้อยไหม วิตามินผิว</p>
+                    <p class="text-white text-sm md:text-lg font-kanit">เปิดบริการทุกวัน 11.00 - 20.00</p>
                 </div>
-                <div class="flex flex-col my-5">
+                <div class="flex flex-col">
                     <div>
                         <RouterLink to="/user/reservation"
                             class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 w-48 hover:bg-slate-50 hover:bg-opacity-50"
@@ -26,13 +40,29 @@
                         </RouterLink>
                     </div>
                 </div>
+                <div class="flex justify-center mt-3 w-full bg-orange-300 h-11 bg-opacity-80 rounded-b-lg shadow-md">
+                    <p class="text-white text-center mt-2">สถานะ : </p>
+                    <div :class="statusStore === 'เปิดร้าน' ? 'badge badge-success' : 'badge badge-error'"
+                        class="mt-2 mx-2 h-7 w-20">
+                        <p class="text-white">{{ statusStore }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+
 <style scoped>
 .overflow-auto {
     overflow-y: auto;
+}
+
+.font-kanit {
+    font-family: 'Kanit', sans-serif;
+}
+
+.text-stroke {
+    text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
 </style>

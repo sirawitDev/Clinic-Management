@@ -149,4 +149,8 @@ const cancelEdit = () => {
 onMounted(() => {
   loadUser()
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>

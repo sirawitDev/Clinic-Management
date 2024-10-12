@@ -1,88 +1,89 @@
 <template>
   <UserLayout>
+    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">เพิ่มข้อมูลที่อยู่</h2>
+    </div>
     <!-- เพิ่มช่องสำหรับ House Number -->
+    <div class="form-control w-full mt-5">
+      <div class="label">
+        <span class="label-text text-lg">บ้านเลขที่</span>
+      </div>
+      <input v-model="address.houseNumber" type="number" placeholder="Type here" class="input input-bordered w-full text-lg" />
+    </div>
+
+    <!-- เพิ่มช่องสำหรับ Village -->
     <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">บ้านเลขที่</span>
-          </div>
-          <input v-model="address.houseNumber" type="number" placeholder="Type here"
-            class="input input-bordered w-full" />
-        </div>
+      <div class="label">
+        <span class="label-text text-lg">หมู่</span>
+      </div>
+      <input v-model="address.village" type="number" placeholder="Type here" class="input input-bordered w-full text-lg" />
+    </div>
 
-        <!-- เพิ่มช่องสำหรับ Village -->
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">หมู่</span>
-          </div>
-          <input v-model="address.village" type="number" placeholder="Type here" class="input input-bordered w-full" />
-        </div>
+    <!-- เพิ่มช่องสำหรับ Country -->
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">ประเทศ</span>
+      </div>
+      <select v-model="address.country" class="select select-bordered w-full text-lg">
+        <option disabled value="">เลือกประเทศ</option>
+        <option v-for="country in countries" :key="country.alpha2" :value="country.name">
+          {{ country.name }} ({{ country.enName }})
+        </option>
+      </select>
+    </div>
 
-        <!-- เพิ่มช่องสำหรับ Country -->
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">ประเทศ</span>
-          </div>
-          <select v-model="address.country" class="select select-bordered w-full">
-            <option disabled value="">เลือกประเทศ</option>
-            <option v-for="country in countries" :key="country.alpha2" :value="country.name">
-              {{ country.name }} ({{ country.enName }})
-            </option>
-          </select>
-        </div>
+    <!-- ช่องกรอกข้อมูลอื่นๆ ตามที่มีอยู่ -->
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">จังหวัด</span>
+      </div>
+      <select v-model="address.province" @change="onProvinceChange" class="select select-bordered w-full text-lg">
+        <option disabled value="">เลือกจังหวัด</option>
+        <option v-for="province in provinces" :key="province.name" :value="province.name">
+          {{ province.name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">อำเภอ</span>
+      </div>
+      <select v-model="address.district" @change="onDistrictChange" class="select select-bordered w-full text-lg"
+        :disabled="!districts.length">
+        <option disabled value="">เลือกอำเภอ</option>
+        <option v-for="district in districts" :key="district" :value="district">
+          {{ district }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">ตำบล</span>
+      </div>
+      <select v-model="address.subdistrict" @change="onSubdistrictChange" class="select select-bordered w-full text-lg"
+        :disabled="!subdistricts.length">
+        <option disabled value="">เลือกตำบล</option>
+        <option v-for="subdistrict in subdistricts" :key="subdistrict.name" :value="subdistrict.name">
+          {{ subdistrict.name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">รหัสไปรษณีย์</span>
+      </div>
+      <input v-model="address.postalCode" type="number" placeholder="Type here" class="input input-bordered w-full text-lg" />
+    </div>
 
-        <!-- ช่องกรอกข้อมูลอื่นๆ ตามที่มีอยู่ -->
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">จังหวัด</span>
-          </div>
-          <select v-model="address.province" @change="onProvinceChange" class="select select-bordered w-full">
-            <option disabled value="">เลือกจังหวัด</option>
-            <option v-for="province in provinces" :key="province.name" :value="province.name">
-              {{ province.name }}
-            </option>
-          </select>
-        </div>
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">อำเภอ</span>
-          </div>
-          <select v-model="address.district" @change="onDistrictChange" class="select select-bordered w-full"
-            :disabled="!districts.length">
-            <option disabled value="">เลือกอำเภอ</option>
-            <option v-for="district in districts" :key="district" :value="district">
-              {{ district }}
-            </option>
-          </select>
-        </div>
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">ตำบล</span>
-          </div>
-          <select v-model="address.subdistrict" @change="onSubdistrictChange" class="select select-bordered w-full"
-            :disabled="!subdistricts.length">
-            <option disabled value="">เลือกตำบล</option>
-            <option v-for="subdistrict in subdistricts" :key="subdistrict.name" :value="subdistrict.name">
-              {{ subdistrict.name }}
-            </option>
-          </select>
-        </div>
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">รหัสไปรษณีย์</span>
-          </div>
-          <input v-model="address.postalCode" type="number" placeholder="Type here"
-            class="input input-bordered w-full" />
-        </div>
+    <div class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-lg">เบอร์โทรศัพท์</span>
+      </div>
+      <input v-model="address.phoneNumber" @input="handlePhoneNumberInput" type="text" placeholder="Type here"
+        class="input input-bordered w-full text-lg" />
+    </div>
 
-        <div class="form-control w-full">
-          <div class="label">
-            <span class="label-text">เบอร์โทรศัพท์</span>
-          </div>
-          <input v-model="address.phoneNumber" @input="handlePhoneNumberInput" type="text" placeholder="Type here"
-            class="input input-bordered w-full" />
-        </div>
-
-        <button @click="submitAddress" class="btn btn-accent">ยืนยัน</button>
+    <button @click="submitAddress" class="btn btn-accent w-full mt-5 text-white">ยืนยัน</button>
   </UserLayout>
 </template>
 
@@ -113,14 +114,21 @@ const countries = ref([]);
 
 const submitAddress = async () => {
   try {
-    const response = await axios.post('/api/users/addresses', {
-      userId: authStore.user.id,
-      ...address.value // Include the entire address object
+    // Unformat the phone number before submitting
+    const unformattedPhoneNumber = unformatPhoneNumber(address.value.phoneNumber);
+    
+    const response = await $fetch('/api/users/address', {
+      method: 'POST',
+      body: {
+        userId: authStore.user.id,
+        ...address.value,
+        phoneNumber: unformattedPhoneNumber, // Use the unformatted phone number here
+      }
     });
 
-    if (response.data.success) {
+    if (response.success) {
       alert('Address added successfully');
-      // Redirect or perform other actions
+      router.push('/user/profile');
     } else {
       alert('Failed to add address');
     }
@@ -129,6 +137,8 @@ const submitAddress = async () => {
     alert('An error occurred while adding the address');
   }
 };
+
+
 
 
 const fetchCountries = async () => {
@@ -222,3 +232,9 @@ onMounted(async () => {
   await fetchCountries();
 })
 </script>
+
+<style>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+</style>

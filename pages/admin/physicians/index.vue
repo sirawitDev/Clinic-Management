@@ -47,6 +47,10 @@ const editPhysician = (id: number) => {
 };
 
 onMounted(fetchPhysicians);
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <template>

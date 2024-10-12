@@ -1,4 +1,5 @@
-import { defineEventHandler, getQuery, readBody, setResponseStatus } from 'h3';
+//server/api/users/[id].ts
+import { defineEventHandler, readBody, setResponseStatus } from 'h3';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

@@ -61,7 +61,7 @@ onMounted(fetchProducts);
             </figure>
             <div class="card-body p-4">
               <h2 class="card-title text-lg font-semibold">{{ product.name }}</h2>
-              <p class="font-light text-sm mt-2">
+              <p class="font-light text-sm mt-2 p-3 rounded-md">
                 {{ isExpanded(index) ? product.about : truncatedText(product) }}
                 <span v-if="!isExpanded(index) && isTruncated(product)">...</span>
                 <button v-if="isTruncated(product)" @click="toggleReadMore(index)" class="text-blue-500 underline ml-2">
@@ -76,9 +76,9 @@ onMounted(fetchProducts);
                   {{ product.status }}
                 </div>
               </div>
-              <div class="card-actions justify-end mt-4">
+              <!-- <div class="card-actions justify-end mt-4">
                 <button @click="addToCart(product)" class="btn btn-ghost w-full text-white bg-[#FFD600] bg-opacity-50 border border-gray-200 shadow-sm">Buy Now</button>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

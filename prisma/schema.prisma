@@ -101,21 +101,18 @@ model Products {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  promotions Promotion[]
 }
 
 model Promotion {
   id        Int     @id @default(autoincrement())
-  productId   Int
   name      String
   imageUrl    String
-  price     Int
   startDate   DateTime
   endDate     DateTime
   status         String   @default("active")
+  about     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  products  Products @relation(fields: [productId], references: [id])
 }
 
 model Drug {
@@ -157,9 +154,26 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // สร้างความสัมพันธ์กับ Address
   addresses    Address[]
+  eservations Reservation[]
 }
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  firstname    String
+  lastname    String
+  cdnumber      String //บัตร ปชช
+  category     String //หมวดหมู่
+  date        DateTime
+  time        String
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
 
 model Address {
   id          Int      @id @default(autoincrement())
@@ -175,6 +189,16 @@ model Address {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // สร้างความสัมพันธ์กับโมเดล User
   user        User     @relation(fields: [userId], references: [id])
+}
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String? 
+  imageUrl    String?
+  price       Int
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt    
+  status      String    @default("active")
 }

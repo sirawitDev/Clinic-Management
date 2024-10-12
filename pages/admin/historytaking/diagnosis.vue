@@ -225,5 +225,8 @@ const submitDiagnosis = async () => {
   }
 };
 
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 

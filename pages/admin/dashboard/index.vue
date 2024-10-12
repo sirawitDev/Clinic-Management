@@ -9,6 +9,10 @@
 
 <script setup>
 import adminLayout from '~/layouts/adminLayout2.vue';
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

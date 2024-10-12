@@ -12,7 +12,14 @@
             <h1 class="font-bold text-2xl mt-2 ml-2 text-white">Dashboard</h1>
           </div>
         </div>
+        
         <div class="flex items-center space-x-4">
+          <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text text-white">เปิดร้าน - ปิดร้าน</span>
+            <input type="checkbox" class="toggle toggle-accent mx-2" :checked="ToggleOpenClose" @change="toggleStore" />
+          </label>
+        </div>
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar online">
               <div class="w-10 rounded-full">
@@ -47,7 +54,7 @@
             </div>
             <div class="flex">
               <h1 class="mt-2 text-base-200">Role :</h1>
-              <h1 class="font-bold ml-2 mt-2 text-accent">Super Admin</h1>
+              <h1 class="font-bold ml-2 mt-2 text-accent">{{ authStore.user.role }}</h1>
             </div>
           </div>
           <div class="divider p-2"></div>
@@ -102,7 +109,7 @@
                 <li>
                   <RouterLink to="/admin/physicians">
                     <font-awesome-icon :icon="['fa', 'user-md']" class="text-zinc-500 text-xl mr-2"></font-awesome-icon>
-                    <p class="text-base ">ข้อมูลแพทย์</p>
+                    <p class="text-base ">บุคลากรในคลินิก</p>
                   </RouterLink>
                 </li>
                 <li>
@@ -191,6 +198,24 @@
 </template>
 
 <script setup>
+import { useAdminDashboardStore } from '~/stores/admin/dashboard';
+import { storeToRefs } from "pinia";
+import { useAuthStore } from '~/stores/auth'
+
+const authStore = useAuthStore()
+const AdminDashboardStore = useAdminDashboardStore();
+const { ToggleOpenClose } = storeToRefs(AdminDashboardStore);
+
+const toggleStore = () => {
+    if (ToggleOpenClose.value) {
+        AdminDashboardStore.closeStore();
+    } else {
+        AdminDashboardStore.openStore();
+    }
+};
+
+
+authStore.initializeAuth()
 </script>
 
 <style scoped>

@@ -121,6 +121,10 @@ const editDrug = (id: number) => {
 };
 
 onMounted(fetchDrugs);
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

@@ -1,28 +1,43 @@
-import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const { email, password } = body;
+  const { email, password, confirmPassword } = await readBody(event);
 
-  // Check if the user already exists
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    return { error: 'User already exists' };
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    throw createError({
+      statusCode: 400,
+      message: 'Passwords do not match.',
+    });
   }
 
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Create the user in the database
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword
-    }
+  // Check if the user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
   });
 
-  return { success: true, user };
+  if (existingUser) {
+    throw createError({
+      statusCode: 400,
+      message: 'User already exists.',
+    });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create new user
+  const newUser = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+    },
+  });
+
+  return {
+    message: 'User registered successfully',
+    user: newUser,
+  };
 });
