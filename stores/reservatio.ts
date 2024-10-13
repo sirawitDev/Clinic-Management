@@ -9,7 +9,7 @@ export const useUserReservatioStore = defineStore('reservation', {
         confirm(userData) {
             try {
                 const usersData = {
-                    ...userData, // ... กระจายฟิลใน object ทั้งหมด
+                    ...userData,
                 }
                 localStorage.setItem('reservation-data', JSON.stringify(usersData))
             } catch (error) {

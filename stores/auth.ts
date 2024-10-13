@@ -24,13 +24,12 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('user', JSON.stringify(userData.user));
     localStorage.setItem('token', userData.token);
   
-    // Redirect based on user role
     if (userData.user.role === 'admin') {
-      router.push('/admin');  // Redirect to admin page
+      router.push('/admin'); 
     } else if (userData.user.role === 'cashier') {
-      router.push('/cashier');  // Redirect to cashier page
+      router.push('/cashier');
     } else {
-      router.push('/user');  // Redirect to user page
+      router.push('/user'); 
     }
   };
   

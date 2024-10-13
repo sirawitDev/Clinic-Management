@@ -45,7 +45,8 @@
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
               <div class="w-10 rounded-full">
-                <img alt="User Avatar" src="https://img2.pic.in.th/pic/volunteer_11077481.png" />
+                <img alt="User Avatar"
+                  :src="authStore.user?.role === 'admin' ? 'https://img5.pic.in.th/file/secure-sv1/software-engineerc1438b6fade78e82.png' : 'https://img2.pic.in.th/pic/volunteer_11077481.png'" />
               </div>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
@@ -56,6 +57,7 @@
             </ul>
           </div>
         </div>
+
 
         <div v-else class="mr-5">
           <button class="btn btn-accent font-light text-white" onclick="my_modal_3.showModal()">เข้าสู่ระบบ</button>
@@ -90,6 +92,12 @@
                   </div>
                   <div class="form-control mt-5">
                     <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                  </div>
+
+                  <div class="divider"></div>
+
+                  <div class="flex justify-center mt-5">
+                    <GoogleSignInButton @success="handleLoginSuccess" @error="handleLoginError"></GoogleSignInButton>
                   </div>
                 </form>
               </div>
@@ -160,11 +168,36 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import auth from '~/middleware/auth';
 import { useAuthStore } from '~/stores/auth.ts';
+import {
+  GoogleSignInButton,
+  type CredentialResponse,
+} from "vue3-google-signin";
+
+const handleLoginSuccess = async (response: CredentialResponse) => {
+  const { credential } = response;
+  let user;
+  if (credential) {
+    user = await $fetch("/api/auth/google-login", {
+      method: "POST",
+      body: {
+        token: credential,
+      },
+    })
+    authStore.login(user);
+    showSuccessMessageLogin.value = true;
+  }
+
+  console.log('user : ', user)
+};
+
+const handleLoginError = () => {
+  console.error("Login failed");
+};
 
 const authStore = useAuthStore();
 const router = useRouter();

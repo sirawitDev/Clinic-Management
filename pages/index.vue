@@ -10,6 +10,8 @@ const authStore = useAuthStore();
 
 onMounted(() => {
   console.log(authStore.user)
+
+  localStorage.removeItem('reservation-data');
 })
 
 </script>

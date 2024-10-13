@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@pinia/nuxt', '@nuxtjs/google-fonts'],
+  modules: ['@pinia/nuxt', '@nuxtjs/google-fonts' , 'nuxt-vue3-google-signin'],
   compatibilityDate: '2024-08-19',
   googleFonts: {
     families: {
@@ -22,5 +22,10 @@ export default defineNuxtConfig({
     },
     display: 'swap',
   },
-  
+  googleSignIn: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+  },
+  runtimeConfig: {
+    googleClientId: process.env.GOOGLE_CLIENT_ID
+  }
 });

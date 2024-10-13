@@ -24,12 +24,12 @@
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar online">
               <div class="w-10 rounded-full">
                 <img alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                  src="https://img5.pic.in.th/file/secure-sv1/software-engineerc1438b6fade78e82.png" />
               </div>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li>
-                <a class="justify-between">
+                <a class="justify-between" @click="authStore.logout()">
                   ออกจากระบบ
                 </a>
               </li>
@@ -49,7 +49,7 @@
           <div class="flex-col justify-center items-center">
             <div class="flex justify-center items-center avatar">
               <div class=" ring-accent ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                <img src="https://img5.pic.in.th/file/secure-sv1/software-engineerc1438b6fade78e82.png" />
               </div>
             </div>
             <div class="flex">
