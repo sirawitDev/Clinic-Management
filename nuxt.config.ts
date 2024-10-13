@@ -23,11 +23,11 @@ export default defineNuxtConfig({
     display: 'swap',
   },
   googleSignIn: {
-    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientId: '557530570894-634cp3f1j2epod3e2supi6bhcl3nohj7.apps.googleusercontent.com',
   },
   runtimeConfig: {
     public: {
-      googleClientId: process.env.GOOGLE_CLIENT_ID,
+      googleClientId: '557530570894-634cp3f1j2epod3e2supi6bhcl3nohj7.apps.googleusercontent.com',
     },
   },
 });
