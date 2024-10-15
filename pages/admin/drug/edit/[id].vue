@@ -1,7 +1,7 @@
 <template>
   <adminLayouts>
     <div class="container mx-auto p-4 bg-white">
-      <div class="flex justify-center items-center bg-[#FFD600] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
         <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลยา</h2>
       </div>
 
@@ -16,6 +16,18 @@
           <div class="mb-5">
             <label class="label">ชื่อยา</label>
             <input v-model="drug.name" type="text" class="input input-bordered w-full" />
+          </div>
+
+          <div>
+            <label class="block text-base font-medium">URL รูปภาพ</label>
+            <input v-model="drug.imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
+          </div>
+
+          <!-- Image Preview -->
+          <div v-if="drug.imageUrl" class="my-4">
+            <div class="flex justify-center">
+              <img :src="drug.imageUrl" alt="" class="w-48 h-auto border rounded" />
+            </div>
           </div>
 
           <div class="mb-5">
@@ -43,7 +55,12 @@
             <textarea v-model="drug.about" class="textarea textarea-bordered w-full"></textarea>
           </div>
 
-          <button class="btn btn-accent w-full text-white font-light mt-5" type="submit">บันทึกข้อมูล</button>
+          <div class="flex justify-end gap-5">
+            <RouterLink to="/admin/drug" class="btn btn-accent w-60 mt-5">
+              <p class="font-light text-white">ย้อนกลับ</p>
+            </RouterLink>
+            <button class="btn btn-accent w-60 text-white font-light mt-5" type="submit">บันทึกข้อมูล</button>
+          </div>
         </form>
       </div>
     </div>
@@ -57,6 +74,7 @@ import adminLayouts from '~/layouts/adminLayout2.vue';
 
 const drug = ref({
   name: '',
+  imageUrl: '',
   type: '',
   price: 0,
   dosage: '',
@@ -105,7 +123,11 @@ const updateDrug = async () => {
   }
 };
 
-onMounted(fetchDrug);
+onMounted(async() => {
+  await fetchDrug()
+
+  console.log('drug : ' , drug.value)
+})
 
 definePageMeta({
   middleware: 'auth',

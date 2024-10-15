@@ -79,22 +79,15 @@ definePageMeta({
   <adminLayouts>
     <div class="bg-white w-full h-full pl-5 pt-3 shadow-md rounded-md mt-5">
       <div class="mb-4 flex justify-center">
-        <div v-if="!ToggleTitle"
-          class="flex justify-center items-center bg-[#FFD600] w-[60%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <div class="flex justify-center items-center bg-[#FF8128] w-[60%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
           <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลสินค้า</h2>
         </div>
-        <div v-if="ToggleTitle" class="flex w-full flex-col">
-          <div class="divider">
-            <p class="text-4xl font-sarabun">ข้อมูลสินค้า</p>
-          </div>
-        </div>
       </div>
-      <button @click="ToggleClick" class="btn">กด</button>
       <div class="mt-5 ">
         <nuxt-link to="/admin/products/create"
           class="btn btn-accent w-full font-light text-white">เพิ่มข้อมูลสินค้า</nuxt-link>
       </div>
-      <div class="mx-auto p-4">
+      <div class="mx-auto p-4 mt-5">
 
         <!-- <div class="overflow-x-auto">
           <table class="table">

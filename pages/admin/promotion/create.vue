@@ -63,8 +63,18 @@
           <input v-model="endDateTime" type="datetime-local" class="input input-bordered w-full" />
         </label>
 
+        <!-- Course in Promotion -->
+        <div class="bg-red-200 w-full h-14 rounded-md mt-5">
+          asd
+        </div>
+
         <!-- Submit Button -->
-        <button @click="submitForm" class="btn btn-primary mt-4 w-full font-light">เพิ่มโปรโมชั่น</button>
+        <div class="flex justify-end gap-5">
+
+          <RouterLink to="/admin/promotion" class="btn btn-accent mt-4 font-light text-white">ย้อนกลับ</RouterLink>
+          <button @click="submitForm" class="btn btn-primary mt-4 font-light text-white">เพิ่มโปรโมชั่น</button>
+          
+        </div>
       </div>
     </div>
   </adminLayouts>

@@ -1,11 +1,9 @@
 <template>
   <AdminLayout>
-    <div class=" bg-white h-14">
-      <div class=" flex">
-        <h1 class=" items-center text-3xl font-bold p-2 mx-2 mt-1">แก้ไขข้อมูล</h1>
-      </div>
+    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลผู้ป่วย</h2>
     </div>
-    <div class="container mx-auto p-4 mt-5">
+    <div class="container mx-auto p-4 mt-5 bg-white rounded-md">
       <form @submit.prevent="updateUser">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <label class="form-control w-full mt-2">
@@ -19,14 +17,56 @@
               </option>
             </select>
           </label>
+
           <label v-for="(field, index) in fields" :key="index" class="form-control w-full mb-4">
             <div class="label mb-2">
               <span class="label-text text-base">{{ field.label }}</span>
             </div>
-            <div v-if="field.type === 'textarea'">
+
+            <div v-if="field.model === 'phoneNumber'">
+              <input v-model="editUser[field.model]" type="text" :placeholder="field.placeholder"
+                class="input input-bordered w-full" @input="formatPhoneNumber" maxlength="12" />
+            </div>
+
+            <div v-else-if="field.model === 'blood_type'">
+              <select v-model="editUser[field.model]" class="select select-bordered w-full">
+                <option disabled value="">{{ field.placeholder }}</option>
+                <option v-for="option in field.options" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <input v-if="editUser.blood_type === 'อื่น ๆ'" v-model="customฺBloodtype" type="text"
+                    placeholder="ระบุเลือด" class="input input-bordered w-full mt-2" />
+            </div>
+
+            <div v-else-if="field.model === 'allergy'">
+              <select v-model="editUser[field.model]" class="select select-bordered w-full">
+                <option disabled value="">{{ field.placeholder }}</option>
+                <option v-for="option in field.options" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <input v-if="editUser.allergy === 'อื่น ๆ'" v-model="customAllergy" type="text"
+                    placeholder="ระบุแพ้ยา" class="input input-bordered w-full mt-2" />
+            </div>
+
+            <div v-else-if="field.model === 'congenital'">
+              <select v-model="editUser[field.model]" class="select select-bordered w-full">
+                <option disabled value="">{{ field.placeholder }}</option>
+                <option v-for="option in field.options" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <input v-if="editUser.congenital === 'อื่น ๆ'" v-model="customCongenital" type="text"
+                    placeholder="ระบุโรคประจำตัว" class="input input-bordered w-full mt-2" />
+            </div>
+
+            <div v-else-if="field.type === 'textarea'">
               <textarea v-model="editUser[field.model]" :placeholder="field.placeholder"
                 class="input input-bordered w-full h-24 placeholder-centered"></textarea>
             </div>
+
+
             <div v-else>
               <input v-model="editUser[field.model]" :type="field.type" :placeholder="field.placeholder"
                 class="input input-bordered w-full" />
@@ -47,9 +87,9 @@
           </div>
         </div>
 
-        <div class="flex justify-end gap-3 mt-8">
-          <button @click="cancelEdit" type="button" class="btn btn-secondary btn-lg">ย้อนกลับ</button>
-          <button type="submit" class="btn btn-primary btn-lg">ยืนยัน</button>
+        <div class="flex justify-end gap-5 mt-8">
+          <button @click="cancelEdit" type="button" class="btn btn-secondary w-60 text-white font-light">ย้อนกลับ</button>
+          <button type="submit" class="btn btn-primary w-60 text-white font-light">ยืนยัน</button>
         </div>
       </form>
     </div>
@@ -94,10 +134,45 @@ const fields = [
   { label: 'วันเกิด', model: 'birthdate', type: 'date', placeholder: 'วันเกิด' },
   { label: 'น้ำหนัก', model: 'weight', type: 'number', step: '0.1', placeholder: 'น้ำหนัก' },
   { label: 'ส่วนสูง', model: 'height', type: 'number', step: '0.1', placeholder: 'ส่วนสูง' },
-  { label: 'กรุปเลือด', model: 'blood_type', type: 'text', placeholder: 'กรุปเลือด' },
-  { label: 'แพ้ยา', model: 'congenital', type: 'textarea', placeholder: 'กรุณากรอกข้อมูลแพ้ยา' },
-  { label: 'โรคประจำตัว', model: 'allergy', type: 'textarea', placeholder: 'กรุณากรอกข้อมูลโรคประจำตัว' },
+  {
+    label: 'กรุปเลือด',
+    model: 'blood_type',
+    type: 'select',
+    options: [
+      { value: 'A', label: 'A' },
+      { value: 'B', label: 'B' },
+      { value: 'AB', label: 'AB' },
+      { value: 'O', label: 'O' },
+      { value: 'อื่น ๆ', label: 'อื่น ๆ' }
+    ],
+    placeholder: 'กรุปเลือด'
+  },
+  {
+    label: 'แพ้ยา',
+    model: 'allergy',
+    type: 'select',
+    options: [
+      { value: 'ไม่มี', label: 'ไม่มี' },
+      { value: 'ยาปฏิชีวนะ', label: 'ยาปฏิชีวนะ' },
+      { value: 'ยาแก้ปวด', label: 'ยาแก้ปวด' },
+      { value: 'อื่น ๆ', label: 'อื่น ๆ' }
+    ],
+    placeholder: 'กรุณากรอกข้อมูลแพ้ยา'
+  },
+  {
+    label: 'โรคประจำตัว',
+    model: 'congenital',
+    type: 'select',
+    options: [
+      { value: 'ไม่มี', label: 'ไม่มี' },
+      { value: 'เบาหวาน', label: 'เบาหวาน' },
+      { value: 'ความดันโลหิตสูง', label: 'ความดันโลหิตสูง' },
+      { value: 'อื่น ๆ', label: 'อื่น ๆ' }
+    ],
+    placeholder: 'กรุณากรอกข้อมูลโรคประจำตัว'
+  },
   { label: 'เบอร์โทรศัพท์', model: 'phoneNumber', type: 'text', placeholder: 'เบอร์โทรศัพท์' },
+  { label: 'เลขบัตรประชาชน', model: 'cdnumber', type: 'text', placeholder: 'เลขบัตรประชาชน' },
 ]
 
 const addressFields = [
@@ -118,6 +193,10 @@ const titleOptions = [
   { value: 'อื่น ๆ', label: 'อื่น ๆ' },
 ]
 
+const customCongenital = ref('')
+const customAllergy = ref('')
+const customฺBloodtype = ref('')
+
 const loadUser = async () => {
   const userId = parseInt(route.params.id)
   const users = userStore.users
@@ -127,30 +206,75 @@ const loadUser = async () => {
     if (user.birthdate) {
       user.birthdate = new Date(user.birthdate).toISOString().split('T')[0];
     }
+
+    if (user.allergy) {
+      customAllergy.value = user.allergy
+    }
+    if (user.congenital) {
+      customCongenital.value = user.congenital
+    }
+
+    if (user.phoneNumber) {
+      let input = user.phoneNumber.replace(/\D/g, '');
+      if (input.length > 3 && input.length <= 6) {
+        input = `${input.slice(0, 3)}-${input.slice(3)}`;
+      } else if (input.length > 6) {
+        input = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6, 10)}`;
+      }
+      user.phoneNumber = input;
+    }
+
     editUser.value = { ...user }
   } else {
     router.push('/users')
   }
 }
 
+const formatPhoneNumber = (e) => {
+  let input = e.target.value.replace(/\D/g, ''); // เอาตัวเลขออกเท่านั้น
+  if (input.length > 3 && input.length <= 6) {
+    input = `${input.slice(0, 3)}-${input.slice(3)}`;
+  } else if (input.length > 6) {
+    input = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6, 10)}`;
+  }
+  editUser.value.phoneNumber = input;
+};
+
 const updateUser = async () => {
+  if (editUser.value.congenital === 'อื่น ๆ') {
+    editUser.value.congenital = customCongenital.value
+  }
+
+  if (editUser.value.allergy === 'อื่น ๆ') {
+    editUser.value.allergy = customAllergy.value
+  }
+
+  if (editUser.value.blood_type === 'อื่น ๆ') {
+    editUser.value.blood_type = customฺBloodtype.value
+  }
   if (editUser.value.birthdate) {
     editUser.value.birthdate = new Date(editUser.value.birthdate).toISOString();
   }
 
   await userStore.updateUser(editUser.value);
-  router.push('/admin/users');
+  router.push('/admin/patients');
 }
 
 const cancelEdit = () => {
-  router.push('/admin/users')
+  router.push('/admin/patients')
 }
 
-onMounted(() => {
-  loadUser()
+onMounted(async() => {
+  await loadUser()
 })
 
 definePageMeta({
   middleware: 'auth',
 });
 </script>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+</style>

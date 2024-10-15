@@ -1,6 +1,6 @@
 <template>
   <UserLayout>
-    <div class=" container mx-auto">
+    <div class="font-kanit container mx-auto">
       <div class="flex justify-center">
         <div
           class="font-kanit flex justify-center items-center bg-[#FFD600] w-[27%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
@@ -15,14 +15,19 @@
           <div class="card-body">
             <h2 class="card-title">
               <p>{{ promotion.name }}</p>
-              <div class="badge badge-secondary">NEW</div>
+              <div class="badge badge-secondary font-light text-white">NEW</div>
             </h2>
             <p>{{ promotion.about }}</p>
+            <div class="flex justify-end w-full">
+              <div>
+                <p class="text-sm text-gray-500">คอร์สในโปรโมชั่น</p>
+              </div>
+            </div>
             <div class="card-actions justify-end mt-2">
-              <div class="badge badge-outline">เติมวิตามินผิว</div>
-              <div class="badge badge-outline">โบท็อกซ์</div>
-              <div class="badge badge-outline">ฟิลเลอร์</div>
-              <div class="badge badge-outline">มาเด้คอลลาเจน</div>
+              <div class="badge badge-accent badge-outline">เติมวิตามินผิว</div>
+              <div class="badge badge-accent badge-outline">โบท็อกซ์</div>
+              <div class="badge badge-accent badge-outline">ฟิลเลอร์</div>
+              <div class="badge badge-accent badge-outline">มาเด้คอลลาเจน</div>
             </div>
           </div>
         </div>

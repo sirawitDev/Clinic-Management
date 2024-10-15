@@ -32,7 +32,7 @@
               <th>{{ index + 1 }}</th>
               <td>{{ course.title }}</td>
               <td>
-                <img v-if="course.imageUr"
+                <img v-if="course.imageUrl"
                   :src="course.imageUrl" 
                   alt="Promotion Image" 
                   class="w-16 h-auto cursor-pointer" 
@@ -42,7 +42,10 @@
                   <p class=" text-gray-600">ไม่มีรูปภาพ</p>
                 </div>
               </td>
-              <td><p class="text-center">{{ course.description }}</p></td>
+              <td>
+                <p v-if="course.description" class="text-center">{{ course.description }}</p>
+                <p v-else class=" text-center">ยังไม่มีรายละเอียด</p>
+              </td>
               <td><p class="text-center">{{ course.price }} บาท</p></td>
               <td><p class="text-center">{{ course.status }}</p></td>
               <td>

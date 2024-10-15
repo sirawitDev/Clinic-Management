@@ -5,11 +5,7 @@
         <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการผู้ใช้บริการ</h2>
       </div>
 
-      <div class="mb-5">
-        <nuxt-link to="/admin/physicians/create" class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
-      </div>
-
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto mt-5">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
@@ -23,16 +19,19 @@
                 <p class="text-center">ID</p>
               </th>
               <th>
-                <p class="text-center">Email</p>
+                <p class="text-center">อีเมล</p>
               </th>
               <th>
-                <p class="text-center">Password</p>
+                <p class="text-center">รหัสผ่าน</p>
               </th>
               <th>
-                <p class="text-center">Firstname</p>
+                <p class="text-center">ชื่อ</p>
               </th>
               <th>
-                <p class="text-center">Lastname</p>
+                <p class="text-center">นามสกุล</p>
+              </th>
+              <th>
+                <p class="text-center">เลขบัตรประชาชน</p>
               </th>
               <th>
                 <p class="text-center">Role</p>
@@ -42,8 +41,12 @@
           </thead>
           <tbody>
             <tr v-for="(user, index) in useres" :key="user.id">
-              <th>{{ index + 1 }}</th>
-              <td>{{ user.email }}</td>
+              <th>
+                <p class="text-center">{{ index + 1 }}</p>
+              </th>
+              <td>
+                <p class="text-center">{{ user.email }} {{ user.id }}</p>
+              </td>
               <td>
                 <div class="flex justify-center">
                   <span class="text-gray-500">••••••</span> <!-- Placeholder for password -->
@@ -51,6 +54,10 @@
               </td>
               <td><p class="text-center">{{ user.firstname }}</p></td>
               <td><p class="text-center">{{ user.lastname }}</p></td>
+              <td>
+                <p v-if="user.cdnumber" class="text-center">{{ user.cdnumber }}</p>
+                <p v-else class="text-center">ยังไม่ได้เพิ่มเลขบัตร</p>
+              </td>
               <td><p class="text-center">{{ user.role }}</p></td>
               <td>
                 <div class="flex gap-2 justify-center">

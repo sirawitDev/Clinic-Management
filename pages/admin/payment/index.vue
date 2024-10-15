@@ -53,23 +53,18 @@ definePageMeta({
 <template>
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
-      <div class="flex justify-center items-center bg-[#FFD600] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
         <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">การชำระเงิน</h2>
       </div>
 
-      <div class="mb-5">
-        <nuxt-link to="/admin/physicians/create"
-          class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
-      </div>
-
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto mt-5">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
         </div>
 
         <!-- Display table once data is fetched -->
-        <table v-else class="table">
+        <table v-else class="table mt-5">
           <thead>
             <tr>
               <th>
@@ -94,26 +89,39 @@ definePageMeta({
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(payment , index) in payment" :key="payment.id">
-              <td>{{ index + 1 }}</td>
-              <td>{{ payment.diagnosis?.patient?.firstname }} {{ payment.diagnosis?.patient?.lastname }}</td>
-              <td>{{ payment.orderNumber }}</td>
-              <td>{{ payment.totalAmount }} บาท</td>
-              <td>{{ payment.paymentMethod }}</td>
-              <td>{{ payment.status }}</td>
+            <tr v-for="(payment, index) in payment" :key="payment.id">
+              <td>
+                <p class="text-center">{{ index + 1 }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ payment.diagnosis?.patient?.firstname }} {{ payment.diagnosis?.patient?.lastname }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ payment.orderNumber }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ payment.totalAmount }} บาท</p>
+              </td>
+              <td>
+                <p class="text-center">{{ payment.paymentMethod }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ payment.status }}</p>
+              </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button @click="deletePayment(payment.id)"  class="btn">
+                  <button @click="deletePayment(payment.id)" class="btn">
                     <Trash />
                   </button>
                   <button class="btn btn-accent">
-                    <Edit />
+                    <p class="font-light text-white">ดูเพิ่มเติม</p>
                   </button>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
+
       </div>
     </div>
   </AdminLayout>

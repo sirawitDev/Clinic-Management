@@ -35,8 +35,13 @@
           </select>
         </label>
 
-        <div>
-          <button type="submit" class="btn btn-accent my-5 w-full text-white font-light">ยืนยันการแก้ไข</button>
+        <div class="flex justify-end gap-5">
+          <RouterLink to="/admin/users" class="btn btn-accent font-light my-5 text-white w-60">
+            ย้อนกลับ
+          </RouterLink>
+          <div>
+            <button type="submit" class="btn btn-accent my-5 text-white font-light w-60">ยืนยันการแก้ไข</button>
+          </div>
         </div>
       </form>
     </div>
@@ -112,4 +117,3 @@ definePageMeta({
   middleware: 'auth',
 });
 </script>
-

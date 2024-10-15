@@ -1,14 +1,37 @@
 <template>
   <adminLayouts>
     <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">เพิ่มข้อมูลยา</h1>
+      <div class="flex">
+        <div class="flex-1 mt-4 pl-4">
+          <div class="divider"></div>
+        </div>
+        <div class="flex-2">
+          <h1 class="font-bold text-3xl p-4">เพิ่มข้อมูลยา</h1>
+        </div>
+        <div class="flex-1 mt-5 pr-4">
+          <div class="divider"></div>
+        </div>
+      </div>
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
-          <label for="name" class="block text-sm font-medium">ชื่อยา</label>
+          <label for="name" class="block text-base font-medium">ชื่อยา</label>
           <input v-model="name" id="name" type="text" required class="input input-bordered w-full" />
         </div>
+
         <div>
-          <label for="type" class="block text-sm font-medium">ประเภทของยา</label>
+          <label for="imageUrl" class="block text-base font-medium">URL รูปภาพ</label>
+          <input v-model="imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
+        </div>
+
+        <!-- Image Preview -->
+        <div v-if="imageUrl" class="my-4">
+          <div class="flex justify-center">
+            <img :src="imageUrl" alt="" class="w-48 h-auto border rounded" />
+          </div>
+        </div>
+
+        <div>
+          <label for="type" class="block text-base font-medium">ประเภทของยา</label>
           <select v-model="type" id="type" class="select select-bordered w-full" required>
             <option value="ยาสามัญประจำบ้าน">ยาสามัญประจำบ้าน</option>
             <option value="ยาใส่แผล/นวด/ใช้ภายนอก">ยาใส่แผล/นวด/ใช้ภายนอก</option>
@@ -19,44 +42,51 @@
 
         <!-- ช่อง input จะปรากฏเมื่อเลือก "อื่นๆ" -->
         <div v-if="type === 'อื่นๆ'">
-          <label for="customType" class="block text-sm font-medium">ประเภทอื่นๆ</label>
-          <input v-model="customType" id="customType" type="text" placeholder="กรุณาระบุประเภท" class="input input-bordered w-full" />
+          <label for="customType" class="block text-base font-medium">ประเภทอื่นๆ</label>
+          <input v-model="customType" id="customType" type="text" placeholder="กรุณาระบุประเภท"
+            class="input input-bordered w-full input-accent" />
         </div>
 
         <div>
-          <label for="price" class="block text-sm font-medium">ราคา</label>
+          <label for="price" class="block text-base font-medium">ราคา</label>
           <input v-model.number="price" id="price" type="number" required class="input input-bordered w-full" />
         </div>
         <div>
-          <label for="dosage" class="block text-sm font-medium">ปริมาณยา</label>
+          <label for="dosage" class="block text-base font-medium">ปริมาณยา</label>
           <input v-model.number="dosage" id="dosage" type="number" step="0.01" class="input input-bordered w-full" />
         </div>
+
         <div>
-          <label for="imageUrl" class="block text-sm font-medium">URL รูปภาพ</label>
-          <input v-model="imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
+          <label for="unit" class="block text-base font-medium">หน่วยของปริมาณ</label>
+          <select v-model="unit" id="unit" class="select select-bordered w-full">
+            <option value="mg">มิลลิกรัม (mg)</option>
+            <option value="g">กรัม (g)</option>
+            <option value="ml">มิลลิลิตร (ml)</option>
+            <option value="tablet">เม็ด (tablet)</option>
+            <option value="bottle">ขวด (bottle)</option>
+            <!-- Add more options as needed -->
+          </select>
         </div>
+
         <div>
-          <label for="unit" class="block text-sm font-medium">หน่วยของปริมาณ</label>
-          <input v-model="unit" id="unit" type="text" class="input input-bordered w-full" />
-        </div>
-        <div>
-          <label for="about" class="block text-sm font-medium">ข้อมูลเพิ่มเติม</label>
+          <label for="about" class="block text-base font-medium">ข้อมูลเพิ่มเติมเกี่ยวกับสินค้า</label>
           <textarea v-model="about" id="about" class="textarea textarea-bordered w-full"></textarea>
         </div>
 
-        <div class="flex justify-between gap-5 mt-0">
-          <div class="form-control w-72">
-            <div class="label">
-              <span class="label-text">Status</span>
-            </div>
-            <select class="select select-bordered" v-model="status">
-              <option value="active">active</option>
-              <option value="inactive">inactive</option>
-            </select>
+        <div class="form-control">
+          <div class="label">
+            <span class="label-text text-base">Status</span>
           </div>
+          <select class="select select-bordered" v-model="status">
+            <option value="active">active</option>
+            <option value="inactive">inactive</option>
+          </select>
+        </div>
 
-          <div class="w-full mt-9 mb-10">
-            <button @click="submitForm" class="btn btn-accent w-full text-white">เพิ่มข้อมูลยา</button>
+        <div class="flex justify-center gap-5 mt-0">
+          <RouterLink to="/admin/drug" class="btn btn-accent font-light text-white mt-5 w-60">ย้อนกลับ</RouterLink>
+          <div class="w-60 mt-5 mb-10">
+            <button @click="submitForm" class="btn btn-accent w-60 text-white font-light">เพิ่มข้อมูลยา</button>
           </div>
         </div>
       </form>

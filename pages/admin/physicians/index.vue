@@ -56,8 +56,8 @@ definePageMeta({
 <template>
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
-      <div class="flex justify-center items-center bg-[#FFD600] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลแพทย์</h2>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลภายในคลินิก</h2>
       </div>
 
       <div class="mb-5">
@@ -88,22 +88,34 @@ definePageMeta({
                 <p class="text-center">นามสกุล</p>
               </th>
               <th>
-                <p class="text-center">แพทย์ทาง</p>
+                <p class="text-center">ตำแหน่ง</p>
               </th>
               <th>
-                <p class="text-center">phone</p>
+                <p class="text-center">เบอร์โทรศัพท์</p>
               </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(physician, index) in physicians" :key="physician.id">
-              <th>{{ index + 1 }}</th>
-              <td>{{ physician.title }}</td>
-              <td>{{ physician.first_name }}</td>
-              <td>{{ physician.last_name }}</td>
-              <td>{{ physician.about }}</td>
-              <td>{{ physician.phone }}</td>
+              <th>
+                <p class="text-center">{{ index + 1 }}</p>
+              </th>
+              <td>
+                <p class="text-center">{{ physician.title }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ physician.first_name }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ physician.last_name }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ physician.about }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ physician.phone }}</p>
+              </td>
               <td>
                 <div class="flex gap-2 justify-center">
                   <button class="btn" @click="deletePhysician(physician.id)">

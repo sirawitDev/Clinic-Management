@@ -1,15 +1,11 @@
 <template>
   <AdminLayout>
     <div class="mx-auto h-full p-4">
-      <div class="flex p-4 justify-center items-center bg-white rounded-full mt-3 shadow-md">
-        <div class="flex w-full flex-col">
-          <div class="divider divider-accent">
-            <p class="text-4xl">รอตรวจ</p>
-          </div>
-        </div>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">รอตรวจ</h2>
       </div>
 
-      <div class="grid grid-cols-2 mt-5 rounded-md font-sarabun">
+      <div class="grid grid-cols-2 mt-5 rounded-md font-sarabun bg-base-200">
         <div v-for="(item, index) in patientHistories" :key="item.id"
           class="shadow-lg border-black rounded-md p-4 flex flex-col h-64 font-sarabun bg-white mx-5 my-5">
           <div class="flex">
@@ -35,14 +31,14 @@
               </div>
               <div class="flex gap-1 my-5">
                 <div class="flex-1 flex justify-end">
-                  <button class="btn btn-accent text-white font-thin w-full"
-                    @click="handleCheck(item.patient.id, item.id)">
-                    ตรวจ
+                  <button class="btn btn-error text-white font-thin w-full" @click="handleDelete(item.id)">
+                    ลบ
                   </button>
                 </div>
                 <div class="flex-1 ">
-                  <button class="btn btn-error text-white font-thin w-full" @click="handleDelete(item.id)">
-                    ลบ
+                  <button class="btn btn-accent text-white font-thin w-full"
+                    @click="handleCheck(item.patient.id, item.id)">
+                    ตรวจ
                   </button>
                 </div>
               </div>
@@ -124,5 +120,11 @@ definePageMeta({
 
 .whitespace-normal {
   white-space: nowrap;
+}
+</style>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
 </style>

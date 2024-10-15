@@ -28,6 +28,7 @@ model patients {
   province    String
   postalCode  Int // เลขไปรษณีย์ 
   phoneNumber String // เบอร์โทรศัพท์ 
+  cdnumber    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -113,6 +114,9 @@ model Promotion {
   about     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  courseId  Int?
+  course    Course?  @relation(fields: [courseId], references: [id])
 }
 
 model Drug {
@@ -150,6 +154,7 @@ model User {
   password    String?
   firstname       String?
   lastname    String?
+  cdnumber    String?
   role        String   @default("user")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -201,4 +206,6 @@ model Course {
   createdAt   DateTime  @default(now()) 
   updatedAt   DateTime  @updatedAt    
   status      String    @default("active")
+
+  promotions Promotion[]
 }

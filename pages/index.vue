@@ -31,7 +31,7 @@ onMounted(() => {
         </div>
 
         <!-- Countdown -->
-        <Coutdown></Coutdown>
+        
 
       </div>
       <ImageSlider></ImageSlider>

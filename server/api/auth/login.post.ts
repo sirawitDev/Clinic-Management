@@ -41,6 +41,7 @@ export default defineEventHandler(async (event) => {
       id: user.id,
       email: user.email,
       role: user.role,
+      cdnumber: user.cdnumber
     },
   };
 });

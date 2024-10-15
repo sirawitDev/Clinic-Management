@@ -41,7 +41,7 @@
           <div class="label">
             <span class="label-text">ชื่อ</span>
           </div>
-          <input type="text" v-model="form.first_name" placeholder="Type here" class="input input-bordered w-full"
+          <input type="text" v-model="form.first_name" placeholder="ชื่อ" class="input input-bordered w-full"
             required />
         </label>
 
@@ -49,7 +49,7 @@
           <div class="label">
             <span class="label-text">นามสกุล</span>
           </div>
-          <input type="text" v-model="form.last_name" placeholder="Type here" class="input input-bordered w-full"
+          <input type="text" v-model="form.last_name" placeholder="นามสกุล" class="input input-bordered w-full"
             required />
         </label>
 
@@ -57,7 +57,7 @@
           <div class="label">
             <span class="label-text">อีเมล</span>
           </div>
-          <input type="email" v-model="form.email" placeholder="Type here" class="input input-bordered w-full"
+          <input type="email" v-model="form.email" placeholder="อีเมล" class="input input-bordered w-full"
             required />
         </label>
 
@@ -65,7 +65,7 @@
           <div class="label">
             <span class="label-text">หมายเลขโทรศัพท์</span>
           </div>
-          <input type="tel" v-model="form.phone" @input="formatPhoneNumber" placeholder="080-000-0000"
+          <input type="tel" v-model="form.phone" @input="formatPhoneNumber" placeholder="เบอร์โทรศัพท์"
             class="input input-bordered w-full" />
         </label>
 
@@ -81,8 +81,9 @@
           </select>
         </label>
 
-        <div>
-          <button type="submit" class="btn btn-accent my-5 w-full text-white font-light">ยืนยันข้อมูล</button>
+        <div class="flex justify-end gap-5">
+          <RouterLink to="/admin/physicians" class="btn btn-accent mt-5 font-light text-white w-60">ย้อนกลับ</RouterLink>
+          <button type="submit" class="btn btn-accent mt-5 text-white font-light w-60">ยืนยันข้อมูล</button>
         </div>
       </form>
     </div>

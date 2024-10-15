@@ -1,18 +1,10 @@
 <template>
   <AdminLayout>
-    <div class="container mx-auto">
-      <!-- Header -->
-      <div class="flex bg-white rounded-full mt-3 shadow-md">
-        <div class="flex-1 mt-4 pl-3">
-          <div class="divider divider-accent"></div>
-        </div>
-        <div class="flex-2">
-          <h1 class="font-light text-4xl p-4">วินิจฉัย</h1>
-        </div>
-        <div class="flex-1 mt-4 pr-4">
-          <div class="divider divider-accent"></div>
-        </div>
+    <!-- Header -->
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">วินิฉัย</h2>
       </div>
+    <div class="container mx-auto max-w-5xl bg-white p-4 mt-5">
 
       <!-- Diagnosis Select -->
       <label class="form-control w-full mt-5">
@@ -229,4 +221,10 @@ definePageMeta({
   middleware: 'auth',
 });
 </script>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+</style>
 

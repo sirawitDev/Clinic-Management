@@ -12,12 +12,11 @@
           </div>
           <div class="flex justify-between w-full">
             <div class="flex-grow">
-              <!-- Display name if not editing -->
+
               <div v-if="!editingName">
                 {{ firstname }} {{ lastname }}
               </div>
 
-              <!-- Show input fields if editing -->
               <div v-else>
                 <input v-model="firstname" type="text" placeholder="First name"
                   class="input input-bordered w-full mb-2" />
@@ -35,6 +34,33 @@
             </div>
           </div>
         </div>
+
+        <div class="flex w-full font-kanit mt-10">
+          <div class=" w-52">
+            <p class=" text-gray-500">เลขประชาชน</p>
+          </div>
+          <div class="flex justify-between w-full">
+            <div class="flex-grow">
+              <div v-if="!editingCdNumber">
+                {{ cdnumber }}
+              </div>
+              <div v-else>
+                <input v-model="cdnumber" type="text" placeholder="cdnumber"
+                  class="input input-bordered w-full" />
+              </div>
+            </div>
+
+            <div class="ml-4">
+              <!-- Edit button when not editing, Save/Cancel buttons when editing -->
+              <p class="link link-secondary" v-if="!editingCdNumber" @click="toggleEditCdNumber">แก้ไข</p>
+              <div v-else>
+                <button @click="saveCdNumber" class="btn btn-primary btn-sm">บันทึก</button>
+                <button @click="cancelEditCdNumber" class="btn btn-sm ml-2">ยกเลิก</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <div class="divider"></div>
 
@@ -56,8 +82,6 @@
             <p class="text-gray-500">เปลี่ยนรหัสผ่าน</p>
           </div>
           <div class="flex flex-col w-full">
-            <input v-model="currentPassword" type="password" placeholder="รหัสผ่านเดิม"
-              class="input input-bordered w-full mb-2" />
             <input v-model="newPassword" type="password" placeholder="รหัสผ่านใหม่"
               class="input input-bordered w-full mb-2" />
             <input v-model="confirmPassword" type="password" placeholder="รหัสผ่านใหม่อีกครั้ง"
@@ -78,12 +102,10 @@
           </div>
           <div class="flex justify-between w-full">
             <div class="flex-grow">
-              <!-- Show phone number if not editing -->
               <div v-if="!address.editingPhoneNumber">
                 {{ address.phoneNumber }}
               </div>
 
-              <!-- Show input field when editing -->
               <div v-else>
                 <input v-model="address.phoneNumber" type="text" placeholder="Phone number"
                   class="input input-bordered w-full" />
@@ -127,10 +149,11 @@ const authStore = useAuthStore();
 const email = ref('');
 const firstname = ref('');
 const lastname = ref('');
+const cdnumber = ref('')
 const addresses = ref([])
 const editingName = ref(false); // State to track editing mode
+const editingCdNumber = ref(false);
 
-const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
 
@@ -143,13 +166,11 @@ const changePassword = async () => {
   try {
     const response = await axios.put('/api/users/changePassword', {
       userId: authStore.user.id,
-      currentPassword: currentPassword.value,
       newPassword: newPassword.value,
     });
 
     if (response.data.success) {
       alert('Password changed successfully');
-      currentPassword.value = '';
       newPassword.value = '';
       confirmPassword.value = '';
     } else {
@@ -161,8 +182,8 @@ const changePassword = async () => {
   }
 };
 
+
 const cancelPasswordChange = () => {
-  currentPassword.value = '';
   newPassword.value = '';
   confirmPassword.value = '';
 };
@@ -179,7 +200,39 @@ const cancelEditName = () => {
 
 const saveName = async () => {
   await updateProfile(); // Update the profile with new values
+  authStore.updateUserName(firstname.value, lastname.value); // Update store and localStorage
   editingName.value = false;
+}
+
+//cdnumber
+const toggleEditCdNumber = () => {
+  editingCdNumber.value = !editingCdNumber.value;
+};
+
+const cancelEditCdNumber = () => {
+  editingCdNumber.value = false;
+  fetchUserProfile(); // Reset to original values
+};
+
+
+const saveCdNumber = async () => {
+  try {
+    const response = await axios.put('/api/users/updateCdNumber', {
+      userId: authStore.user.id,
+      cdnumber: cdnumber.value,
+    });
+
+    if (response.data.success) {
+      alert('CD number updated successfully');
+      authStore.updateCdnumber(cdnumber.value);
+      editingCdNumber.value = false;
+    } else {
+      alert('Failed to update CD number');
+    }
+  } catch (error) {
+    console.error('Error updating CD number:', error);
+    alert('An error occurred while updating the CD number');
+  }
 };
 
 //Phone Fuc
@@ -251,22 +304,7 @@ const fetchUserProfile = async () => {
       email.value = response.email || '';
       firstname.value = response.firstname || '';
       lastname.value = response.lastname || '';
-      // if (response.addresses && response.addresses.length > 0) {
-      //   const userAddress = response.addresses[0];
-      //   address.value = {
-      //     ...userAddress,
-      //   };
-      //   // Set initial selections based on user profile
-      //   if (address.value.province) {
-      //     onProvinceChange();
-      //   }
-      //   if (address.value.district) {
-      //     onDistrictChange();
-      //   }
-      //   if (address.value.subdistrict) {
-      //     onSubdistrictChange(); // Call to set postal code
-      //   }
-      // }
+      cdnumber.value = response.cdnumber || '';
     } else {
       alert('User profile not found');
     }
@@ -274,29 +312,7 @@ const fetchUserProfile = async () => {
     console.error('Error fetching user profile:', error);
     alert('An error occurred while fetching the profile');
   }
-};
-
-const deleteAddress = async (addressId) => {
-  if (confirm('คุณต้องการลบที่อยู่นี้หรือไม่?')) {
-    try {
-      const response = await axios.delete(`/api/users/address`, {
-        params: { addressId }
-      });
-
-      if (response.data.success) {
-        alert('ลบที่อยู่สำเร็จ');
-        // Refresh the address list
-        await fetchAddresses();
-      } else {
-        alert('ไม่สามารถลบที่อยู่ได้');
-      }
-    } catch (error) {
-      console.error('Error deleting address:', error);
-      alert('เกิดข้อผิดพลาดขณะลบที่อยู่');
-    }
-  }
-};
-
+}
 
 const fetchAddresses = async () => {
   try {
@@ -315,12 +331,13 @@ const fetchAddresses = async () => {
   }
 };
 
-
+authStore.initializeAuth()
 
 onMounted(async () => {
   await fetchUserProfile();
   await fetchAddresses()
-  console.log('address : ', addresses.value)
+
+  console.log('user :' , cdnumber.value)
 });
 </script>
 

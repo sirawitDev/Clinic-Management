@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody } from 'h3';
+//server/api/course
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

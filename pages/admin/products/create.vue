@@ -119,7 +119,12 @@ definePageMeta({
           </select>
         </label>
 
-        <button @click="submitForm" class="btn btn-primary mt-4 w-full">Add Product</button>
+        <div class="flex justify-center mt-5 gap-5">
+          <RouterLink to="/admin/products" class="btn btn-accent w-60">
+            <p class="font-light text-white">ย้อนกลับ</p>
+          </RouterLink>
+          <button @click="submitForm" class="btn btn-accent w-60 font-light text-white">เพิ่มสินค้า</button>
+        </div>
       </div>
     </div>
   </adminLayouts>

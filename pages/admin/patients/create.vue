@@ -8,6 +8,10 @@ import axios from 'axios'
 const userStore = useUserStore()
 const router = useRouter()
 
+const customCongenital = ref('')
+const customAllergy = ref('')
+const customฺBloodtype = ref('')
+
 const fields = [
   { label: 'ชื่อ', model: 'firstname', type: 'text', placeholder: 'ชื่อ' },
   { label: 'นามสกุล', model: 'lastname', type: 'text', placeholder: 'นามสกุล' },
@@ -24,6 +28,7 @@ const fields = [
       { value: 'B', label: 'B' },
       { value: 'AB', label: 'AB' },
       { value: 'O', label: 'O' },
+      { value: 'อื่น ๆ', label: 'อื่น ๆ' }
     ],
     placeholder: 'กรุปเลือด'
   },
@@ -52,6 +57,7 @@ const fields = [
     placeholder: 'กรุณากรอกข้อมูลโรคประจำตัว'
   },
   { label: 'เบอร์โทรศัพท์', model: 'phoneNumber', type: 'text', placeholder: 'เบอร์โทรศัพท์' },
+  { label: 'เลขบัตรประชาชน', model: 'cdnumber', type: 'text', placeholder: 'เลขบัตรประชาชน' },
 ]
 
 const addressFields = [
@@ -107,7 +113,8 @@ const newUser = ref({
   district: '',
   province: '',
   postalCode: null,
-  title: ''
+  title: '',
+  cdnumber: ''
 })
 
 const formatPhoneNumber = (value) => {
@@ -133,6 +140,18 @@ const formatDateForDB = (dateString) => {
 
 const createUser = async () => {
   const userData = { ...newUser.value }
+  if (userData.congenital === 'อื่น ๆ') {
+    userData.congenital = customCongenital.value
+  }
+
+  if (userData.allergy === 'อื่น ๆ') {
+    userData.allergy = customAllergy.value
+  }
+
+  if (userData.blood_type === 'อื่น ๆ') {
+    userData.blood_type = customฺBloodtype.value
+  }
+
   if (userData.birthdate) {
     userData.birthdate = formatDateForDB(userData.birthdate)
   }
@@ -237,11 +256,18 @@ watch(() => newUser.value.postalCode, async (newPostalCode) => {
 
     newUser.value.district = location.district
 
-    await nextTick() 
+    await nextTick()
 
     newUser.value.subdistrict = location.subdistrict
   }
 })
+
+const onlyNumbers = (event) => {
+  const key = event.key
+  if (!/[0-9]/.test(key)) {
+    event.preventDefault()
+  }
+}
 
 definePageMeta({
   middleware: 'auth',
@@ -251,57 +277,75 @@ definePageMeta({
 
 <template>
   <adminLayouts>
-    <div class="flex items-center p-4">
+    <div class="flex items-center">
       <div class="w-full">
-        <h1 class="text-2xl font-bold mb-4 text-center">เพิ่มข้อมูลผู้ป่วย</h1>
+        <div
+          class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full bg-opacity-50">
+          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลผู้ป่วย</h2>
+        </div>
 
-        <form @submit.prevent="createUser">
-          <label class="form-control w-full">
-            <div class="label">
-              <span class="label-text text-base">คำนำหน้า</span>
-            </div>
-            <select v-model="newUser.title" class="select select-bordered">
-              <option disabled value="">เลือก</option>
-              <option v-for="option in titleOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-          </label>
+        <div class=" bg-white rounded-md p-4 mt-5">
+          <form @submit.prevent="createUser">
+            <label class="form-control w-full">
+              <div class="label">
+                <span class="label-text text-base">คำนำหน้า</span>
+              </div>
+              <select v-model="newUser.title" class="select select-bordered">
+                <option disabled value="">เลือก</option>
+                <option v-for="option in titleOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </label>
 
-          <div class="grid grid-cols-3 gap-4 mt-5">
-            <div v-for="(field, index) in fields" :key="index" class="form-control w-full mb-4">
-              <span class="label-text text-base">{{ field.label }}</span>
-              <template v-if="field.type === 'textarea'">
-                <textarea v-model="newUser[field.model]" :placeholder="field.placeholder" class="textarea textarea-bordered w-full"></textarea>
-              </template>
-              <template v-else-if="field.type === 'select'">
-                <select v-model="newUser[field.model]" class="select select-bordered">
-                  <option disabled value="">{{ field.placeholder }}</option>
-                  <option v-for="option in field.options" :key="option.value" :value="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </template>
-              <template v-else>
-                <input 
-                  v-model="newUser[field.model]" 
-                  :type="field.type" 
-                  :placeholder="field.placeholder" 
-                  class="input input-bordered w-full"
-                  @input="field.model === 'phoneNumber' ? handlePhoneNumberInput($event) : null"
-                />
-              </template>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="mt-5">
-            <h1 class="text-2xl font-bold mb-4">ที่อยู่</h1>
-            <div class="grid grid-cols-3 gap-4 my-3">
-              <div v-for="(field, index) in addressFields" :key="index" class="form-control w-full mb-4">
+            <div class="grid grid-cols-3 gap-4 mt-5">
+              <div v-for="(field, index) in fields" :key="index" class="form-control w-full mb-4">
                 <span class="label-text text-base">{{ field.label }}</span>
-                <template v-if="field.type === 'select'">
+
+                <template v-if="field.type === 'textarea'">
+                  <textarea v-model="newUser[field.model]" :placeholder="field.placeholder"
+                    class="textarea textarea-bordered w-full"></textarea>
+                </template>
+
+                <template v-else-if="field.model === 'congenital'">
+                  <select v-model="newUser.congenital" class="select select-bordered">
+                    <option disabled value="">{{ field.placeholder }}</option>
+                    <option v-for="option in field.options" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <input v-if="newUser.congenital === 'อื่น ๆ'" v-model="customCongenital" type="text"
+                    placeholder="ระบุแพ้ยา" class="input input-bordered w-full mt-2" />
+                </template>
+
+                <template v-else-if="field.model === 'blood_type'">
+                  <select v-model="newUser.blood_type" class="select select-bordered">
+                    <option disabled value="">{{ field.placeholder }}</option>
+                    <option v-for="option in field.options" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <input v-if="newUser.blood_type === 'อื่น ๆ'" v-model="customฺBloodtype" type="text"
+                    placeholder="ระบุเลือด" class="input input-bordered w-full mt-2" />
+                </template>
+
+                <template v-else-if="field.model === 'allergy'">
+                  <select v-model="newUser.allergy" class="select select-bordered">
+                    <option disabled value="">{{ field.placeholder }}</option>
+                    <option v-for="option in field.options" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <input v-if="newUser.allergy === 'อื่น ๆ'" v-model="customAllergy" type="text"
+                    placeholder="ระบุโรคประจำตัว" class="input input-bordered w-full mt-2" />
+                </template>
+
+                <template v-else-if="field.model === 'cdnumber'">
+                  <input v-model="newUser.cdnumber" :placeholder="field.placeholder" class="input input-bordered w-full"
+                    maxlength="13" @keypress="onlyNumbers($event)" />
+                </template>
+
+                <template v-else-if="field.type === 'select'">
                   <select v-model="newUser[field.model]" class="select select-bordered">
                     <option disabled value="">{{ field.placeholder }}</option>
                     <option v-for="option in field.options" :key="option.value" :value="option.value">
@@ -310,17 +354,55 @@ definePageMeta({
                   </select>
                 </template>
                 <template v-else>
-                  <input v-model="newUser[field.model]" :type="field.type" :placeholder="field.placeholder" class="input input-bordered w-full" />
+                  <input v-model="newUser[field.model]" :type="field.type" :placeholder="field.placeholder"
+                    class="input input-bordered w-full"
+                    @input="field.model === 'phoneNumber' ? handlePhoneNumberInput($event) : null" />
                 </template>
               </div>
             </div>
-          </div>
 
-          <div class="divider"></div>
+            <div class="divider"></div>
 
-          <button type="submit" class="btn btn-primary font-bold w-full text-lg">เพิ่มข้อมูลผู้ป่วย</button>
-        </form>
+            <div class="mt-5">
+              <h1 class="text-2xl font-bold mb-4">ที่อยู่</h1>
+              <div class="grid grid-cols-3 gap-4 my-3">
+                <div v-for="(field, index) in addressFields" :key="index" class="form-control w-full mb-4">
+                  <span class="label-text text-base">{{ field.label }}</span>
+                  <template v-if="field.type === 'select'">
+                    <select v-model="newUser[field.model]" class="select select-bordered">
+                      <option disabled value="">{{ field.placeholder }}</option>
+                      <option v-for="option in field.options" :key="option.value" :value="option.value">
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </template>
+                  <template v-else>
+                    <input v-model="newUser[field.model]" :type="field.type" :placeholder="field.placeholder"
+                      class="input input-bordered w-full" />
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="flex justify-end gap-5">
+              <RouterLink to="/admin/patients" class="btn btn-accent text-base w-60 font-light text-white">
+                ย้อนกลับ
+              </RouterLink>
+              <button type="submit"
+                class="btn btn-primary font-bold text-base w-60 font-light text-white">เพิ่มข้อมูลผู้ป่วย</button>
+
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </adminLayouts>
 </template>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+</style>

@@ -1,12 +1,13 @@
 <template>
   <adminLayouts>
     <div class="container mx-auto p-4 bg-white">
-      <div class="flex justify-center items-center bg-[#FFD600] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
         <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลยา</h2>
       </div>
 
       <div class="mb-5">
-        <nuxt-link to="/admin/drug/create" class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
+        <nuxt-link to="/admin/drug/create"
+          class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
       </div>
 
       <div class="overflow-x-auto">
@@ -38,9 +39,6 @@
                 <p class="text-center">ปริมาณ</p>
               </th>
               <th>
-                <p class="text-center">หน่วย</p>
-              </th>
-              <th>
                 <p class="text-center">ข้อมูลเพิ่มเติม</p>
               </th>
               <th></th>
@@ -49,12 +47,23 @@
           <tbody>
             <tr v-for="(drug, index) in drugs" :key="drug.id">
               <th>{{ index + 1 }}</th>
-              <td><img :src="drug.imageUrl" alt="drug image" class="w-24 h-24 object-cover" /></td>
+              <td>
+                <img
+                  :src="drug.imageUrl"
+                  alt="drug image"
+                  class="w-24 h-24 object-cover cursor-pointer"
+                  @click="showImageModal(drug.imageUrl)"
+                />
+              </td>
               <td>{{ drug.name }}</td>
               <td>{{ drug.type }}</td>
               <td>{{ drug.price }}</td>
-              <td>{{ drug.dosage }}</td>
-              <td>{{ drug.unit }}</td>
+              <td>
+                <div class="flex gap-1">
+                  <p class="">{{ drug.dosage }}</p>
+                  <p class="">{{ drug.unit }}</p>
+                </div>
+              </td>
               <td>{{ drug.about }}</td>
               <td>
                 <div class="flex gap-2 justify-center">
@@ -70,6 +79,14 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Modal to display the full image -->
+      <div v-if="isImageModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
+        <div class="relative">
+          <button @click="closeImageModal" class="absolute top-0 right-0 text-white text-3xl">&times;</button>
+          <img :src="selectedImage" alt="Full drug image" class="max-w-full max-h-screen object-cover" />
+        </div>
+      </div>
     </div>
   </adminLayouts>
 </template>
@@ -84,6 +101,9 @@ import Edit from '~/components/admin/Edit.vue'
 const drugs = ref([]);
 const isLoading = ref(true);
 const router = useRouter();
+
+const isImageModalOpen = ref(false);
+const selectedImage = ref('');
 
 const fetchDrugs = async () => {
   try {
@@ -120,6 +140,16 @@ const editDrug = (id: number) => {
   router.push(`/admin/drug/edit/${id}`);
 };
 
+// Modal handlers
+const showImageModal = (imageUrl: string) => {
+  selectedImage.value = imageUrl;
+  isImageModalOpen.value = true;
+};
+
+const closeImageModal = () => {
+  isImageModalOpen.value = false;
+};
+
 onMounted(fetchDrugs);
 
 definePageMeta({
@@ -147,5 +177,14 @@ definePageMeta({
 
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+
+
+img.cursor-pointer {
+  cursor: pointer;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.75);
 }
 </style>

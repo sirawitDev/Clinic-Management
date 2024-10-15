@@ -86,8 +86,8 @@ const exportToExcel = () => {
   writeFile(workbook, 'UserData.xlsx')
 }
 
-onMounted(() => {
-  userStore.fetchUsers()
+onMounted(async() => {
+  await userStore.fetchUsers()
 })
 
 definePageMeta({

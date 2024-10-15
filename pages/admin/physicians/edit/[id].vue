@@ -125,8 +125,11 @@ definePageMeta({
           </select>
         </label>
 
-        <div>
-          <button type="submit" class="btn btn-accent my-5 w-full text-white font-light">ยืนยันการแก้ไข</button>
+        <div class="flex justify-end gap-5">
+          <RouterLink to="/admin/physicians" class="btn btn-accent w-60 mt-5">
+            <p class="text-white font-light">ย้อนกลับ</p>
+          </RouterLink>
+          <button type="submit" class="btn btn-secondary mt-5 w-60 text-white font-light">ยืนยันการแก้ไข</button>
         </div>
       </form>
     </div>

@@ -1,16 +1,8 @@
 <template>
   <AdminLayout>
     <div class="container mx-auto p-4">
-      <div class="flex bg-white rounded-full mt-3 shadow-md">
-        <div class="flex-1 mt-4 pl-3">
-          <div class="divider divider-accent"></div>
-        </div>
-        <div class="flex-2">
-          <h1 class="font-light text-4xl p-4">ซักประวัติ</h1>
-        </div>
-        <div class="flex-1 mt-4 pr-4">
-          <div class="divider divider-accent"></div>
-        </div>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">ซักประวัติ</h2>
       </div>
       <form @submit.prevent="searchPatients" class="mt-5">
         <input v-model="query" type="text" placeholder="ใส่ชื่อเพื่อค้นหา"
@@ -107,5 +99,9 @@ definePageMeta({
 <style scoped>
 .font-sarabun {
   font-family: 'Sarabun', sans-serif;
+}
+
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
 </style>
