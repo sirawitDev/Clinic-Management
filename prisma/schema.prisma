@@ -104,21 +104,6 @@ model Products {
 
 }
 
-model Promotion {
-  id        Int     @id @default(autoincrement())
-  name      String
-  imageUrl    String
-  startDate   DateTime
-  endDate     DateTime
-  status         String   @default("active")
-  about     String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  courseId  Int?
-  course    Course?  @relation(fields: [courseId], references: [id])
-}
-
 model Drug {
   id          Int      @id @default(autoincrement())
   name        String   // ชื่อยา
@@ -173,6 +158,7 @@ model Reservation {
   date        DateTime
   time        String
   note        String?
+  email       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -197,15 +183,25 @@ model Address {
   user        User     @relation(fields: [userId], references: [id])
 }
 
+model Promotion {
+  id        Int     @id @default(autoincrement())
+  name      String
+  imageUrl    String
+  startDate   DateTime
+  endDate     DateTime
+  status         String   @default("active")
+  about     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 model Course {
   id          Int       @id @default(autoincrement())
   title       String
-  description String? 
+  description String?
   imageUrl    String?
   price       Int
   createdAt   DateTime  @default(now()) 
-  updatedAt   DateTime  @updatedAt    
+  updatedAt   DateTime  @updatedAt
   status      String    @default("active")
-
-  promotions Promotion[]
 }

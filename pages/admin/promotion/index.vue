@@ -31,8 +31,12 @@
           </thead>
           <tbody>
             <tr v-for="(promotion, index) in promotions" :key="promotion.id">
-              <th>{{ index + 1 }}</th>
-              <td>{{ promotion.name }}</td>
+              <th>
+                <p class="text-center">{{ index + 1 }}</p>
+              </th>
+              <td>
+                <p class="text-center">{{ promotion.name }}</p>
+              </td>
               <td class="flex justify-center">
                 <img 
                   :src="promotion.imageUrl" 

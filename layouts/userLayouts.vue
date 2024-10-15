@@ -51,6 +51,9 @@
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li>
+                <RouterLink to="/admin/" class="text-red-500">AdminDashboard</RouterLink>
+              </li>
+              <li>
                 <RouterLink to="/user/profile">โปรไฟล์</RouterLink>
               </li>
               <li><a @click="authStore.logout()">ออกจากระบบ</a></li>
@@ -91,7 +94,7 @@
                     <input v-model="password" type="password" placeholder="" class="input input-bordered" />
                   </div>
                   <div class="form-control mt-5">
-                    <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                    <button type="submit" class="btn btn-accent text-white font-light">เข้าสู่ระบบ</button>
                   </div>
 
                   <div class="divider"></div>
@@ -107,6 +110,7 @@
                   <div class="form-control">
                     <label class="text-lg mx-1">อีเมล</label>
                     <input v-model="registerEmail" type="email" placeholder="" class="input input-bordered" />
+                    <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
                   </div>
 
                   <div class="form-control mt-5">
@@ -119,7 +123,7 @@
                     <input v-model="confirmPassword" type="password" placeholder="" class="input input-bordered" />
                   </div>
                   <div class="form-control mt-5">
-                    <button type="submit" class="btn btn-primary">สร้างบัญชี</button>
+                    <button type="submit" class="btn btn-accent text-white font-light">สร้างบัญชี</button>
                   </div>
                 </form>
               </div>
@@ -150,18 +154,23 @@
 
     <slot></slot>
 
-    <div class="hero mt-5 rounded-lg mb-5" style="
-        background-image: url(https://img.freepik.com/premium-photo/interior-house-apartment-dining-3d-architecture-inside-hall-white-floor-generative-ai_163305-172769.jpg?w=826);
+    <div class="hero mt-5 rounded-lg mb-5 font-kanit" style="
+        background-image: url(https://img.freepik.com/free-photo/blurred-common-room_1203-106.jpg);
         ">
-      <div class="hero-overlay rounded-lg"></div>
+      <div class="  rounded-lg"></div>
       <div class="hero-content text-center text-neutral-content">
-        <div class="max-w-md">
-          <h1 class="mb-5 text-5xl font-bold text-white">ติดต่อเรา</h1>
-          <p class="mb-5 text-white">
+        <div class="max-w-md rounded-md p-4">
+          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">ติดต่อเรา</h2>
+          <div class="flex bg-base-100 w-96 h-16 rounded-full mt-2 gap-2 p-1 shadow-xl">
+            <div class="flex justify-center w-full">
+              <Facebook />
+            </div>
+          </div>
+          <!-- <p class="mb-5 text-white">
             คลินิกสุขภาพ ความงาม และศัลยกรรม
             โบท็อกซ์ ฟิลเลอร์ ร้อยไหม วิตามินผิว
             เปิดบริการทุกวัน 11.00 - 20.00
-          </p>
+          </p> -->
         </div>
       </div>
     </div>
@@ -177,6 +186,9 @@ import {
   GoogleSignInButton,
   type CredentialResponse,
 } from "vue3-google-signin";
+
+import Facebook from '~/components/user/Facebook.vue';
+const emailError = ref('');
 
 const handleLoginSuccess = async (response: CredentialResponse) => {
   const { credential } = response;
@@ -213,6 +225,13 @@ const registerPassword = ref('');
 const confirmPassword = ref('');
 
 const register = async () => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(hotmail\.com|gmail\.com)$/;
+
+  if (!emailRegex.test(registerEmail.value)) {
+    emailError.value = 'กรุณาใช้อีเมล @hotmail.com หรือ @gmail.com เท่านั้น';
+    return;
+  }
+  
   if (registerPassword.value !== confirmPassword.value) {
     alert('Passwords do not match.');
     return;

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import adminLayouts from '~/layouts/adminLayout2.vue';
 import { useUserStore } from '~/stores/user.ts';
-import ApexBarChart from '~/components/admin/ApexBarChart.vue'
+import ApexBarChart from '~/components/admin/ApexBarChart.vue';
 
 import Call from '~/components/user/Call.vue';
 import Trash from '~/components/admin/Trash.vue';
@@ -10,8 +10,31 @@ import Edit from '~/components/admin/Edit.vue';
 
 const userStore = useUserStore();
 const totalPatients = ref(0);
-const payment = ref([])
+const payment = ref([]);
 const totalRevenue = ref(0);
+const reservations = ref([]);
+const todayAppointments = ref(0);
+
+const fetchReservations = async () => {
+  try {
+    const response = await fetch('/api/reservations', {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch reservations');
+    }
+    const data = await response.json();
+    reservations.value = data.reservations; // Assuming API returns an array of reservations
+
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+    todayAppointments.value = reservations.value.filter(
+      (reservation) => formatDate(reservation.date) === today
+    ).length; // Count today's appointments
+  } catch (err) {
+    console.error('Error fetching reservations:', err);
+  }
+};
+
 
 const fetchPayments = async () => {
   try {
@@ -34,9 +57,7 @@ const deletePayment = async (id) => {
       method: 'DELETE',
     });
     if (response.ok) {
-      // Remove the payment from the list
-      payment.value = payment.value.filter(p => p.id !== id);
-      console.log('Payment deleted successfully');
+      payment.value = payment.value.filter((p) => p.id !== id);
       totalRevenue.value = payment.value.reduce((sum, p) => sum + p.totalAmount, 0);
     } else {
       console.error('Error deleting payment');
@@ -46,17 +67,40 @@ const deletePayment = async (id) => {
   }
 };
 
+const deleteReservation = async (id) => {
+  try {
+    const response = await fetch(`/api/reservations?id=${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error(`Error deleting reservations: ${response.statusText}`);
+    }
+    await response.json();
+    // Optionally, remove the deleted reservation from the reservations list
+    reservations.value = reservations.value.filter((res) => res.id !== id);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  return date.toISOString().split('T')[0]; // Return 'YYYY-MM-DD' format
+};
+
 definePageMeta({
   middleware: 'auth',
 });
 
-onMounted(() => {
-  userStore.fetchUsers().then(() => {
+onMounted(async () => {
+  await userStore.fetchUsers().then(() => {
     totalPatients.value = userStore.users.length;
   });
-  fetchPayments()
-})
+  await fetchPayments();
+  await fetchReservations(); // Ensure reservations and todayAppointments are fetched correctly
+});
 </script>
+
 
 <template>
   <adminLayouts>
@@ -79,25 +123,28 @@ onMounted(() => {
         <div class="card bg-[#00AC97] w-full h-44 shadow-xl transform-transition bg-opacity-65">
           <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">คนใช้บริการวันนี้</h2>
           <div class="flex mt-8">
-            <div class="flex-1 ml-5">
-              <p class="text-white text-6xl mt-2">{{ totalPatients }} คน</p>
+            <div class="flex-1 ml-5 mt-8">
+              <p class="text-white text-4xl mt-2">{{ totalPatients }} คน</p>
             </div>
             <div class="flex-1 flex justify-end mr-5">
               <img src="https://img2.pic.in.th/pic/qc_8790314-1.png" alt="logo_user">
             </div>
           </div>
         </div>
+        <!-- This section displays today's appointments count -->
         <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65">
           <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">นัดหมายวันนี้</h2>
           <div class="flex mt-8">
-            <div class="flex-1 ml-5">
-              <p class="text-white text-6xl mt-2">{{ totalPatients }} คน</p>
+            <div class="flex-1 ml-5 mt-8">
+              <p class="text-white text-4xl mt-2">{{ todayAppointments }} คน</p>
+              <!-- Correctly bound to todayAppointments -->
             </div>
             <div class="flex-1 flex justify-end mr-5">
               <img src="https://img2.pic.in.th/pic/job_10485121.png" alt="logo_user">
             </div>
           </div>
         </div>
+
       </div>
     </div>
     <div class="bg-white rounded-lg h-[350px]">
@@ -107,23 +154,20 @@ onMounted(() => {
         </h1>
       </div>
       <div class="grid grid-cols-4 gap-3 p-4">
-        <div v-for=" i in [1, 2, 3]" class="bg-base-100 rounded-xl mb-5">
+        <div v-for="(reservation, index) in reservations" :key="reservation.id" class="bg-base-100 rounded-xl mb-5">
           <div class="flex justify-center mt-4">
-            <img src="https://img2.pic.in.th/pic/volunteer_11077481.png" alt="logo-user" class=" w-16">
+            <img src="https://img2.pic.in.th/pic/volunteer_11077481.png" alt="logo-user" class="w-16">
           </div>
           <div class="ml-4 mt-3">
-            <h1>ยูสเซอร์ : test@tetste</h1>
-            <h1>ชื่อ : </h1>
-            <h1>เวลานัด : </h1>
-            <div class="flex">
-              <Call class=" -mx-2 w-12" />
-              <div class="ml-3 mt-3">
-                0123123123
-              </div>
-            </div>
-            <div class="flex gap-2 justify-center mb-2">
-              <button class="btn w-28 shadow-md">
-                <Trash />
+            <h1>ยูสเซอร์ : {{ reservation.email }}</h1>
+            <h1>ชื่อ : {{ reservation.firstname }} {{ reservation.lastname }}</h1>
+            <h1>วันนัด : {{ formatDate(reservation.date) }}</h1>
+            <h1>เวลานัด : {{ reservation.time }}</h1>
+            <h1>บัตรประชาชน : {{ reservation.cdnumber || 'N/A' }}</h1>
+
+            <div class="flex gap-2 justify-center mb-2 mt-2">
+              <button @click="deleteReservation(reservation.id)" class="btn w-28 shadow-md bg-red-500 text-white">
+                <Trash /> ลบ
               </button>
               <button class="btn btn-accent w-28">
                 <div class="flex">
@@ -135,6 +179,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
+
     </div>
 
     <div class="bg-white rounded-lg h-full mt-5">
@@ -197,7 +242,9 @@ onMounted(() => {
     </td>
     <th>
       <div class="flex gap-2">
-        <button @click="deletePayment(payment.id)" class="btn btn-md btn-danger font-light"><Trash /></button>
+        <button @click="deletePayment(payment.id)" class="btn btn-md btn-danger font-light">
+          <Trash />
+        </button>
         <button class="btn btn-md btn-accent font-light text-white">เพิ่มเติม</button>
       </div>
     </th>
@@ -220,9 +267,6 @@ onMounted(() => {
         </div>
       </div>
       <div class="flex-1">
-        <div class="p-4 bg-white mt-5 shadow-md rounded-md">
-          asdasd
-        </div>
 
       </div>
     </div>

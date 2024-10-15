@@ -35,7 +35,7 @@
         <!-- Image Preview -->
         <div v-if="imageUrl" class="my-4">
           <div class="flex justify-center">
-            <img :src="imageUrl" alt="Promotion Image" class="w-48 h-auto border rounded"/>
+            <img :src="imageUrl" alt="Promotion Image" class="w-48 h-auto border rounded" />
           </div>
         </div>
 
@@ -44,7 +44,7 @@
           <div class="label">
             <span class="label-text">คำอธิบายรายละเอียดสินค้า</span>
           </div>
-          <input v-model="about" type="text" placeholder="" class="input input-bordered w-full"/>
+          <input v-model="about" type="text" placeholder="" class="input input-bordered w-full" />
         </label>
 
         <!-- Start Date and Time -->
@@ -63,17 +63,12 @@
           <input v-model="endDateTime" type="datetime-local" class="input input-bordered w-full" />
         </label>
 
-        <!-- Course in Promotion -->
-        <div class="bg-red-200 w-full h-14 rounded-md mt-5">
-          asd
-        </div>
-
         <!-- Submit Button -->
         <div class="flex justify-end gap-5">
 
           <RouterLink to="/admin/promotion" class="btn btn-accent mt-4 font-light text-white">ย้อนกลับ</RouterLink>
           <button @click="submitForm" class="btn btn-primary mt-4 font-light text-white">เพิ่มโปรโมชั่น</button>
-          
+
         </div>
       </div>
     </div>
@@ -92,7 +87,6 @@ const startDateTime = ref(''); // Updated to handle date and time
 const endDateTime = ref(''); // Updated to handle date and time
 
 const router = useRouter();
-
 const submitForm = async () => {
   try {
     const response = await $fetch('/api/promotions', {
@@ -103,7 +97,7 @@ const submitForm = async () => {
         about: about.value,
         startDate: new Date(startDateTime.value), // Updated to use datetime
         endDate: new Date(endDateTime.value), // Updated to use datetime
-        status: 'active'
+        status: 'active',
       }
     });
 

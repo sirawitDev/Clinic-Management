@@ -29,8 +29,12 @@
           </thead>
           <tbody>
             <tr v-for="(course, index) in courses" :key="course.id">
-              <th>{{ index + 1 }}</th>
-              <td>{{ course.title }}</td>
+              <th>
+                <p class="text-center">{{ index + 1 }}</p>
+              </th>
+              <td>
+                <p class="text-center">{{ course.title }}</p>
+              </td>
               <td>
                 <img v-if="course.imageUrl"
                   :src="course.imageUrl" 
