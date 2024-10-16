@@ -22,9 +22,6 @@
                 <p class="text-center">อีเมล</p>
               </th>
               <th>
-                <p class="text-center">รหัสผ่าน</p>
-              </th>
-              <th>
                 <p class="text-center">ชื่อ</p>
               </th>
               <th>
@@ -47,16 +44,11 @@
               <td>
                 <p class="text-center">{{ user.email }} {{ user.id }}</p>
               </td>
-              <td>
-                <div class="flex justify-center">
-                  <span class="text-gray-500">••••••</span> <!-- Placeholder for password -->
-                </div>
-              </td>
               <td><p class="text-center">{{ user.firstname }}</p></td>
               <td><p class="text-center">{{ user.lastname }}</p></td>
               <td>
                 <p v-if="user.cdnumber" class="text-center">{{ user.cdnumber }}</p>
-                <p v-else class="text-center">ยังไม่ได้เพิ่มเลขบัตร</p>
+                <p v-else class="text-center text-red-400 text-sm">ยังไม่ได้เพิ่มเลขบัตร</p>
               </td>
               <td><p class="text-center">{{ user.role }}</p></td>
               <td>

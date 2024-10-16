@@ -2,11 +2,24 @@
 import cashierLayouts from '~/layouts/cashierLayouts.vue';
 import { ref, computed, onMounted } from 'vue';
 
+import Search from '~/components/cashier/Search.vue';
+
 const drugs = ref([]);
 const diagnosesFetch = ref([]);
 const patientsFetch = ref([]);
 const physicianFetch = ref([]);
 const selectedDrugs = ref(JSON.parse(localStorage.getItem('selectedDrugs')) || []);
+const activeTab = ref('สินค้าทั้งหมด');
+const selectedDrug = ref(null);
+const selectedDiagnosis = ref(null);
+const searchQuery = ref('');
+
+const filteredDrugs = computed(() => {
+  // Step 2: Filter drugs based on the search query
+  return drugs.value.filter(drug =>
+    drug.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 
 const fetchPatients = async () => {
   try {
@@ -70,10 +83,6 @@ const fetchDrugs = async () => {
     console.error('Error fetching drugs:', error);
   }
 };
-
-const activeTab = ref('สินค้าทั้งหมด');
-const selectedDrug = ref(null);
-const selectedDiagnosis = ref(null);
 
 const setActiveTab = (tab) => {
   activeTab.value = tab;
@@ -174,11 +183,11 @@ watch(selectedDiagnosis, (newVal) => {
     <div class="flex h-screen">
       <div class="flex-64 flex-col w-[70%]">
         <div class="flex gap-10">
-          <div class=" bg-white mt-5 rounded-md w-[70%] shadow-md h-28">
+          <div class=" bg-white mt-5 rounded-lg w-[70%] shadow-md h-28">
 
             <div class="form-control w-[80%] mx-auto">
               <div class="label">
-                <span class="label-text">เลือกอาการวินิจฉัย</span>
+                <span class="label-text">เลือกการตรวจเพื่อจ่ายยา</span>
               </div>
               <select class="select select-bordered text-black" v-model="selectedDiagnosis">
                 <option disabled value="">
@@ -194,18 +203,24 @@ watch(selectedDiagnosis, (newVal) => {
           </div>
           <div class="w-[60%] mt-10">
             <div class="form-control">
-              <input type="text" placeholder="Search for items..." class="input input-bordered w-24 md:w-auto" />
+              <div class="flex gap-5 mr-4 mt-5">
+                <Search></Search>
+                <input type="text" placeholder="ค้นหาชื่อยา" class="input input-bordered w-full"
+                  v-model="searchQuery" />
+              </div>
             </div>
           </div>
         </div>
 
+        <div class="divider"></div>
+
         <!-- ปุ่มที่สามารถคลิกเพื่อเปลี่ยนแท็บ -->
-        <div class="flex gap-10 mt-10">
-          <button class="btn btn-ghost rounded-full" :class="{ 'btn-active': activeTab === 'สินค้าทั้งหมด' }"
+        <div class="flex gap-10">
+          <button class="btn btn-ghost rounded-full w-52" :class="{ 'btn-active': activeTab === 'สินค้าทั้งหมด' }"
             @click="setActiveTab('สินค้าทั้งหมด')">
             <p class="font-light">สินค้าทั้งหมด</p>
           </button>
-          <button class="btn btn-ghost rounded-full" :class="{ 'btn-active': activeTab === 'ยาใช้ภายนอก' }"
+          <!-- <button class="btn btn-ghost rounded-full" :class="{ 'btn-active': activeTab === 'ยาใช้ภายนอก' }"
             @click="setActiveTab('ยาใช้ภายนอก')">
             <p class="font-light">ยาใช้ภายนอก</p>
           </button>
@@ -220,26 +235,27 @@ watch(selectedDiagnosis, (newVal) => {
           <button class="btn btn-ghost rounded-full" :class="{ 'btn-active': activeTab === 'ยาเฉพาะทาง' }"
             @click="setActiveTab('ยาเฉพาะทาง')">
             <p class="font-light">ยาเฉพาะทาง</p>
-          </button>
+          </button> -->
         </div>
 
         <!-- เนื้อหาที่จะแสดงตามปุ่มที่ถูกกด -->
         <div v-if="activeTab === 'สินค้าทั้งหมด'">
           <div class="grid grid-cols-4 gap-1">
-            <button v-for="drug in drugs" :key="drug.id"
-              class="w-48 h-28 p-4 mt-5 rounded-2xl border-2 flex flex-col justify-end items-end relative"
+            <button v-for="drug in filteredDrugs" :key="drug.id"
+              class="w-48 h-52 p-4 mt-5 rounded-2xl border-2 flex flex-col items-center justify-between"
               @click="addDrug(drug)">
-              <div class="absolute top-2 left-2">
-                <p class="text-sm font-light text-[#2A3E57]">{{ drug.name }}</p>
-                <p class="text-xs font-light">#00{{ drug.id }}</p>
+              <div class="flex flex-col items-center">
+                <img :src="drug.imageUrl" alt="Drug Image" class="w-24 h-24 object-cover" />
+                <p class="text-sm font-light text-[#2A3E57] mt-2 text-center">{{ drug.name }}</p>
               </div>
-              <div class="absolute bottom-2 left-2">
-                <p class="text-base font-light text-accent">ราคา {{ drug.price }} ฿</p>
+              <div class="flex justify-center">
+                <p class="text-base font-light text-accent mt-2 text-center">ราคา {{ drug.price }} ฿</p>
               </div>
-              <img :src="drug.imageUrl" alt="Drug Image" class="w-24 h-24 object-cover absolute bottom-0 right-0" />
             </button>
           </div>
         </div>
+
+
 
 
         <div v-if="activeTab === 'ยาใช้ภายนอก'">
@@ -261,11 +277,11 @@ watch(selectedDiagnosis, (newVal) => {
       <div class="flex-32 w-[30%]">
         <div class="flex mt-3 justify-between w-full">
           <div class="mt-2">
-            <h1 class="text-2xl">Order Number</h1>
+            <h1 class="text-2xl">รายการสินค้า</h1>
           </div>
           <div>
             <button class="btn btn-accent text-white font-light"
-              @click="selectedDrugs.splice(0, selectedDrugs.length)">Clear order</button>
+              @click="selectedDrugs.splice(0, selectedDrugs.length)">เคลียร์สินค้า</button>
           </div>
         </div>
 
@@ -274,8 +290,8 @@ watch(selectedDiagnosis, (newVal) => {
           class=" bg-zinc-50 shadow-md rounded-md h-24 mt-5 p-4 flex justify-between items-center">
           <img :src="drug.imageUrl" alt="Selected Drug Image" class="w-16 h-16 object-cover bg-white" />
           <div>
-            <h1>{{ drug.name }}</h1>
-            <p>ราคา: {{ drug.price }} ฿</p>
+            <h1 class="text-sm">{{ drug.name }}</h1>
+            <p class="text-sm">ราคา: {{ drug.price }} ฿</p>
           </div>
           <div class="flex gap-2">
             <button class="btn btn-sm" @click="removeDrug(drug)">-</button>
@@ -291,12 +307,13 @@ watch(selectedDiagnosis, (newVal) => {
             <div>
               <h1 class="text-xl">{{ totalPrice }} ฿</h1>
             </div>
+
           </div>
-          <div class=" absolute bottom-5 w-72">
-            <button class="btn btn-accent w-full mx-8 text-white font-light"
-              onclick="my_modal_3.showModal()">ชำระเงิน</button>
+          <button class="btn btn-accent w-full mt-5 text-white font-light"
+            onclick="my_modal_3.showModal()">ชำระเงิน</button>
+          <div class=" absolute bottom-5 w-92">
             <dialog id="my_modal_3" class="modal fixed inset-0 flex items-center justify-center bg-black/50">
-              <div class="modal-box relative bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <div class="modal-box relative bg-white p-6 rounded-lg shadow-lg w-full">
                 <form method="dialog">
                   <button class="absolute right-5 top-5 text-gray-500 hover:text-gray-700">
                     ✕
@@ -309,7 +326,7 @@ watch(selectedDiagnosis, (newVal) => {
                 </div>
 
                 <div class="flex justify-center">
-                  <img src="https://img2.pic.in.th/pic/IMG_1284.jpg" alt="Prompt Pay QR Code" class="w-full rounded-lg">
+                  <img src="https://img2.pic.in.th/pic/IMG_1284.jpg" alt="Prompt Pay QR Code" class=" w-72 rounded-lg">
                 </div>
 
                 <div>

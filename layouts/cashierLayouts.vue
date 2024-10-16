@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import { useAuthStore } from '~/stores/auth.ts';
+
+const authStore = useAuthStore()
 
 const drawerOpen = ref(false);
 const openProfile = ref(false);
@@ -23,6 +26,12 @@ const handleClickOutside = (event) => {
 };
 
 window.addEventListener('click', handleClickOutside);
+
+authStore.initializeAuth()
+
+onMounted(() => {
+
+})
 </script>
 
 
@@ -104,30 +113,34 @@ window.addEventListener('click', handleClickOutside);
             </div>
           </RouterLink>
         </li>
-
-        <li class="mt-10">
-          <RouterLink to="/cashier/setting" v-slot="{ isActive }" class="items-center text-center">
-            <div :class="['flex items-center justify-center', isActive ? 'text-blue-500 font-bold' : 'text-gray-700']">
-              <font-awesome-icon :icon="['fas', 'gear']" class="text-2xl mx-2" />
-            </div>
-          </RouterLink>
+        <li>
+          <div class="mt-10">
+            <RouterLink to="/cashier/list" v-slot="{ isActive }">
+              <div :class="['flex items-center justify-center', isActive ? 'text-blue-500' : 'text-gray-700']">
+                <font-awesome-icon :icon="['fas', 'list']" class="text-2xl mx-2" />
+              </div>
+              <h1></h1>
+            </RouterLink>
+          </div>
         </li>
       </ul>
+
 
       <!-- Profile Avatar at the bottom -->
       <div class="mt-auto mx-5 mb-10">
         <div class="relative">
           <ul v-if="openProfile"
-            class="profile-dropdown bg-base-100 rounded-box z-[1] w-52 p-2 shadow absolute right-0 top-12">
-            <li><a class="justify-between">โปรไฟล์</a></li>
-            <li><a>ตั้งค่า</a></li>
-            <li><a>ออกจากระบบ</a></li>
+            class="profile-dropdown bg-base-100 rounded-box z-[1] p-2 shadow absolute right-0 top-9">
+            <li>
+              <a @click="authStore.logout()" class=" cursor-pointer">
+                <p class="text-center hover:-translate-y-1">ออกจากระบบ</p>
+              </a>
+            </li>
           </ul>
           <div>
             <button class="btn btn-ghost btn-circle avatar avatar-button" @click="toggleProfileDropdown">
-              <div class="w-10 h-10 rounded-full overflow-hidden">
-                <img alt="User Avatar"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+              <div class="w-16 h-12 rounded-full overflow-hidden">
+                <img alt="User Avatar" src="https://img2.pic.in.th/pic/machine_14756003.png" />
               </div>
             </button>
           </div>
@@ -159,8 +172,6 @@ window.addEventListener('click', handleClickOutside);
   height: 100%;
 }
 
-
-
 .drawer-side {
   height: 100vh;
   overflow-y: auto;
@@ -168,9 +179,9 @@ window.addEventListener('click', handleClickOutside);
 
 .profile-dropdown {
   position: absolute;
-  right: -10rem;
-  top: -6rem;
-  width: 200px;
+  right: -8rem;
+  top: -3rem;
+  width: 150px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

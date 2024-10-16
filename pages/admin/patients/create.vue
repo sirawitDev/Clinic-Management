@@ -157,7 +157,7 @@ const createUser = async () => {
   }
   userData.phoneNumber = unformatPhoneNumber(userData.phoneNumber)
   await userStore.addUser(userData)
-  router.push('/admin/users')
+  router.push('/admin/patients')
 }
 
 const provinces = ref([])

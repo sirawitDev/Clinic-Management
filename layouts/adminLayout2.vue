@@ -12,14 +12,18 @@
             <h1 class="font-bold text-2xl mt-2 ml-2 text-white">Dashboard</h1>
           </div>
         </div>
-        
+
         <div class="flex items-center space-x-4">
+          <RouterLink to="/Cashier" class="btn btn-secondary btn-sm">
+            <p class="text-white font-light">ไปหน้าแคชเชียร์</p>
+          </RouterLink>
           <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text text-white">เปิดร้าน - ปิดร้าน</span>
-            <input type="checkbox" class="toggle toggle-accent mx-2" :checked="ToggleOpenClose" @change="toggleStore" />
-          </label>
-        </div>
+            <label class="label cursor-pointer">
+              <span class="label-text text-white">เปิดร้าน - ปิดร้าน</span>
+              <input type="checkbox" class="toggle toggle-accent mx-2" :checked="ToggleOpenClose"
+                @change="toggleStore" />
+            </label>
+          </div>
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar online">
               <div class="w-10 rounded-full">
@@ -207,11 +211,11 @@ const AdminDashboardStore = useAdminDashboardStore();
 const { ToggleOpenClose } = storeToRefs(AdminDashboardStore);
 
 const toggleStore = () => {
-    if (ToggleOpenClose.value) {
-        AdminDashboardStore.closeStore();
-    } else {
-        AdminDashboardStore.openStore();
-    }
+  if (ToggleOpenClose.value) {
+    AdminDashboardStore.closeStore();
+  } else {
+    AdminDashboardStore.openStore();
+  }
 };
 
 

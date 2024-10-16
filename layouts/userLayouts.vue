@@ -33,7 +33,7 @@
         <form class="relative mx-auto w-max" @submit.prevent="handleSearch">
           <input type="search"
             class="peer cursor-pointer relative z-10 h-12 w-12 rounded-full border bg-transparent pl-12 outline-none focus:w-full focus:cursor-text focus:border-orange-300 focus:pl-16 focus:pr-4"
-            v-model="searchText" @keyup="handleSearch" />
+            v-model="searchText" placeholder="ค้นหาสินค้า..." />
           <svg xmlns="http://www.w3.org/2000/svg"
             class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-orange-300 peer-focus:stroke-orange-500"
             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -51,7 +51,14 @@
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li>
-                <RouterLink to="/admin/" class="text-red-500">AdminDashboard</RouterLink>
+                <div v-if="authStore.user?.role === 'admin'">
+                  <RouterLink to="/admin/" class="text-red-500">AdminDashboard</RouterLink>
+                </div>
+              </li>
+              <li>
+                <div v-if="authStore.user?.role === 'cashier'">
+                  <RouterLink to="/cashier/" class="text-red-500">ไปหน้าแคชเชียร์</RouterLink>
+                </div>
               </li>
               <li>
                 <RouterLink to="/user/profile">โปรไฟล์</RouterLink>
@@ -78,8 +85,11 @@
               <div class="divider"></div>
 
               <div class="flex gap-1 w-full mx-auto justify-center">
-                <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">เข้าสู่ระบบ</button>
-                <button @click="toggleForm" class="btn btn-link text-[#FF8128] text-lg">สมัครสมาชิก</button>
+                <button @click="showLoginForm"
+                  class="link link-accent font-light w-52 text-orange-400 text-lg rounded-xl">เข้าสู่ระบบ</button>
+                <div class="divider lg:divider-horizontal"></div>
+                <button @click="showRegisterForm"
+                  class="link link-accent w-52 font-light text-orange-400 text-md rounded-xl">สมัครสมาชิก</button>
               </div>
 
 
@@ -138,16 +148,25 @@
               </svg>
               <span class="text-white">สมัครสมาชิกเสร็จสิ้น</span>
             </div>
+            <div v-if="showSuccessMessageLogin" role="alert"
+              class="alert alert-success absolute bottom-5 right-10 w-60">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="text-white">ล็อคอินสำเร็จ</span>
+            </div>
           </dialog>
 
-          <div v-if="showSuccessMessageLogin" role="alert" class="alert alert-success absolute bottom-5 right-10 w-60">
+          <!-- <div v-if="showSuccessMessageLogin" role="alert" class="alert alert-success absolute bottom-5 right-10 w-60">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none"
               viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="text-white">ล็อคอินสำเร็จ</span>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -231,7 +250,7 @@ const register = async () => {
     emailError.value = 'กรุณาใช้อีเมล @hotmail.com หรือ @gmail.com เท่านั้น';
     return;
   }
-  
+
   if (registerPassword.value !== confirmPassword.value) {
     alert('Passwords do not match.');
     return;
@@ -279,12 +298,17 @@ const login = async () => {
 };
 
 
-const toggleForm = () => {
-  isLoginForm.value = !isLoginForm.value;
+const showLoginForm = () => {
+  isLoginForm.value = true; // แสดงแบบฟอร์มเข้าสู่ระบบ
+};
+
+const showRegisterForm = () => {
+  isLoginForm.value = false; // แสดงแบบฟอร์มสมัครสมาชิก
 };
 
 const handleSearch = () => {
-  router.push({ path: '/user/search', query: { search: searchText.value } });
+  // Redirect to the search page with the search query
+  router.push({ path: '/user/search', query: { q: searchText.value } });
 };
 
 authStore.initializeAuth()
