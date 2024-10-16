@@ -14,6 +14,9 @@
         </div>
 
         <div class="flex items-center space-x-4">
+          <RouterLink to="/user" class="btn btn-secondary btn-sm">
+            <p class="text-white font-light">ไปหน้ายูสเซอร์</p>
+          </RouterLink>
           <RouterLink to="/Cashier" class="btn btn-secondary btn-sm">
             <p class="text-white font-light">ไปหน้าแคชเชียร์</p>
           </RouterLink>

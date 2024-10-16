@@ -1,27 +1,33 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useAdminDashboardStore } from '~/stores/admin/dashboard';
+import { useAuthStore } from '~/stores/auth';
 
-const AdminDashboardStore = useAdminDashboardStore()
-const statusStore = ref('')
+const AdminDashboardStore = useAdminDashboardStore();
+const authStore = useAuthStore();
+
+const statusStore = ref('');
 
 onMounted(() => {
-    if (AdminDashboardStore.ToggleOpenClose == true) {
-        statusStore.value = 'เปิดร้าน'
+    if (AdminDashboardStore.ToggleOpenClose) {
+        statusStore.value = 'เปิดร้าน';
     } else {
-        statusStore.value = 'ปิดร้าน'
+        statusStore.value = 'ปิดร้าน';
     }
-})
 
+    authStore.initializeAuth();
+
+    console.log('user : ', authStore.user)
+});
 </script>
 
 <template>
-    <div class="hero h-screen rounded-lg bg-opacity-90"
+    <div class="hero sm:h-screen h-[500px] rounded-lg bg-opacity-90 mx-1"
         style="background-image: url(https://img2.pic.in.th/pic/file-hlrGqoYKwViJigphm4CFBz1j.png);">
-        <div class="hero-overlay bg-opacity-50 rounded-lg bg-orange-100"></div> <!-- Increased opacity here -->
-        <div class="hero-content text-center text-neutral-content ">
-            <div
-                class="flex flex-col bg-[#FF8128] bg-opacity-70 rounded-lg h-[420px] w-11/12 md:w-[500px] justify-between items-center mx-auto ">
-                <div class="bg-orange-300 shadow-md bg-opacity-80 rounded-t-lg rounded-b-lg"> <!-- Changed this -->
+        <div class="hero-overlay bg-opacity-50 rounded-lg bg-orange-100"></div>
+        <div class="hero-content text-center text-neutral-content">
+            <div class="flex flex-col bg-[#FF8128] bg-opacity-70 rounded-lg sm:h-[420px] h-[350px] w-11/12 justify-between items-center mx-auto">
+                <div class="bg-orange-300 shadow-md bg-opacity-80 rounded-t-lg rounded-b-lg">
                     <div class="mt-2 mb-5 text-3xl md:text-5xl font-bold text-white font-kanit">
                         <p class="mt-5 text-stroke">แอร์พอร์ต เมดิคอล คลินิก</p>
                     </div>
@@ -34,9 +40,20 @@ onMounted(() => {
                 <div class="flex flex-col">
                     <div>
                         <RouterLink to="/user/reservation"
+                            class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 sm:w-48 w-20 hover:bg-slate-50 hover:bg-opacity-50"
+                            role="button"
+                            v-if="authStore.user.email.length > 1"
+                            >
+                            <span class="relative z-10 text-white font-light sm:text-lg text-sm">จองคิวออนไลน์</span>
+                        </RouterLink>
+
+                        <RouterLink to=""
                             class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 w-48 hover:bg-slate-50 hover:bg-opacity-50"
-                            role="button">
-                            <span class="relative z-10 text-white font-light text-lg">จองคิวออนไลน์</span>
+                            role="button"
+                            v-else-if="authStore.user.email.length < 1"
+                            onclick="my_modal_3.showModal()"
+                            >
+                            <span class="relative z-10 text-white font-light text-lg">เข้าสู่ระบบ</span>
                         </RouterLink>
                     </div>
                 </div>
@@ -51,7 +68,6 @@ onMounted(() => {
         </div>
     </div>
 </template>
-
 
 <style scoped>
 .overflow-auto {

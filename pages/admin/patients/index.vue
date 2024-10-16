@@ -229,6 +229,9 @@ definePageMeta({
               <div class="mt-5">
                 <h1>รหัสไปรษณีย์ : {{ selectedUser.postalCode }}</h1>
               </div>
+              <div class="mt-5">
+                <h1>เลขบัตรประชาชน : {{ selectedUser.cdnumber }}</h1>
+              </div>
             </div>
           </div>
 
@@ -249,4 +252,5 @@ definePageMeta({
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
+
 </style>

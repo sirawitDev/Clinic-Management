@@ -10,7 +10,7 @@
       <div class="grid grid-cols-3 gap-4 mt-10">
         <div v-for="(promotion , index) in promotions" :key="promotion.id" class="card bg-base-100 w-96 shadow-xl">
           <figure class="w-full h-48 overflow-hidden rounded-lg">
-              <img class=" w-[200px] h-[200px] object-cover transition-transform duration-500 hover:scale-105" :src="promotion.imageUrl" :alt="promotion.name" />
+              <img class=" w-[200px] h-[200px] object-cover transition-transform duration-500 hover:scale-105 p-2" :src="promotion.imageUrl" :alt="promotion.name" />
           </figure>
           <div class="card-body">
             <h2 class="card-title">
@@ -18,17 +18,7 @@
               <div class="badge badge-secondary font-light text-white">NEW</div>
             </h2>
             <p>{{ promotion.about }}</p>
-            <div class="flex justify-end w-full">
-              <div>
-                <p class="text-sm text-gray-500">คอร์สในโปรโมชั่น</p>
-              </div>
-            </div>
-            <div class="card-actions justify-end mt-2">
-              <div class="badge badge-accent badge-outline">เติมวิตามินผิว</div>
-              <div class="badge badge-accent badge-outline">โบท็อกซ์</div>
-              <div class="badge badge-accent badge-outline">ฟิลเลอร์</div>
-              <div class="badge badge-accent badge-outline">มาเด้คอลลาเจน</div>
-            </div>
+            
           </div>
         </div>
       </div>

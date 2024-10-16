@@ -47,6 +47,7 @@ onMounted(() => {
   /* Ensure image covers the entire container */
   background-position: center;
   /* Center the background image */
+  margin-right: ;
 }
 
 .button-name {

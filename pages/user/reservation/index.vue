@@ -2,8 +2,10 @@
     <UserLayout>
         <div
             class="flex flex-col max-w-5xl mx-auto border border-base-200 shadow-xl justify-center items-center rounded-xl bg-white">
-            <div class="flex items-center justify-between bg-[#FF8128] rounded-t-lg h-10 px-4 w-full">
-                <h2 class="text-xl text-white font-bold mx-auto">จองคิว</h2>
+            <div class="flex items-center justify-between bg-opacity-80 bg-[#FF8128] rounded-t-lg h-14 px-4 w-full">
+                <RouterLink to="/user" class="btn btn-sm btn-primary text-white  font-light">กลับสู่หน้าหลัก
+                </RouterLink>
+                <h2 class="font-kanit text-stroke text-4xl text-white font-bold mx-auto">การจองคิว</h2>
             </div>
             <div class="w-full my-5 flex items-center justify-center">
                 <ul class="steps">
@@ -30,10 +32,14 @@
                         <div class="p-8">
                             <div v-for="form in formData" :key="form.field" class="form-control w-full">
                                 <div class="label">
-                                    <span class="label-text">{{ form.name }}</span>
+                                    <span class="label-text text-lg">{{ form.name }}</span>
                                 </div>
-                                <input type="text" placeholder="" class="input input-bordered w-full"
-                                    v-model="useFormData[form.field]" />
+                                <input v-if="form.field !== 'cdnumber'" type="text" placeholder=""
+                                    class="input input-bordered w-full" v-model="useFormData[form.field]" />
+                                <input v-else type="text" placeholder="" class="input input-bordered w-full"
+                                    v-model="useFormData.cdnumber"
+                                    @input="useFormData.cdnumber = $event.target.value.replace(/[^0-9]/g, '')"
+                                    pattern="[0-9]*" inputmode="numeric" maxlength="13"
                             </div>
                         </div>
                     </div>
@@ -143,7 +149,6 @@
                 </div>
 
             </div>
-
             <!-- Navigation buttons -->
             <!-- Navigation buttons -->
             <div class="flex justify-end items-end w-full p-4 space-x-2">
@@ -156,6 +161,7 @@
                 <button v-else @click="nextStepCurrentstep"
                     class="btn btn-accent rounded w-1/4 md:w-1/6 text-white">ถัดไป</button>
             </div>
+
 
         </div>
 
@@ -297,3 +303,13 @@ onBeforeUnmount(() => {
 });
 
 </script>
+
+<style scope>
+.text-stroke {
+    text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+
+.font-kanit {
+    font-family: 'Kanit', sans-serif;
+}
+</style>
