@@ -82,8 +82,8 @@
         </label>
 
         <div class="flex justify-end gap-5">
-          <RouterLink to="/admin/physicians" class="btn btn-accent mt-5 font-light text-white w-60">ย้อนกลับ</RouterLink>
-          <button type="submit" class="btn btn-accent mt-5 text-white font-light w-60">ยืนยันข้อมูล</button>
+          <RouterLink to="/admin/physicians" class="btn btn-accent mt-5 font-light text-white sm:w-60 w-36">ย้อนกลับ</RouterLink>
+          <button type="submit" class="btn btn-accent mt-5 text-white font-light sm:w-60 w-36">ยืนยันข้อมูล</button>
         </div>
       </form>
     </div>

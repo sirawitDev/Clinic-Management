@@ -104,8 +104,8 @@ onMounted(async () => {
 
 <template>
   <adminLayouts>
-    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-50">
-      <h2 class="text-6xl font-bold text-[#fefeff] text-stroke tracking-wide">DASHBOARD</h2>
+    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-70">
+      <h2 class="sm:text-6xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">DASHBOARD</h2>
     </div>
     <div class="flex justify-center mt-5 p-5 bg-white shadow-md rounded-md">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
@@ -121,10 +121,10 @@ onMounted(async () => {
           </div>
         </div>
         <div class="card bg-[#00AC97] w-full h-44 shadow-xl transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">คนใช้บริการวันนี้</h2>
+          <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">นัดหมายวันนี้</h2>
           <div class="flex mt-8">
             <div class="flex-1 ml-5 mt-8">
-              <p class="text-white text-4xl mt-2">{{ totalPatients }} คน</p>
+              <p class="text-white text-4xl mt-2">{{ todayAppointments }} คน</p>
             </div>
             <div class="flex-1 flex justify-end mr-5">
               <img src="https://img2.pic.in.th/pic/qc_8790314-1.png" alt="logo_user">
@@ -133,10 +133,10 @@ onMounted(async () => {
         </div>
         <!-- This section displays today's appointments count -->
         <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">นัดหมายวันนี้</h2>
+          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">รวมคนใช้ทั้งหมด</h2>
           <div class="flex mt-8">
             <div class="flex-1 ml-5 mt-8">
-              <p class="text-white text-4xl mt-2">{{ todayAppointments }} คน</p>
+              <p class="text-white text-4xl mt-2">{{ totalPatients }} คน</p>
               <!-- Correctly bound to todayAppointments -->
             </div>
             <div class="flex-1 flex justify-end mr-5">
@@ -153,26 +153,30 @@ onMounted(async () => {
           นัดหมายวันนี้
         </h1>
       </div>
-      <div class="grid grid-cols-4 gap-3 p-4">
+      <div class="grid sm:grid-cols-4 grid-cols-2 gap-3 p-4">
         <div v-for="(reservation, index) in reservations" :key="reservation.id" class="bg-base-100 rounded-xl mb-5">
           <div class="flex justify-center mt-4">
             <img src="https://img2.pic.in.th/pic/volunteer_11077481.png" alt="logo-user" class="w-16">
           </div>
-          <div class="ml-4 mt-3">
-            <h1>ยูสเซอร์ : {{ reservation.email }}</h1>
+          <div class="mt-2">
+            <h1 class="text-center">ข้อมูลนัดหมาย</h1>
+          </div>
+          <div class="ml-4 mt-3 sm:text-sm text-[10px]">
+            
+            <h1>{{ reservation.email }}</h1>
             <h1>ชื่อ : {{ reservation.firstname }} {{ reservation.lastname }}</h1>
             <h1>วันนัด : {{ formatDate(reservation.date) }}</h1>
             <h1>เวลานัด : {{ reservation.time }}</h1>
             <h1>บัตรประชาชน : {{ reservation.cdnumber || 'N/A' }}</h1>
 
             <div class="flex gap-2 justify-center mb-2 mt-2">
-              <button @click="deleteReservation(reservation.id)" class="btn w-28 shadow-md bg-red-500 text-white">
-                <Trash /> ลบ
+              <button @click="deleteReservation(reservation.id)" class="btn sm:w-28 w-16 shadow-md bg-red-500 text-white">
+                <Trash /> <p class="font-light hidden sm:block">ลบ</p>
               </button>
-              <button class="btn btn-accent w-28">
+              <button class="btn btn-accent sm:w-28 w-16">
                 <div class="flex">
                   <Edit />
-                  <h1 class="font-light text-white mt-1">เพิ่มเติม</h1>
+                  <h1 class="font-light text-white mt-1 hidden sm:block">เพิ่มเติม</h1>
                 </div>
               </button>
             </div>
@@ -188,7 +192,7 @@ onMounted(async () => {
           รายการล่าสุด
         </h1>
       </div>
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto mt-3">
         <table class="table">
           <!-- head -->
           <thead>
@@ -255,7 +259,7 @@ onMounted(async () => {
     </div>
     </div>
 
-    <div class="flex gap-3">
+    <!-- <div class="flex gap-3">
       <div class="flex-1">
         <div class=" p-4 bg-white mt-5 shadow-md rounded-md">
           <div class="flex justify-center">
@@ -269,7 +273,7 @@ onMounted(async () => {
       <div class="flex-1">
 
       </div>
-    </div>
+    </div> -->
   </adminLayouts>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
   <adminLayouts>
     <div class="container mx-auto p-4 bg-white">
-      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลยา</h2>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลยา</h2>
       </div>
 
       <div class="mb-5">
@@ -10,7 +10,7 @@
           class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto w-full">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
@@ -38,7 +38,7 @@
               <th>
                 <p class="text-center">ปริมาณ</p>
               </th>
-              <th>
+              <th class=" hidden sm:block">
                 <p class="text-center">ข้อมูลเพิ่มเติม</p>
               </th>
               <th></th>
@@ -48,12 +48,8 @@
             <tr v-for="(drug, index) in drugs" :key="drug.id">
               <th>{{ index + 1 }}</th>
               <td>
-                <img
-                  :src="drug.imageUrl"
-                  alt="drug image"
-                  class="w-24 h-24 object-cover cursor-pointer"
-                  @click="showImageModal(drug.imageUrl)"
-                />
+                <img :src="drug.imageUrl" alt="drug image" class="w-24 h-24 object-cover cursor-pointer"
+                  @click="showImageModal(drug.imageUrl)" />
               </td>
               <td>{{ drug.name }}</td>
               <td>{{ drug.type }}</td>
@@ -64,7 +60,7 @@
                   <p class="">{{ drug.unit }}</p>
                 </div>
               </td>
-              <td>{{ drug.about }}</td>
+              <td class=" hidden sm:block">{{ drug.about }}</td>
               <td>
                 <div class="flex gap-2 justify-center">
                   <button class="btn" @click="deleteDrug(drug.id)">
@@ -101,6 +97,7 @@ import Edit from '~/components/admin/Edit.vue'
 const drugs = ref([]);
 const isLoading = ref(true);
 const router = useRouter();
+
 
 const isImageModalOpen = ref(false);
 const selectedImage = ref('');
@@ -150,7 +147,9 @@ const closeImageModal = () => {
   isImageModalOpen.value = false;
 };
 
-onMounted(fetchDrugs);
+onMounted(async () => {
+  await fetchDrugs()
+})
 
 definePageMeta({
   middleware: 'auth',
@@ -170,10 +169,6 @@ definePageMeta({
   text-align: left;
 }
 
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
 
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;

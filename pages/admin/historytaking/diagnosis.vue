@@ -1,9 +1,9 @@
 <template>
   <AdminLayout>
     <!-- Header -->
-      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">วินิฉัย</h2>
-      </div>
+    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">วินิฉัย</h2>
+    </div>
     <div class="container mx-auto max-w-5xl bg-white p-4 mt-5">
 
       <!-- Diagnosis Select -->
@@ -25,7 +25,8 @@
           </option>
         </select>
         <div v-if="isOtherDiagnosis" class="mt-2">
-          <input v-model="customDiagnosis" type="text" placeholder="ระบุวินิจฉัยอื่นๆ" class="input input-accent input-bordered w-full" />
+          <input v-model="customDiagnosis" type="text" placeholder="ระบุวินิจฉัยอื่นๆ"
+            class="input input-accent input-bordered w-full" />
         </div>
       </label>
 
@@ -41,30 +42,42 @@
             </div>
           </div>
         </div>
-        <select v-model="treatmentPlan" @change="checkOtherTreatmentPlan" class="select select-accent select-bordered w-full">
+        <select v-model="treatmentPlan" @change="checkOtherTreatmentPlan"
+          class="select select-accent select-bordered w-full">
           <option disabled value="" selected>-- เลือกแผนการรักษา --</option>
           <option v-for="plan in treatmentPlanOptions" :key="plan" :value="plan">
             {{ plan }}
           </option>
         </select>
         <div v-if="isOtherTreatmentPlan" class="mt-2">
-          <input v-model="customTreatmentPlan" type="text" placeholder="ระบุแผนการรักษาอื่นๆ" class="input input-accent input-bordered w-full" />
+          <input v-model="customTreatmentPlan" type="text" placeholder="ระบุแผนการรักษาอื่นๆ"
+            class="input input-accent input-bordered w-full" />
         </div>
       </label>
 
-      <!-- Notes -->
-      <label class="form-control w-full">
+      <!-- Notes (ระยะการทานยา) -->
+      <label class="form-control w-full max-w-xs mt-3">
         <div class="label">
           <div class="flex">
             <div class="mt-2">
-              <span class="label-text text-lg">อื่นๆ (notes)</span>
+              <span class="label-text text-lg">ระยะการทานยา</span>
             </div>
             <div class="ml-2">
               <img src="https://img2.pic.in.th/pic/arm_2855503.png" alt="">
             </div>
           </div>
         </div>
-        <input v-model="notes" type="text" placeholder="" class="input input-accent input-bordered w-full" />
+        <select class="select select-bordered" v-model="notes" @change="checkOtherPeriod">
+          <option disabled value="" selected>-- ระยะการทานยา --</option>
+          <option v-for="period in periods" :key="period.id" :value="period.title">
+            {{ period.title }}
+          </option>
+          <option value="อื่นๆ">อื่นๆ</option>
+        </select>
+        <div v-if="isOtherPeriod" class="mt-2">
+          <input v-model="customPeriod" type="text" placeholder="ระบุระยะการทานยาอื่นๆ"
+            class="input input-accent input-bordered w-full" />
+        </div>
       </label>
 
       <!-- Physician Select -->
@@ -89,13 +102,12 @@
 
       <!-- Submit Button -->
       <div>
-        <button @click="submitDiagnosis" class="btn btn-accent mt-5 w-full font-light text-white text-lg">ส่งวินิจฉัย</button>
+        <button @click="submitDiagnosis"
+          class="btn btn-accent mt-5 w-full font-light text-white text-lg">ส่งวินิจฉัย</button>
       </div>
     </div>
   </AdminLayout>
 </template>
-
-
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
@@ -113,7 +125,7 @@ const diagnosisOptions = ref([
   'ปวดศีรษะ',
   'โรคความดันโลหิตสูง',
   'เบาหวาน',
-  'อื่นๆ' // Add 'Other' option
+  'อื่นๆ'
 ])
 
 // Treatment plan options
@@ -122,21 +134,38 @@ const treatmentPlanOptions = ref([
   'ให้ยาแก้ปวด',
   'ปรับเปลี่ยนการดำเนินชีวิต',
   'ส่งต่อผู้เชี่ยวชาญ',
-  'อื่นๆ' // Add 'Other' option
+  'อื่นๆ'
 ])
 
 // Reactive state
 const diagnosis = ref('')
 const treatmentPlan = ref('')
 const notes = ref('')
+const customPeriod = ref('')
 const physicianId = ref<number | null>(null)
 const physicians = ref([])
 
 // New reactive variables for custom inputs
 const isOtherDiagnosis = ref(false)
 const isOtherTreatmentPlan = ref(false)
+const isOtherPeriod = ref(false)
 const customDiagnosis = ref('')
 const customTreatmentPlan = ref('')
+const periods = ref([])
+
+const fetchPeriods = async () => {
+  try {
+    const response = await fetch('/api/periodOfdrug', {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    periods.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching periodOfdrug:', error);
+  }
+};
 
 // Fetch physicians list
 const fetchPhysicians = async () => {
@@ -171,12 +200,18 @@ const checkOtherTreatmentPlan = () => {
   isOtherTreatmentPlan.value = treatmentPlan.value === 'อื่นๆ';
 }
 
+// Function to check if "อื่นๆ" is selected for period
+const checkOtherPeriod = () => {
+  isOtherPeriod.value = notes.value === 'อื่นๆ';
+}
+
 // Handle diagnosis submission
 const submitDiagnosis = async () => {
   const finalDiagnosis = isOtherDiagnosis.value ? customDiagnosis.value : diagnosis.value;
   const finalTreatmentPlan = isOtherTreatmentPlan.value ? customTreatmentPlan.value : treatmentPlan.value;
+  const finalPeriod = isOtherPeriod.value ? customPeriod.value : notes.value;
 
-  if (!finalDiagnosis || !finalTreatmentPlan || physicianId.value === null) {
+  if (!finalDiagnosis || !finalTreatmentPlan || !finalPeriod || physicianId.value === null) {
     alert('กรุณากรอกข้อมูลให้ครบถ้วน');
     return;
   }
@@ -192,8 +227,9 @@ const submitDiagnosis = async () => {
         patientHistoryId,
         diagnosis: finalDiagnosis,
         treatment_plan: finalTreatmentPlan,
-        notes: notes.value,
+        notes: finalPeriod,
         physician_id: physicianId.value,
+        paymentStatus: 'pening',
       }),
     });
 
@@ -210,21 +246,20 @@ const submitDiagnosis = async () => {
     }
 
     alert('บันทึกวินิจฉัยสำเร็จ');
+
+    if (!updateResponse.ok) {
+      throw new Error('Failed to update patient history');
+    }
+
     router.push('/admin/checksuccess');
   } catch (error) {
-    console.error('Failed to submit diagnosis:', error);
-    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+    console.error('Error submitting diagnosis:', error);
+    alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
   }
-};
-
-definePageMeta({
-  middleware: 'auth',
-});
-</script>
-
-<style scoped>
-.text-stroke {
-  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
-</style>
 
+onMounted(async () => {
+await fetchPeriods()
+await fetchPhysicians()
+})
+</script>

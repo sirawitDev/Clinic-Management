@@ -1,15 +1,15 @@
 <template>
   <AdminLayout>
     <div class="mx-auto h-full p-4">
-      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">รอตรวจ</h2>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">รอตรวจ</h2>
       </div>
 
-      <div class="grid grid-cols-2 mt-5 rounded-md font-sarabun bg-base-200">
+      <div class="grid sm:grid-cols-2 grid-cols-1 mt-5 rounded-md font-sarabun bg-base-200">
         <div v-for="(item, index) in patientHistories" :key="item.id"
-          class="shadow-lg border-black rounded-md p-4 flex flex-col h-64 font-sarabun bg-white mx-5 my-5">
+          class="shadow-lg border-black rounded-md p-4 flex flex-col sm:h-64 h-48 font-sarabun bg-white mx-5 my-5">
           <div class="flex">
-            <div class="flex items-start ">
+            <div class="flex items-start hidden sm:block ">
               <div class="avatar">
                 <div class="w-32 h-32 rounded bg-white p-4">
                   <img src="https://img2.pic.in.th/pic/users_391194.png" />
@@ -18,15 +18,15 @@
             </div>
             <div class="pt-2 flex flex-col justify-between w-full">
               <div class="flex w-full">
-                <div class="text-lg w-full ml-5">
+                <div class="text-lg w-full ml-5 sm:text-base text-sm">
                   <p><strong>ชื่อ:</strong> {{ item.patient ? item.patient.firstname : 'ไม่ระบุ' }}</p>
                   <p class="pt-2"><strong>อาการ:</strong> {{ item.chiefComplaint }}</p>
                   <p class="pt-2"><strong>อาการสำคัญ:</strong> <span class="whitespace-normal">{{ item.symptoms
                       }}</span></p>
                 </div>
-                <div class="text-lg w-full flex flex-col">
+                <div class="text-sm w-full flex flex-col sm:text-base mx-3">
                   <p><strong>นามสกุล:</strong> {{ item.patient ? item.patient.lastname : 'ไม่ระบุ' }}</p>
-                  <p class="pt-2"><strong>สถานะ:</strong> {{ item.status }}</p>
+                  <p class="pt-2" v-if="item.status === 'close'"><strong>สถานะ:</strong>รอตรวจ</p>
                 </div>
               </div>
               <div class="flex gap-1 my-5">

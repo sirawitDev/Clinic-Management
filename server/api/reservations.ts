@@ -5,14 +5,12 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
     const method = event.req.method;
-    
+
     if (method === 'GET') {
-        // Handle GET request (fetch reservations)
         const query = getQuery(event);
-        
+
         try {
             if (query.id) {
-                // Fetch a specific reservation by ID
                 const reservation = await prisma.reservation.findUnique({
                     where: { id: Number(query.id) },
                 });
@@ -44,7 +42,7 @@ export default defineEventHandler(async (event) => {
             };
         }
     }
-    
+
     if (method === 'POST') {
         // Handle POST request (create a new reservation)
         const body = await readBody(event);
@@ -76,18 +74,18 @@ export default defineEventHandler(async (event) => {
             };
         }
     }
-    
+
     if (method === 'DELETE') {
         // Handle DELETE request (delete a reservation)
         const query = getQuery(event);
 
         if (!query.id) {
-          return {
-            success: false,
-            message: 'No reservation id provided',
-          };
+            return {
+                success: false,
+                message: 'No reservation id provided',
+            };
         }
-        
+
         try {
             const deletedReservation = await prisma.reservation.delete({
                 where: { id: Number(query.id) },

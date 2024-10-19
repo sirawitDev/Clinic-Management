@@ -166,15 +166,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
 
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
 </style>

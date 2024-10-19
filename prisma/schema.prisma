@@ -34,6 +34,7 @@ model patients {
 
   patientHistories PatientHistory[]
   diagnoses        Diagnosis[]
+  courses          PatientCourse[] @relation("PatientToCourse")
 }
 
 // ซักประวัติ // ตรวจรักษา
@@ -47,7 +48,7 @@ model PatientHistory {
   bloodPressure  Float
   pulse          Float
   respiration    Float
-  chiefComplaint String
+  chiefComplaint String?
   symptoms       String
   physicalExam   String
   status         String   @default("close")
@@ -83,6 +84,7 @@ model Diagnosis {
   treatment_plan String?
   notes          String?
   physician_id   Int
+  paymentStatus   String?
 
   patient   patients  @relation(fields: [patient_id], references: [id])
   physician Physician @relation(fields: [physician_id], references: [id])
@@ -204,4 +206,38 @@ model Course {
   createdAt   DateTime  @default(now()) 
   updatedAt   DateTime  @updatedAt
   status      String    @default("active")
+  
+  patients    PatientCourse[] @relation("CourseToPatient")
+}
+
+model periodOfdrug {
+  id      Int     @id @default(autoincrement())
+  title   String
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt
+}
+
+model infoDiagnosis {
+  id      Int     @id @default(autoincrement())
+  title   String
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt
+}
+
+model infotreatment {
+  id      Int     @id @default(autoincrement())
+  title   String
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt
+}
+
+model PatientCourse {
+  patientId Int
+  courseId  Int
+  addedAt   DateTime @default(now())
+
+  patient patients @relation(fields: [patientId], references: [id], name: "PatientToCourse")
+  course  Course   @relation(fields: [courseId], references: [id], name: "CourseToPatient")
+
+  @@id([patientId, courseId])
 }

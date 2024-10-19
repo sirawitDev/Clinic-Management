@@ -2,10 +2,11 @@
   <adminLayouts>
     <div class="bg-white w-full h-full pl-5 pt-3 shadow-md rounded-md mt-5">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลคอร์ส</h2>
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลคอร์ส</h2>
       </div>
       <div class="mb-5">
-        <nuxt-link to="/admin/course/create" class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
+        <nuxt-link to="/admin/course/create"
+          class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
       </div>
 
       <div class="overflow-x-auto">
@@ -18,12 +19,24 @@
         <table v-else class="table">
           <thead>
             <tr>
-              <th><p class="text-center">ID</p></th>
-              <th><p class="text-center">ชื่อคอร์ส</p></th>
-              <th><p class="text-center">รูปภาพ</p></th>
-              <th><p class="text-center">รายละเอียด</p></th>
-              <th><p class="text-center">ราคา</p></th>
-              <th><p class="text-center">สถานะ</p></th>
+              <th>
+                <p class="text-center">ID</p>
+              </th>
+              <th>
+                <p class="text-center">ชื่อคอร์ส</p>
+              </th>
+              <th>
+                <p class="text-center">รูปภาพ</p>
+              </th>
+              <th>
+                <p class="text-center">รายละเอียด</p>
+              </th>
+              <th>
+                <p class="text-center">ราคา</p>
+              </th>
+              <th>
+                <p class="text-center">สถานะ</p>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -36,12 +49,8 @@
                 <p class="text-center">{{ course.title }}</p>
               </td>
               <td>
-                <img v-if="course.imageUrl"
-                  :src="course.imageUrl" 
-                  alt="Promotion Image" 
-                  class="w-16 h-auto cursor-pointer" 
-                  @click="openModal(promotion.imageUrl)" 
-                />
+                <img v-if="course.imageUrl" :src="course.imageUrl" alt="Promotion Image"
+                  class="w-16 h-auto cursor-pointer" @click="openModal(promotion.imageUrl)" />
                 <div v-else class="flex justify-center">
                   <p class=" text-gray-600">ไม่มีรูปภาพ</p>
                 </div>
@@ -50,16 +59,21 @@
                 <p v-if="course.description" class="text-center">{{ course.description }}</p>
                 <p v-else class=" text-center">ยังไม่มีรายละเอียด</p>
               </td>
-              <td><p class="text-center">{{ course.price }} บาท</p></td>
-              <td><p class="text-center">{{ course.status }}</p></td>
+              <td>
+                <p class="text-center">{{ course.price }} บาท</p>
+              </td>
+              <td>
+                <p class="text-center">{{ course.status }}</p>
+              </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deleteCourse(course.id)">
+                  <button class="btn sm:btn-md btn-sm" @click="deleteCourse(course.id)">
                     <Trash />
                   </button>
-                  <button class="btn btn-accent" @click="editCourse(course.id)">
-                    <Edit />
-                  </button>
+                  <!-- You can open the modal using ID.showModal() method -->
+                  <RouterLink :to="`/admin/course/detail/${course.id}`" class="btn btn-accent">
+                    <p class="font-light text-white">เพิ่มเติม</p>
+                  </RouterLink>
                 </div>
               </td>
             </tr>
@@ -68,13 +82,10 @@
       </div>
 
       <!-- Modal for Image Preview -->
-      <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" @click="closeModal">
-        <img 
-          :src="modalImage" 
-          alt="Expanded Course Image" 
-          class="max-w-full max-h-full cursor-auto" 
-          @click.stop="closeModal"
-        />
+      <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        @click="closeModal">
+        <img :src="modalImage" alt="Expanded Course Image" class="max-w-full max-h-full cursor-auto"
+          @click.stop="closeModal" />
       </div>
     </div>
   </adminLayouts>
@@ -130,10 +141,6 @@ const deleteCourse = async (courseId) => {
   }
 };
 
-const editCourse = (courseId) => {
-  router.push(`/admin/course/edit/${courseId}`);
-};
-
 const openModal = (imageUrl) => {
   modalImage.value = imageUrl;
   isModalOpen.value = true;
@@ -144,7 +151,10 @@ const closeModal = () => {
   modalImage.value = '';
 };
 
-onMounted(fetchCourses);
+onMounted(async () => {
+  await fetchCourses()
+  console.log('cou : ' , courses.value)
+})
 
 definePageMeta({
   middleware: 'auth',

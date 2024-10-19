@@ -26,13 +26,12 @@ onMounted(() => {
       <div class="flex">
         <div class="flex-1">
           <div class="mx-2">
-            <h2 class="text-7xl font-bold text-[#fefeff] text-stroke tracking-wide">Promotion</h2>
+            <h2 class="sm:text-7xl text-6xl font-bold text-[#fefeff] text-stroke tracking-wide">Promotion</h2>
           </div>
         </div>
 
         <!-- Countdown -->
-        
-
+      
       </div>
       <ImageSlider></ImageSlider>
 

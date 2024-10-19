@@ -13,7 +13,6 @@ export const usePatientHistoryStore = defineStore('patientHistory', {
       bloodPressure: number;
       pulse: number;
       respiration: number;
-      chiefComplaint: string;
       symptoms: string;
       physicalExam: string;
     }) {

@@ -280,8 +280,8 @@ definePageMeta({
     <div class="flex items-center">
       <div class="w-full">
         <div
-          class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full bg-opacity-50">
-          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลผู้ป่วย</h2>
+          class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full bg-opacity-70">
+          <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลผู้ป่วย</h2>
         </div>
 
         <div class=" bg-white rounded-md p-4 mt-5">
@@ -298,7 +298,7 @@ definePageMeta({
               </select>
             </label>
 
-            <div class="grid grid-cols-3 gap-4 mt-5">
+            <div class="grid sm:grid-cols-3 grid-cols-2 gap-4 mt-5">
               <div v-for="(field, index) in fields" :key="index" class="form-control w-full mb-4">
                 <span class="label-text text-base">{{ field.label }}</span>
 
@@ -365,7 +365,7 @@ definePageMeta({
 
             <div class="mt-5">
               <h1 class="text-2xl font-bold mb-4">ที่อยู่</h1>
-              <div class="grid grid-cols-3 gap-4 my-3">
+              <div class="grid sm:grid-cols-3 grid-cols-2 gap-4 my-3">
                 <div v-for="(field, index) in addressFields" :key="index" class="form-control w-full mb-4">
                   <span class="label-text text-base">{{ field.label }}</span>
                   <template v-if="field.type === 'select'">
@@ -386,12 +386,12 @@ definePageMeta({
 
             <div class="divider"></div>
 
-            <div class="flex justify-end gap-5">
-              <RouterLink to="/admin/patients" class="btn btn-accent text-base w-60 font-light text-white">
+            <div class="flex sm:justify-end justify-center gap-5">
+              <RouterLink to="/admin/patients" class="btn btn-accent text-base sm:w-60 w-36 font-light text-white">
                 ย้อนกลับ
               </RouterLink>
               <button type="submit"
-                class="btn btn-primary font-bold text-base w-60 font-light text-white">เพิ่มข้อมูลผู้ป่วย</button>
+                class="btn btn-primary font-bold text-base sm:w-60 w-36 font-light text-white">เพิ่มข้อมูลผู้ป่วย</button>
 
             </div>
           </form>

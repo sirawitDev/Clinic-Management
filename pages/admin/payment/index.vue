@@ -54,7 +54,7 @@ definePageMeta({
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">การชำระเงิน</h2>
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">การชำระเงิน</h2>
       </div>
 
       <div class="overflow-x-auto mt-5">

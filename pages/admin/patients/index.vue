@@ -86,7 +86,7 @@ const exportToExcel = () => {
   writeFile(workbook, 'UserData.xlsx')
 }
 
-onMounted(async() => {
+onMounted(async () => {
   await userStore.fetchUsers()
 })
 
@@ -99,48 +99,51 @@ definePageMeta({
 
 <template>
   <adminLayouts>
-    <div class="mx-auto p-4 bg-white h-full">
-      <div class="mb-4">
-        <div
-          class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลผู้ป่วย</h2>
+    <div class="mx-auto p-4 bg-zinc-50 h-full">
+      <div class="bg-white p-3">
+        <div class="mb-4">
+          <div
+            class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+            <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลผู้ป่วย</h2>
+          </div>
         </div>
-      </div>
 
-      <div class=" mt-5">
-        <nuxt-link to="/admin/patients/create"
-          class="btn btn-accent w-full font-light text-white">เพิ่มข้อมูลคนไข้</nuxt-link>
-      </div>
+        <div class=" mt-5">
+          <nuxt-link to="/admin/patients/create"
+            class="btn btn-accent w-full font-light text-white sm:text-base text-sm">เพิ่มข้อมูลคนไข้</nuxt-link>
+        </div>
 
-      <div class="overflow-x-auto mt-5">
-        <table class="table w-full text-left border-collapse">
-          <thead>
-            <tr>
-              <th v-for="column in columns" :key="column.field" class="border p-2 text-center">
-                <p class="text-sm">{{ column.title }}</p>
-              </th>
-              <th class="border p-2 text-center">{{ actionsColumn.title }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in userStore.users" :key="user.id">
-              <td v-for="column in columns" :key="column.field" class="border p-2">
-                <p class="text-sm text-center">{{ user[column.field] }}</p>
-              </td>
-              <td class="border p-2">
-                <div class="flex justify-center gap-3">
-                  <nuxt-link :to="`/admin/patients/edit/${user.id}`" class="btn btn-primary">
-                    <p class="font-light text-white">แก้ไข</p>
-                  </nuxt-link>
-                  <button @click="deleteUser(user.id)" class="btn btn-secondary">
-                    <p class="font-light text-white">ลบ</p>
-                  </button>
-                  <button @click="openModal(user)" class="btn btn-accent text-white font-light">ดูเพิ่มเติม</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto mt-5 bg-white">
+          <table class="table w-full text-left border-collapse">
+            <thead>
+              <tr>
+                <th v-for="column in columns" :key="column.field" class="border p-2 text-center">
+                  <p class="sm:text-sm text-[12px]">{{ column.title }}</p>
+                </th>
+                <th class="border p-2 text-center">{{ actionsColumn.title }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in userStore.users" :key="user.id">
+                <td v-for="column in columns" :key="column.field" class="border p-2">
+                  <p class="sm:text-sm text-[13px] text-center">{{ user[column.field] }}</p>
+                </td>
+                <td class="border p-2">
+                  <div class="flex justify-center gap-3 p-4">
+                    <nuxt-link :to="`/admin/patients/edit/${user.id}`" class="btn btn-primary sm:btn-md btn-sm">
+                      <p class="font-light text-white sm:text-base text-[12px]">แก้ไข</p>
+                    </nuxt-link>
+                    <button @click="deleteUser(user.id)" class="btn btn-secondary sm:btn-md btn-sm">
+                      <p class="font-light text-white sm:text-base text-[12px]">ลบ</p>
+                    </button>
+                    <button @click="openModal(user)"
+                      class="btn sm:btn-md btn-sm btn-accent text-white font-light sm:text-base text-[12px]">ดูเพิ่มเติม</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -236,7 +239,7 @@ definePageMeta({
           </div>
 
           <div class="divider"></div>
-          
+
           <div class=" ">
             <div class="p-4 font-bold text-2xl">
               <h1>ประวัติการรักษา</h1>
@@ -252,5 +255,4 @@ definePageMeta({
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
-
 </style>

@@ -46,7 +46,9 @@ const editPhysician = (id: number) => {
   router.push(`/admin/physicians/edit/${id}`);
 };
 
-onMounted(fetchPhysicians);
+onMounted(async() => {
+  await fetchPhysicians()
+});
 
 definePageMeta({
   middleware: 'auth',
@@ -57,7 +59,7 @@ definePageMeta({
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลภายในคลินิก</h2>
+        <h2 class="sm:text-5xl text-2xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลภายในคลินิก</h2>
       </div>
 
       <div class="mb-5">
@@ -90,7 +92,7 @@ definePageMeta({
               <th>
                 <p class="text-center">ตำแหน่ง</p>
               </th>
-              <th>
+              <th class=" hidden sm:block">
                 <p class="text-center">เบอร์โทรศัพท์</p>
               </th>
               <th></th>
@@ -113,7 +115,7 @@ definePageMeta({
               <td>
                 <p class="text-center">{{ physician.about }}</p>
               </td>
-              <td>
+              <td class="hidden sm:block">
                 <p class="text-center">{{ physician.phone }}</p>
               </td>
               <td>

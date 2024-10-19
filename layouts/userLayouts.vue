@@ -209,7 +209,7 @@
         </RouterLink>
       </div>
       <div v-if="authStore.isAuthenticated">
-        <div class="dropdown dropdown-end -my-3">
+        <div class="dropdown dropdown-end -my-3 -mx-4">
           <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
             <div class="w-10 rounded-full">
               <img alt="User Avatar"
@@ -241,7 +241,7 @@
       <div class="hero-content text-center text-neutral-content">
         <div class="max-w-md rounded-md p-4">
           <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">ติดต่อเรา</h2>
-          <div class="flex bg-base-100 w-96 h-16 rounded-full mt-2 gap-2 p-1 shadow-xl">
+          <div class="flex bg-base-100 sm:w-96 w-72 h-16 rounded-full mt-2 gap-2 p-1 shadow-xl">
             <div class="flex justify-center w-full gap-5 mt-1">
               <Facebook />
 

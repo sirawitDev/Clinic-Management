@@ -6,7 +6,7 @@
       <li><RouterLink to="/user/profile" class="btn btn-accent w-full rounded-full text-white font-light mt-2">ตั้งค่าโปรไฟล์</RouterLink></li>
       <li><RouterLink to="/user/profile/addresses" class="btn btn-accent w-full rounded-full text-white font-light mt-2">ข้อมูลที่อยู่</RouterLink></li>
       <li><RouterLink to="/user/profile/medicalhistory" class="btn btn-accent w-full rounded-full text-white font-light mt-2">ประวัติการรักษา</RouterLink></li>
-      <li><RouterLink to="/user/profile" class="btn btn-accent w-full rounded-full text-white font-light mt-2">ประวัติการจอง</RouterLink></li>
+      <li><RouterLink to="/user/profile/bookinghistory" class="btn btn-accent w-full rounded-full text-white font-light mt-2">ประวัติการจอง</RouterLink></li>
       <li><div class="btn bg-red-500 w-full rounded-full text-white font-light mt-2">ออกจากระบบ</div></li>
     </ul>
   </aside>

@@ -35,12 +35,12 @@
           </select>
         </label>
 
-        <div class="flex justify-end gap-5">
-          <RouterLink to="/admin/users" class="btn btn-accent font-light my-5 text-white w-60">
+        <div class="flex sm:justify-end justify-center gap-5">
+          <RouterLink to="/admin/users" class="btn btn-accent font-light my-5 text-white sm:w-60 w-36">
             ย้อนกลับ
           </RouterLink>
           <div>
-            <button type="submit" class="btn btn-accent my-5 text-white font-light w-60">ยืนยันการแก้ไข</button>
+            <button type="submit" class="btn btn-accent my-5 text-white font-light sm:w-60 w-36">ยืนยันการแก้ไข</button>
           </div>
         </div>
       </form>

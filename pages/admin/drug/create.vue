@@ -1,95 +1,89 @@
 <template>
   <adminLayouts>
-    <div class="container mx-auto p-4">
-      <div class="flex">
-        <div class="flex-1 mt-4 pl-4">
-          <div class="divider"></div>
-        </div>
-        <div class="flex-2">
-          <h1 class="font-bold text-3xl p-4">เพิ่มข้อมูลยา</h1>
-        </div>
-        <div class="flex-1 mt-5 pr-4">
-          <div class="divider"></div>
-        </div>
+    <div class="container mx-auto p-4 bg-zinc-100 rounded-lg">
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">เพิ่มข้อมูลยา</h2>
       </div>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-          <label for="name" class="block text-base font-medium">ชื่อยา</label>
-          <input v-model="name" id="name" type="text" required class="input input-bordered w-full" />
-        </div>
-
-        <div>
-          <label for="imageUrl" class="block text-base font-medium">URL รูปภาพ</label>
-          <input v-model="imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
-        </div>
-
-        <!-- Image Preview -->
-        <div v-if="imageUrl" class="my-4">
-          <div class="flex justify-center">
-            <img :src="imageUrl" alt="" class="w-48 h-auto border rounded" />
+      <div class="bg-white rounded-md p-4 mt-5">
+        <form @submit.prevent="handleSubmit" class="space-y-4 ">
+          <div>
+            <label for="name" class="block text-base font-medium">ชื่อยา</label>
+            <input v-model="name" id="name" type="text" required class="input input-bordered w-full" />
           </div>
-        </div>
 
-        <div>
-          <label for="type" class="block text-base font-medium">ประเภทของยา</label>
-          <select v-model="type" id="type" class="select select-bordered w-full" required>
-            <option value="ยาสามัญประจำบ้าน">ยาสามัญประจำบ้าน</option>
-            <option value="ยาใส่แผล/นวด/ใช้ภายนอก">ยาใส่แผล/นวด/ใช้ภายนอก</option>
-            <option value="ยาน้ำสำหรับเด็ก">ยาน้ำสำหรับเด็ก</option>
-            <option value="อื่นๆ">อื่นๆ</option>
-          </select>
-        </div>
-
-        <!-- ช่อง input จะปรากฏเมื่อเลือก "อื่นๆ" -->
-        <div v-if="type === 'อื่นๆ'">
-          <label for="customType" class="block text-base font-medium">ประเภทอื่นๆ</label>
-          <input v-model="customType" id="customType" type="text" placeholder="กรุณาระบุประเภท"
-            class="input input-bordered w-full input-accent" />
-        </div>
-
-        <div>
-          <label for="price" class="block text-base font-medium">ราคา</label>
-          <input v-model.number="price" id="price" type="number" required class="input input-bordered w-full" />
-        </div>
-        <div>
-          <label for="dosage" class="block text-base font-medium">ปริมาณยา</label>
-          <input v-model.number="dosage" id="dosage" type="number" step="0.01" class="input input-bordered w-full" />
-        </div>
-
-        <div>
-          <label for="unit" class="block text-base font-medium">หน่วยของปริมาณ</label>
-          <select v-model="unit" id="unit" class="select select-bordered w-full">
-            <option value="mg">มิลลิกรัม (mg)</option>
-            <option value="g">กรัม (g)</option>
-            <option value="ml">มิลลิลิตร (ml)</option>
-            <option value="tablet">เม็ด (tablet)</option>
-            <option value="bottle">ขวด (bottle)</option>
-            <!-- Add more options as needed -->
-          </select>
-        </div>
-
-        <div>
-          <label for="about" class="block text-base font-medium">ข้อมูลเพิ่มเติมเกี่ยวกับสินค้า</label>
-          <textarea v-model="about" id="about" class="textarea textarea-bordered w-full"></textarea>
-        </div>
-
-        <div class="form-control">
-          <div class="label">
-            <span class="label-text text-base">Status</span>
+          <div>
+            <label for="imageUrl" class="block text-base font-medium">URL รูปภาพ</label>
+            <input v-model="imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
           </div>
-          <select class="select select-bordered" v-model="status">
-            <option value="active">active</option>
-            <option value="inactive">inactive</option>
-          </select>
-        </div>
 
-        <div class="flex justify-center gap-5 mt-0">
-          <RouterLink to="/admin/drug" class="btn btn-accent font-light text-white mt-5 w-60">ย้อนกลับ</RouterLink>
-          <div class="w-60 mt-5 mb-10">
-            <button @click="submitForm" class="btn btn-accent w-60 text-white font-light">เพิ่มข้อมูลยา</button>
+          <!-- Image Preview -->
+          <div v-if="imageUrl" class="my-4">
+            <div class="flex justify-center">
+              <img :src="imageUrl" alt="" class="w-48 h-auto border rounded" />
+            </div>
           </div>
-        </div>
-      </form>
+
+          <div>
+            <label for="type" class="block text-base font-medium">ประเภทของยา</label>
+            <select v-model="type" id="type" class="select select-bordered w-full" required>
+              <option value="ยาสามัญประจำบ้าน">ยาสามัญประจำบ้าน</option>
+              <option value="ยาใส่แผล/นวด/ใช้ภายนอก">ยาใส่แผล/นวด/ใช้ภายนอก</option>
+              <option value="ยาน้ำสำหรับเด็ก">ยาน้ำสำหรับเด็ก</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+
+          <!-- ช่อง input จะปรากฏเมื่อเลือก "อื่นๆ" -->
+          <div v-if="type === 'อื่นๆ'">
+            <label for="customType" class="block text-base font-medium">ประเภทอื่นๆ</label>
+            <input v-model="customType" id="customType" type="text" placeholder="กรุณาระบุประเภท"
+              class="input input-bordered w-full input-accent" />
+          </div>
+
+          <div>
+            <label for="price" class="block text-base font-medium">ราคา</label>
+            <input v-model.number="price" id="price" type="number" required class="input input-bordered w-full" />
+          </div>
+          <div>
+            <label for="dosage" class="block text-base font-medium">ปริมาณยา</label>
+            <input v-model.number="dosage" id="dosage" type="number" step="0.01" class="input input-bordered w-full" />
+          </div>
+
+          <div>
+            <label for="unit" class="block text-base font-medium">หน่วยของปริมาณ</label>
+            <select v-model="unit" id="unit" class="select select-bordered w-full">
+              <option value="mg">มิลลิกรัม (mg)</option>
+              <option value="g">กรัม (g)</option>
+              <option value="ml">มิลลิลิตร (ml)</option>
+              <option value="tablet">เม็ด (tablet)</option>
+              <option value="bottle">ขวด (bottle)</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+
+          <div>
+            <label for="about" class="block text-base font-medium">ข้อมูลเพิ่มเติมเกี่ยวกับสินค้า</label>
+            <textarea v-model="about" id="about" class="textarea textarea-bordered w-full"></textarea>
+          </div>
+
+          <div class="form-control">
+            <div class="label">
+              <span class="label-text text-base">Status</span>
+            </div>
+            <select class="select select-bordered" v-model="status">
+              <option value="active">active</option>
+              <option value="inactive">inactive</option>
+            </select>
+          </div>
+
+          <div class="flex justify-center gap-5 mt-0">
+            <RouterLink to="/admin/drug" class="btn btn-accent font-light text-white mt-5 sm:w-60 w-32">ย้อนกลับ</RouterLink>
+            <div class="w-60 mt-5 mb-10">
+              <button @click="submitForm" class="btn btn-accent sm:w-60 w-32 text-white font-light">เพิ่มข้อมูลยา</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </adminLayouts>
 </template>
@@ -165,5 +159,9 @@ definePageMeta({
 <style scoped>
 .container {
   max-width: 600px;
+}
+
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
 </style>

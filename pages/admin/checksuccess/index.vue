@@ -1,18 +1,8 @@
 <template>
   <AdminLayout>
     <div class=" mx-auto bg-white h-full">
-      <div class="mb-4">
-        <div class="flex">
-          <div class="flex-1 mt-4">
-            <div class="divider"></div>
-          </div>
-          <div class="flex-2">
-            <h1 class="font-bold text-3xl p-4">ตรวจเสร็จแล้ว</h1>
-          </div>
-          <div class="flex-1 mt-4">
-            <div class="divider"></div>
-          </div>
-        </div>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+        <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">รายการตรวจเสร็จ</h2>
       </div>
 
       <div class="overflow-x-auto p-4">
@@ -41,10 +31,10 @@
               <td>{{ diagnosis.notes }}</td>
               <td>{{ formatDate(diagnosis.createdAt) }}</td>
               <td>
-                <div class="flex justify-center gap-2">
-                  <button @click="deleteDiagnosis(diagnosis.id)" class="btn btn-accent text-white font-light">ลบ</button>
-                  <button class="btn btn-accent text-white font-light">แก้ไข</button>
-                  <RouterLink to='/cashier' class="btn btn-accent text-white font-light">จ่ายยา</RouterLink>
+                <div class="flex justify-center gap-2 p-2">
+                  <button @click="deleteDiagnosis(diagnosis.id)" class="btn btn-accent text-white font-light sm:btn-md btn-sm">ลบ</button>
+                  <button class="btn btn-accent text-white font-light sm:btn-md btn-sm">แก้ไข</button>
+                  <RouterLink to='/cashier' class="btn btn-accent text-white font-light sm:btn-md btn-sm">จ่ายยา</RouterLink>
                 </div>
               </td>
             </tr>
@@ -177,8 +167,8 @@ definePageMeta({
   text-align: left;
 }
 
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
+
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
-    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">ตรวจรักษา</h2>
-      </div>
+    <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">ตรวจรักษา</h2>
+    </div>
     <div class="max-w-4xl mx-auto bg-white rounded-md mt-5">
-      <div class="grid grid-cols-6 gap-2 p-3">
+      <div class="grid sm:grid-cols-6 grid-cols-2 gap-2 p-3">
         <label class="form-control w-full max-w-xs">
           <div class="label">
             <div class="flex">
@@ -91,22 +91,9 @@
         </label>
       </div>
 
-      <div class="flex">
-        <div class="flex-1 pl-4 pr-4">
-          <label class="form-control">
-            <div class="label">
-              <div class="flex">
-                <div class="mt-2">
-                  <span class="label-text text-base">อาการสำคัญ </span>
-                </div>
-                <div class="ml-2">
-                  <img src="https://img5.pic.in.th/file/secure-sv1/sick_8004107.png" alt="">
-                </div>
-              </div>
-            </div>
-            <textarea v-model="chiefComplaint" class="textarea textarea-accent textarea-bordered h-24"
-              placeholder=""></textarea>
-          </label>
+      <div class="sm:flex flex-col">
+        <div class="sm:flex-1 flex-col pl-4 pr-4">
+          
           <label class="form-control">
             <div class="label">
               <div class="flex">
@@ -122,8 +109,9 @@
               placeholder=""></textarea>
           </label>
         </div>
-        <div class="flex-1 pr-3">
-          <label class="form-control">
+
+        <div class="sm:flex-1 flex pr-3 p-4">
+          <label class="form-control w-full">
             <div class="label">
               <div class="flex">
                 <div class="mt-2">
@@ -134,7 +122,7 @@
                 </div>
               </div>
             </div>
-            <textarea v-model="physicalExam" class="textarea textarea-accent textarea-bordered h-[265px]"
+            <textarea v-model="physicalExam" class="textarea textarea-accent textarea-bordered h-32"
               placeholder=""></textarea>
           </label>
         </div>
@@ -164,7 +152,6 @@ const temperature = ref<number | null>(null);
 const bloodPressure = ref<number | null>(null);
 const pulse = ref<number | null>(null);
 const respiration = ref<number | null>(null);
-const chiefComplaint = ref('');
 const symptoms = ref('');
 const physicalExam = ref('');
 
@@ -185,7 +172,6 @@ const submitPatientHistory = async () => {
       bloodPressure: bloodPressure.value ?? 0,
       pulse: pulse.value ?? 0,
       respiration: respiration.value ?? 0,
-      chiefComplaint: chiefComplaint.value,
       symptoms: symptoms.value,
       physicalExam: physicalExam.value,
     };

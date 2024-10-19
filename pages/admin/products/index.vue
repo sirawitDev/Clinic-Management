@@ -77,17 +77,18 @@ definePageMeta({
 
 <template>
   <adminLayouts>
-    <div class="bg-white w-full h-full pl-5 pt-3 shadow-md rounded-md mt-5">
+    <div class="bg-white w-full h-full p-2 pt-3 shadow-md rounded-md mt-5">
       <div class="mb-4 flex justify-center">
-        <div class="flex justify-center items-center bg-[#FF8128] w-[60%] h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-          <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลสินค้า</h2>
+        <div
+          class="flex justify-center items-center bg-[#FF8128] sm:w-full w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+          <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลสินค้า</h2>
         </div>
       </div>
-      <div class="mt-5 ">
+      <div class="mt-5 flex justify-center">
         <nuxt-link to="/admin/products/create"
           class="btn btn-accent w-full font-light text-white">เพิ่มข้อมูลสินค้า</nuxt-link>
       </div>
-      <div class="mx-auto p-4 mt-5">
+      <div class="mx-auto p-2 mt-5">
 
         <!-- <div class="overflow-x-auto">
           <table class="table">
@@ -164,11 +165,11 @@ definePageMeta({
 
     <!-- Modal Overlay -->
     <div v-if="selectedProduct" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg relative w-[55%] max-h-[70%] flex flex-col overflow-hidden">
+      <div class="bg-white rounded-lg relative sm:w-[55%] w-[80%] max-h-[70%] flex flex-col overflow-hidden">
         <!-- Header with close button -->
         <div class="p-4 flex justify-center items-center bg-orange-300 sticky top-0 z-10 relative">
           <div>
-            <h3 class="text-4xl font-bold text-white">ข้อมูลเพิ่มเติม</h3>
+            <h3 class="sm:text-4xl text-2xl font-bold text-white">ข้อมูลเพิ่มเติม</h3>
           </div>
           <div class="absolute right-4 top-4">
             <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost text-white">✕</button>
@@ -178,7 +179,7 @@ definePageMeta({
         <!-- Scrollable Content Area -->
         <div class="overflow-y-auto p-4">
           <div class="flex">
-            <div class="flex-2 p-4">
+            <div class="flex-2 p-4 hidden sm:block">
               <div class="avatar flex justify-center">
                 <div class="w-48 rounded">
                   <img :src="selectedProduct.imageUrl" alt="product image" />
@@ -187,14 +188,28 @@ definePageMeta({
             </div>
             <div class="flex-1 p-4">
               <div>
-                <h1 class="font-bold text-2xl">รายละเอียดสินค้า</h1>
+                <h1 class="font-bold text-2xl sm:text-left text-center">รายละเอียดสินค้า</h1>
               </div>
               <div class="mt-4">
-                <p><strong>ชื่อสินค้า:</strong> {{ selectedProduct.name }}</p>
-                <p class="mt-2"><strong>สถานะ:</strong> {{ selectedProduct.status }}</p>
-                <p class="mt-2"><strong>จำนวน:</strong> {{ selectedProduct.quantity }} / {{
+                <div class=" sm:hidden avatar flex justify-center">
+                  <div class="w-48 rounded">
+                    <img :src="selectedProduct.imageUrl" alt="product image" />
+                  </div>
+                </div>
+                <p><strong class="text-gray-600">ชื่อสินค้า:</strong> {{ selectedProduct.name }}</p>
+
+                <div class="flex gap-2">
+                  <p class="mt-2"><strong class="text-gray-600">สถานะ:</strong></p>
+
+                  <div :class="['badge', selectedProduct.status === 'close' ? 'badge-error' : 'badge-success']"
+                    class="sm:mt-2 mt-3 mr-1">
+                    <p class="text-white sm:text-base text-[14px]">{{ selectedProduct.status }}</p>
+                  </div>
+                </div>
+
+                <p class="mt-2"><strong class="text-gray-600">จำนวน:</strong> {{ selectedProduct.quantity }} / {{
                   selectedProduct.remainQuantity }}</p>
-                <p class="mt-2"><strong>รายละเอียด:</strong> {{ selectedProduct.about }}</p>
+                <p class="mt-2"><strong class="text-gray-600">รายละเอียด:</strong> {{ selectedProduct.about }}</p>
               </div>
             </div>
           </div>

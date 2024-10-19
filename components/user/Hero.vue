@@ -48,19 +48,19 @@ onMounted(() => {
                         </RouterLink>
 
                         <RouterLink to=""
-                            class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 w-48 hover:bg-slate-50 hover:bg-opacity-50"
+                            class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-12 sm:w-48 w-24 hover:bg-slate-50 hover:bg-opacity-50"
                             role="button"
                             v-else-if="authStore.user.email.length < 1"
                             onclick="my_modal_3.showModal()"
                             >
-                            <span class="relative z-10 text-white font-light text-lg">เข้าสู่ระบบ</span>
+                            <span class="relative z-10 text-white font-light sm:text-lg text-sm">เข้าสู่ระบบ</span>
                         </RouterLink>
                     </div>
                 </div>
                 <div class="flex justify-center mt-3 w-full bg-orange-300 h-11 bg-opacity-80 rounded-b-lg shadow-md">
-                    <p class="text-white text-center mt-2">สถานะ : </p>
+                    <p class="text-white text-center sm:mt-2 mt-1">สถานะ : </p>
                     <div :class="statusStore === 'เปิดร้าน' ? 'badge badge-success' : 'badge badge-error'"
-                        class="mt-2 mx-2 h-7 w-20">
+                        class="mt-2 mx-2 sm:h-7 h-5 w-20">
                         <p class="text-white">{{ statusStore }}</p>
                     </div>
                 </div>
