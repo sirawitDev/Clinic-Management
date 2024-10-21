@@ -1,9 +1,41 @@
 <template>
   <UserLayout>
+    <div class="sm:hidden">
+      <details class="dropdown">
+        <summary class="btn btn-accent m-1">
+          <p class="text-white">เมนูการตั้งค่า</p>
+        </summary>
+        <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+          <li>
+            <RouterLink to="/user/profile"
+              class="btn sm:btn-base btn-sm btn-accent w-full rounded-full text-white font-light mt-2">
+              ตั้งค่าโปรไฟล์</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/addresses"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ข้อมูลที่อยู่
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/medicalhistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการรักษา
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/bookinghistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการจอง
+            </RouterLink>
+          </li>
+          <li>
+            <div class="btn bg-red-500 sm:btn-base btn-sm rounded-full text-white font-light mt-2">ออกจากระบบ</div>
+          </li>
+        </ul>
+      </details>
+    </div>
     <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5">
-      <ProfileAside />
+      <ProfileAside class="hidden sm:block" />
 
-      <div class="flex-1 p-5">
+      <div class="flex-1 p-5 w-full">
         <div class="font-bold text-3xl flex justify-center">ประวัติการรักษา</div>
 
         <div class="overflow-x-auto p-4">
@@ -52,9 +84,9 @@
                   <p class="text-center">{{ formatDate(diagnosis.createdAt) }}</p>
                 </td>
                 <td class="">
-                  <div class="flex justify-center">
+                  <!-- <div class="flex justify-center">
                     <div class="btn btn-accent font-light text-white">ดูเพิ่มเติม</div>
-                  </div>
+                  </div> -->
                 </td>
               </tr>
             </tbody>

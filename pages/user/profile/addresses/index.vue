@@ -1,8 +1,40 @@
 <template>
   <UserLayout>
+    <div class="sm:hidden">
+      <details class="dropdown">
+        <summary class="btn btn-accent m-1">
+          <p class="text-white">เมนูการตั้งค่า</p>
+        </summary>
+        <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+          <li>
+            <RouterLink to="/user/profile"
+              class="btn sm:btn-base btn-sm btn-accent w-full rounded-full text-white font-light mt-2">
+              ตั้งค่าโปรไฟล์</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/addresses"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ข้อมูลที่อยู่
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/medicalhistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการรักษา
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/bookinghistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการจอง
+            </RouterLink>
+          </li>
+          <li>
+            <div class="btn bg-red-500 sm:btn-base btn-sm rounded-full text-white font-light mt-2">ออกจากระบบ</div>
+          </li>
+        </ul>
+      </details>
+    </div>
     <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5">
       <!-- Use the ProfileAside component -->
-      <ProfileAside />
+      <ProfileAside class="hidden sm:block" />
 
       <div class="flex-1 p-5">
         <div>
@@ -47,7 +79,7 @@
                   <h3 class="ml-3 mt-3 text-4xl font-bold">เพิ่มข้อมูลที่อยู่</h3>
                 </div>
 
-                
+
 
                 <!-- Address Input Form -->
                 <div>
@@ -112,7 +144,7 @@
                       <input v-model="address.postalCode" type="number" placeholder="รหัสไปรษณีย์"
                         class="input input-bordered w-full text-lg" />
                     </div>
-                    
+
                     <div class="form-control w-full">
                       <div class="label">
                         <span class="label-text text-lg">ตำบล</span>
@@ -128,10 +160,10 @@
                   </div>
 
                   <div class="form-control w-full">
-                      <label class="label"><span class="label-text text-lg">เบอร์โทรศัพท์</span></label>
-                      <input v-model="address.phoneNumber" @input="handlePhoneNumberInput" type="text"
-                        placeholder="เบอร์โทรศัพท์" class="input input-bordered w-full text-lg placeholder" />
-                    </div>
+                    <label class="label"><span class="label-text text-lg">เบอร์โทรศัพท์</span></label>
+                    <input v-model="address.phoneNumber" @input="handlePhoneNumberInput" type="text"
+                      placeholder="เบอร์โทรศัพท์" class="input input-bordered w-full text-lg placeholder" />
+                  </div>
 
                   <button @click="submitAddress" class="btn btn-accent w-full mt-5 text-white">ยืนยัน</button>
                 </div>

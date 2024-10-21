@@ -1,9 +1,9 @@
 <template>
   <UserLayout>
     <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5">
-      <ProfileAside />
+      <ProfileAside class="hidden sm:block"/>
 
-      <div class="flex-1 p-5">
+      <div class="flex-1 p-5 w-full">
         <div class="font-bold text-3xl flex justify-center">ประวัติการจอง</div>
 
         <div class="overflow-x-auto p-4">
@@ -46,9 +46,9 @@
                   <p class="text-center">{{ reservation.note }}</p>
                 </td>
                 <td class="">
-                  <div class="flex justify-center">
+                  <!-- <div class="flex justify-center">
                     <div class="btn btn-accent font-light text-white">ดูเพิ่มเติม</div>
-                  </div>
+                  </div> -->
                 </td>
               </tr>
             </tbody>

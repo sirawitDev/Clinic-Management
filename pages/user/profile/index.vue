@@ -1,10 +1,44 @@
 <template>
   <UserLayout>
-    <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5">
-      <ProfileAside />
+    <div class="sm:hidden">
+      <details class="dropdown">
+        <summary class="btn btn-accent m-1">
+          <p class="text-white">เมนูการตั้งค่า</p>
+        </summary>
+        <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+          <li>
+            <RouterLink to="/user/profile"
+              class="btn sm:btn-base btn-sm btn-accent w-full rounded-full text-white font-light mt-2">
+              ตั้งค่าโปรไฟล์</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/addresses"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ข้อมูลที่อยู่
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/medicalhistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการรักษา
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/user/profile/bookinghistory"
+              class="btn btn-accent sm:btn-base btn-sm rounded-full text-white font-light mt-2">ประวัติการจอง
+            </RouterLink>
+          </li>
+          <li>
+            <div class="btn bg-red-500 sm:btn-base btn-sm rounded-full text-white font-light mt-2">ออกจากระบบ</div>
+          </li>
+        </ul>
+      </details>
+    </div>
+    <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-4">
 
-      <div class="flex-1 p-5">
-        <div class="font-bold text-3xl flex justify-center">ข้อมูลส่วนตัว</div>
+      <ProfileAside class="hidden sm:block" />
+
+
+      <div class="flex-1 sm:p-5 p-0 sm:w-full w-[60%]">
+        <div class="font-bold text-3xl flex justify-center mt-3">ข้อมูลส่วนตัว</div>
 
         <div class="flex w-full font-kanit mt-10">
           <div class=" w-52">
@@ -45,8 +79,7 @@
                 {{ cdnumber }}
               </div>
               <div v-else>
-                <input v-model="cdnumber" type="text" placeholder="cdnumber"
-                  class="input input-bordered w-full" />
+                <input v-model="cdnumber" type="text" placeholder="cdnumber" class="input input-bordered w-full" />
               </div>
             </div>
 
@@ -61,8 +94,7 @@
           </div>
         </div>
 
-
-        <div class="divider"></div>
+        <div class=" divider"></div>
 
         <div class="flex w-full font-kanit mt-10">
           <div class=" w-52">
@@ -75,7 +107,7 @@
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class=" divider"></div>
 
         <div class="flex w-full font-kanit mt-10">
           <div class="w-52">
@@ -87,14 +119,17 @@
             <input v-model="confirmPassword" type="password" placeholder="รหัสผ่านใหม่อีกครั้ง"
               class="input input-bordered w-full" />
             <div class="flex justify-between mt-4">
-              <button @click="changePassword" class="btn btn-primary btn-sm">เปลี่ยนรหัสผ่าน</button>
-              <button @click="cancelPasswordChange" class="btn btn-sm ml-2">ยกเลิก</button>
+              <button @click="changePassword" class="btn btn-primary btn-sm">
+                <p class="font-light">เปลี่ยนรหัสผ่าน</p>
+              </button>
+              <button @click="cancelPasswordChange" class="btn btn-sm ml-2">
+                <p class="font-light">ยกเลิก</p>
+              </button>
             </div>
           </div>
         </div>
 
-
-        <div class="divider"></div>
+        <div class=" divider"></div>
 
         <div class="flex w-full font-kanit mt-10" v-for="(address, index) in addresses" :key="address.id">
           <div class="w-52">
@@ -126,11 +161,9 @@
 
 
 
-        <div class="flex flex-col items-center my-2">
-
-
-
-          <button @click="updateProfile" class="btn btn-accent text-white w-full mt-5">ยืนยันการเปลี่ยนข้อมูล</button>
+        <div class="items-center my-2">
+          <button @click="updateProfile"
+            class="btn btn-accent text-white sm:w-full w-full mt-5">ยืนยันการเปลี่ยนข้อมูล</button>
         </div>
       </div>
     </div>
@@ -337,7 +370,7 @@ onMounted(async () => {
   await fetchUserProfile();
   await fetchAddresses()
 
-  console.log('user :' , cdnumber.value)
+  console.log('user :', cdnumber.value)
 });
 </script>
 
