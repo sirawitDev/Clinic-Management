@@ -18,7 +18,6 @@ const fetchPayments = async () => {
       method: 'GET',
     });
     const data = await response.json();
-    console.log('Payments:', data);
     payment.value = data.body;
     isLoading.value = false;
   } catch (error) {
@@ -41,8 +40,8 @@ const deletePayment = async (id: number) => {
   }
 };
 
-onMounted(() => {
-  fetchPayments();
+onMounted(async() => {
+  await fetchPayments();
 });
 
 definePageMeta({

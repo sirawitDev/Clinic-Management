@@ -123,7 +123,6 @@ authStore.initializeAuth()
 
 onMounted(async() => {
   await fetchReservations()
-  console.log('rever : ' , reservations.value)
 })
 </script>
 

@@ -130,7 +130,6 @@ const fetchDiagnosesByCdnumber = async () => {
     }
 
     diagnoses.value = await response.json();
-    console.log('Fetched diagnoses:', diagnoses.value);
   } catch (error) {
     console.error('Error fetching diagnoses:', error);
   }
@@ -166,7 +165,6 @@ const fetchPhysicians = async () => {
     }
 
     physicians.value = await response.json();
-    console.log('Fetched physicians:', physicians.value);
   } catch (error) {
     console.error('Error fetching physicians:', error);
   }
@@ -189,11 +187,6 @@ onMounted(async () => {
   await fetchPatients();
   await fetchPhysicians();
   await fetchDiagnosesByCdnumber()
-
-
-  console.log('diagnoses : ', diagnoses.value)
-  console.log('user : ', authStore.user)
-
 });
 </script>
 

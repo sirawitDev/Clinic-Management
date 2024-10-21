@@ -186,9 +186,6 @@ const fetchPhysicians = async () => {
 const patientId = Number(route.query.patientId)
 const patientHistoryId = Number(route.query.patientHistoryId)
 
-onMounted(async () => {
-  await fetchPhysicians()
-})
 
 // Function to check if "อื่นๆ" is selected for diagnosis
 const checkOtherDiagnosis = () => {

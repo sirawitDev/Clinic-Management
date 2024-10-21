@@ -164,7 +164,7 @@ const completePayment = async () => {
     localStorage.removeItem('selectedDrugs');
     await updateSuccess()
     alert('ชำระเงินเสร็จสิ้น')
-    router.push('/Cashier')
+    router.push('/cashier/list')
   } catch (error) {
     console.error('Error completing payment:', error);
   }

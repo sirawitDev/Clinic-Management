@@ -99,7 +99,6 @@ const handleLoginSuccess = async (response: CredentialResponse) => {
     authStore.login(user);
   }
 
-  console.log('user : ', user)
 };
 
 const handleLoginError = () => {
@@ -130,7 +129,6 @@ const register = async () => {
       },
     });
     window.location.reload()
-    console.log('User registered successfully', response);
   } catch (error) {
     console.error('Registration failed', error);
   }

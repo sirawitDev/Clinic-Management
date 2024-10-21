@@ -13,7 +13,7 @@
               ข้อมูลคอร์ส</h2>
           </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 mt-5">
           <p class="text-xl font-bold text-gray-600">คอร์ส :</p>
           <h2 class="text-xl font-bold mb-3">{{ course.title }}</h2>
         </div>
@@ -220,7 +220,6 @@ onMounted(async () => {
   const { id } = route.params;
   await fetchCourse(id);
   await userStore.fetchUsers()
-  console.log('couse : ', userStore.users)
 });
 </script>
 

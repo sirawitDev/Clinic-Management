@@ -263,7 +263,6 @@ const saveCdNumber = async () => {
       alert('Failed to update CD number');
     }
   } catch (error) {
-    console.error('Error updating CD number:', error);
     alert('An error occurred while updating the CD number');
   }
 };
@@ -359,7 +358,6 @@ const fetchAddresses = async () => {
       alert('Failed to fetch addresses');
     }
   } catch (error) {
-    console.error('Error fetching addresses:', error);
     alert('An error occurred while fetching addresses');
   }
 };
@@ -369,8 +367,6 @@ authStore.initializeAuth()
 onMounted(async () => {
   await fetchUserProfile();
   await fetchAddresses()
-
-  console.log('user :', cdnumber.value)
 });
 </script>
 

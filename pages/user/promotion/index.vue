@@ -71,7 +71,6 @@ const closeModal = () => {
 
 onMounted(async () => {
   await fetchProducts();
-  console.log('promotion', promotions.value);
 });
 </script>
 

@@ -88,7 +88,6 @@ const fetchUser = async (id) => {
 
 onMounted(() => {
   const id = route.params.id;
-  console.log(form.value)
   if (id) {
     fetchUser(id); // Fetch user details using the ID from route params
   }

@@ -73,7 +73,6 @@ const fetchDiagnoses = async () => {
     }
 
     diagnoses.value = await response.json();
-    console.log('Fetched diagnoses:', diagnoses.value);
   } catch (error) {
     console.error('Error fetching diagnoses:', error);
   }
@@ -90,7 +89,6 @@ const fetchPatients = async () => {
     }
 
     patients.value = await response.json();
-    console.log('Fetched patients:', patients.value);
   } catch (error) {
     console.error('Error fetching patients:', error);
   }
@@ -107,7 +105,6 @@ const fetchPhysicians = async () => {
     }
 
     physicians.value = await response.json();
-    console.log('Fetched physicians:', physicians.value);
   } catch (error) {
     console.error('Error fetching physicians:', error);
   }
@@ -151,7 +148,7 @@ onMounted(() => {
 });
 
 onMounted(() => {
-  console.log(patients.value)
+
 })
 
 definePageMeta({

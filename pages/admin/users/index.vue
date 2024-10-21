@@ -127,7 +127,6 @@ definePageMeta({
 
 onMounted(async() => {
   await fetchUser()
-  console.log('user' , useres.value)
 })
 </script>
 

@@ -8,9 +8,6 @@ import { useAuthStore } from '~/stores/auth';
 
 const authStore = useAuthStore(); 
 
-onMounted(() => {
-  console.log(authStore.user)
-})
 </script>
 
 <template>

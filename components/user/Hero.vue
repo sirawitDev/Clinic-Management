@@ -16,8 +16,6 @@ onMounted(() => {
     }
 
     authStore.initializeAuth();
-
-    console.log('user : ', authStore.user)
 });
 </script>
 

@@ -221,7 +221,6 @@ const fetchAddresses = async () => {
             alert('Failed to fetch addresses');
         }
     } catch (error) {
-        console.error('Error fetching addresses:', error);
         alert('An error occurred while fetching addresses');
     }
 };
@@ -236,15 +235,12 @@ const nextStepCurrentstep = () => {
         if (validateStepOne()) {
             currentStep.value++;
             userReservation.confirm(useFormData);
-            console.log('Data confirmed:', useFormData); // Check data before confirmation
         } else {
             alert("กรุณากรอกข้อมูลที่จำเป็นทั้งหมดในหมวดหมู่");
         }
     } else if (currentStep.value === 2) {
-        // Additional validation for step 2 if necessary
         currentStep.value++;
         userReservation.confirm(useFormData); // Confirming data for step 2
-        console.log('Data confirmed:', useFormData); // Check data before confirmation
     } else {
         nextStep(); // For steps other than step 1
     }
@@ -294,7 +290,6 @@ authStore.initializeAuth();
 
 onMounted(async () => {
     await fetchAddresses()
-    console.log('address : ', addresses.value)
 })
 
 // Clear localStorage when leaving the route

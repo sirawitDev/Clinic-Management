@@ -408,7 +408,6 @@ onMounted(async () => {
   await fetchPeriods()
   await fetchinfoDiagnosis()
   await fetchinfoTreatment()
-  console.log('pa : ', periods.value)
 })
 </script>
 

@@ -42,7 +42,6 @@ const fetchPayments = async () => {
       method: 'GET',
     });
     const data = await response.json();
-    console.log('Payments:', data);
     payment.value = data.body;
     totalRevenue.value = payment.value.reduce((sum, p) => sum + p.totalAmount, 0);
   } catch (error) {

@@ -302,7 +302,6 @@ const handleLoginSuccess = async (response: CredentialResponse) => {
     showSuccessMessageLogin.value = true;
   }
 
-  console.log('user : ', user)
 };
 
 const handleLoginError = () => {

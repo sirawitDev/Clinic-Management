@@ -1,9 +1,11 @@
 <template>
   <adminLayouts>
     <div class="bg-white w-full h-full p-5 shadow-md rounded-md mt-5">
-      <h2 class="text-4xl font-bold text-[#FFD600]">แก้ไขข้อมูลโปรโมชั่น</h2>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+        <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">แก้ไขข้อมูลโปรโมชั่น</h2>
+      </div>
 
-      <form @submit.prevent="updatePromotion">
+      <form @submit.prevent="updatePromotion" class="mt-5">
         <div class="mb-4">
           <label class="block text-gray-700" for="name">ชื่อโปรโมชั่น</label>
           <input v-model="promotion.name" type="text" id="name" class="input input-bordered w-full" required />
@@ -116,5 +118,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
 </style>

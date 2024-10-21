@@ -36,13 +36,12 @@ export default defineEventHandler(async (event) => {
         const { id } = query;
 
         if (id) {
-          // Fetch a single payment by ID, including related data (diagnosis and patient)
           const payment = await prisma.payment.findUnique({
             where: { id: Number(id) },
             include: {
               diagnosis: {
                 include: {
-                  patient: true, // Include patient info
+                  patient: true,
                 },
               },
             },

@@ -125,8 +125,6 @@ const updateDrug = async () => {
 
 onMounted(async() => {
   await fetchDrug()
-
-  console.log('drug : ' , drug.value)
 })
 
 definePageMeta({

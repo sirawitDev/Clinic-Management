@@ -186,7 +186,7 @@ const submitPatientHistory = async () => {
 };
 
 onMounted(() => {
-  console.log('Patient ID:', patientId);
+
 });
 
 definePageMeta({
