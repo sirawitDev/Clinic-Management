@@ -44,7 +44,7 @@ onMounted(fetchProducts);
 
 <template>
   <userLayouts>
-    <div class="container mx-auto">
+    <div class="container mx-auto font-kanit">
       <div class="flex justify-center items-center">
         <div class="flex bg-[#FFD600] rounded-full sm:w-[27%] w-[60%] sm:h-20 h-14 justify-center items-center bg-opacity-50 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
           <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">สินค้า</h2>

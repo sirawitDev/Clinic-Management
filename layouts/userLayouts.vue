@@ -2,10 +2,10 @@
   <div class="container mx-auto">
 
     <div
-      class="navbar bg-base-100 mb-5 bg-[#FAFAFA] rounded-full mx-1 my-3 shadow-lg sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-      <div class="flex-1 mx-3 hidden sm:block">
+      class="navbar mb-5 bg-[#FAFAFA] rounded-full mx-1 my-3 shadow-lg sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <div class="flex-1 hidden sm:block">
         <RouterLink to="/user" class="flex-1 flex items-center">
-          <img class="w-[130px] h-12 mx-2" src="https://img2.pic.in.th/pic/-removebg-preview344b007cb6dec167.png"
+          <img class="w-[130px] h-12 mx-2" src="https://img5.pic.in.th/file/secure-sv1/AIRPORT-removebg-preview.png"
             alt="logo">
         </RouterLink>
       </div>
@@ -254,7 +254,7 @@
                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                   </form>
                   <h3 class="text-lg font-bold text-black font-light">เบอร์โทรศัพท์</h3>
-                  <p class="py-4 text-accent text-2xl">080-000-0000</p>
+                  <p class="py-4 text-accent text-2xl">084-170-8459</p>
                 </div>
               </dialog>
               <Line />

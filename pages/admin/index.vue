@@ -133,7 +133,7 @@ onMounted(async () => {
         </div>
         <!-- This section displays today's appointments count -->
         <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">รวมคนใช้ทั้งหมด</h2>
+          <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">รวมผู้ป่วยทั้งหมด</h2>
           <div class="flex mt-8">
             <div class="flex-1 ml-5 mt-8">
               <p class="text-white text-4xl mt-2">{{ totalPatients }} คน</p>
