@@ -2,9 +2,6 @@
 import { ref, onMounted } from 'vue';
 import adminLayouts from '~/layouts/adminLayout2.vue';
 import { useUserStore } from '~/stores/user.ts';
-import ApexBarChart from '~/components/admin/ApexBarChart.vue';
-
-import Call from '~/components/user/Call.vue';
 import Trash from '~/components/admin/Trash.vue';
 import Edit from '~/components/admin/Edit.vue';
 
@@ -146,14 +143,14 @@ onMounted(async () => {
 
       </div>
     </div>
-    <div class="bg-white rounded-lg h-[350px]">
+    <div class="bg-white rounded-lg h-[400px] shadow-lg">
       <div class="bg-[#FF8128] rounded-t-lg h-14 flex justify-center items-center bg-opacity-95 shadow-sm">
         <h1 class="text-white text-3xl">
           นัดหมายวันนี้
         </h1>
       </div>
-      <div class="grid sm:grid-cols-4 grid-cols-2 gap-3 p-4">
-        <div v-for="(reservation, index) in reservations" :key="reservation.id" class="bg-base-100 rounded-xl mb-5">
+      <div class="grid sm:grid-cols-4 grid-cols-1 gap-3 p-4">
+        <div v-for="(reservation, index) in reservations" :key="reservation.id" class="bg-base-100 rounded-xl mb-5 border-2 border-accent shadow-md">
           <div class="flex justify-center mt-4">
             <img src="https://img2.pic.in.th/pic/volunteer_11077481.png" alt="logo-user" class="w-16">
           </div>
@@ -162,11 +159,11 @@ onMounted(async () => {
           </div>
           <div class="ml-4 mt-3 sm:text-sm text-[10px]">
             
-            <h1>{{ reservation.email }}</h1>
-            <h1>ชื่อ : {{ reservation.firstname }} {{ reservation.lastname }}</h1>
-            <h1>วันนัด : {{ formatDate(reservation.date) }}</h1>
-            <h1>เวลานัด : {{ reservation.time }}</h1>
-            <h1>บัตรประชาชน : {{ reservation.cdnumber || 'N/A' }}</h1>
+            <h1 class="text-base">{{ reservation.email }}</h1>
+            <h1 class="text-base">ชื่อ : {{ reservation.firstname }} {{ reservation.lastname }}</h1>
+            <h1 class="text-base">วันนัด : {{ formatDate(reservation.date) }}</h1>
+            <h1 class="text-base">เวลานัด : {{ reservation.time }}</h1>
+            <h1 class="text-base">บัตรประชาชน : {{ reservation.cdnumber || 'N/A' }}</h1>
 
             <div class="flex gap-2 justify-center mb-2 mt-2">
               <button @click="deleteReservation(reservation.id)" class="btn sm:w-28 w-16 shadow-md bg-red-500 text-white">
@@ -185,7 +182,7 @@ onMounted(async () => {
 
     </div>
 
-    <div class="bg-white rounded-lg h-full mt-5">
+    <div class="bg-white rounded-lg h-96 mt-5">
       <div class="bg-[#FF8128] rounded-t-lg h-14 flex justify-center items-center bg-opacity-95">
         <h1 class="text-white text-3xl">
           รายการล่าสุด

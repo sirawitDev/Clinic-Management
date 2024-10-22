@@ -17,6 +17,7 @@
               <th>การรักษา</th>
               <th>อื่นๆ</th>
               <th>เสร็จสิ้นวันที่</th>
+              <th>สถานะ</th>
               <th></th>
             </tr>
           </thead>
@@ -30,6 +31,7 @@
               <td>{{ diagnosis.treatment_plan }}</td>
               <td>{{ diagnosis.notes }}</td>
               <td>{{ formatDate(diagnosis.createdAt) }}</td>
+              <td>{{ formatDate(diagnosis.paymentStatus) }}</td>
               <td>
                 <div class="flex justify-center gap-2 p-2">
                   <button @click="deleteDiagnosis(diagnosis.id)" class="btn btn-accent text-white font-light sm:btn-md btn-sm">ลบ</button>

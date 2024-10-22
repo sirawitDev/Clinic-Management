@@ -259,4 +259,8 @@ onMounted(async () => {
 await fetchPeriods()
 await fetchPhysicians()
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>

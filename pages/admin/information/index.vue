@@ -409,6 +409,10 @@ onMounted(async () => {
   await fetchinfoDiagnosis()
   await fetchinfoTreatment()
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

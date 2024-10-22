@@ -10,24 +10,18 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
 
         try {
-            if (query.id) {
-                const reservation = await prisma.reservation.findUnique({
-                    where: { id: Number(query.id) },
+            if (query.cdnumber) {
+                // Filter by cdnumber
+                const reservations = await prisma.reservation.findMany({
+                    where: { cdnumber: query.cdnumber },
                 });
 
-                if (reservation) {
-                    return {
-                        success: true,
-                        reservation,
-                    };
-                } else {
-                    return {
-                        success: false,
-                        message: 'Reservation not found',
-                    };
-                }
+                return {
+                    success: true,
+                    reservations,
+                };
             } else {
-                // Fetch all reservations
+                // Fetch all reservations if no cdnumber is provided
                 const reservations = await prisma.reservation.findMany();
                 return {
                     success: true,

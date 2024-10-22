@@ -32,31 +32,38 @@
         </ul>
       </details>
     </div>
-    <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5">
+    <div class="flex rounded-md bg-white mx-auto border border-base-200 shadow-xl p-5 sm:h-[550px] h-[400px]">
       <!-- Use the ProfileAside component -->
       <ProfileAside class="hidden sm:block" />
 
-      <div class="flex-1 p-5">
+      <div class="flex-1 p-5 font-kanit">
         <div>
           <div class="flex justify-center">
-            <p class="font-bold text-3xl mt-3">ข้อมูลที่อยู่</p>
+            <div
+              class="flex justify-center items-center bg-[#FF8128] sm:w-[60%] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-70">
+              <h2 class="sm:text-4xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">ข้อมูลที่อยู่</h2>
+            </div>
           </div>
           <div v-if="addresses.length > 0" class="mt-5">
             <div v-for="address in addresses" :key="address.id">
-              <div class="bg-base-200 bg-opacity-70 text-stone-700 p-4 rounded-md shadow-md">
-                <p><strong>บ้านเลขที่</strong> {{ address.houseNumber }} <strong>หมู่</strong> {{ address.village }}
+              <div class="bg-zinc-100 bg-opacity-70 text-stone-700 p-4 rounded-md shadow-md text-lg">
+                <p><strong class="text-xl">บ้านเลขที่</strong> {{ address.houseNumber }} <strong class="text-xl">หมู่</strong> {{ address.village }}
                 </p>
-                <p><strong>ตำบล</strong> {{ address.subdistrict }}, <strong>อำเภอ</strong> {{ address.district }},
-                  {{ address.province }}</p>
+                <p><strong class="text-xl">ตำบล</strong> {{ address.subdistrict }}, <strong class="text-xl">อำเภอ</strong> {{ address.district }}
+                </p>
+                <p>
+                  <strong class="text-xl">จังหวัด</strong>  {{ address.province }}
+                </p>
                 <p class="flex gap-2">
-                <p class="font-bold">รหัสไปรษณี : </p> {{ address.postalCode }}</p>
-                <p><strong>เบอร์โทรศัพท์ : </strong>{{ address.phoneNumber }}</p>
+                <p class="font-bold text-xl">รหัสไปรษณี  </p> {{ address.postalCode }}</p>
+                <p><strong class="text-xl">เบอร์โทรศัพท์  </strong>{{ address.phoneNumber }}</p>
+
                 <RouterLink :to="`/user/profile/address/edit/${address.id}`"
-                  class="btn btn-sm btn-primary text-white mt-2 w-full">
-                  <p>แก้ไข</p>
+                  class="btn btn-base btn-primary text-white mt-2 w-full">
+                  <p class="text-base">แก้ไข</p>
                 </RouterLink>
-                <button @click="deleteAddress(address.id)" class="btn btn-sm btn-error text-white mt-2 w-full">
-                  ลบ
+                <button @click="deleteAddress(address.id)" class="btn btn-base btn-error text-white mt-2 w-full">
+                  <p class="text-base">ลบ</p>
                 </button>
               </div>
             </div>
@@ -97,31 +104,6 @@
                   </div>
 
                   <div class="flex gap-3">
-                    <!-- เพิ่มช่องสำหรับ Country -->
-                    <!-- <div class="form-control w-full">
-                      <div class="label">
-                        <span class="label-text text-lg">ประเทศ</span>
-                      </div>
-                      <select v-model="address.country" class="select select-bordered w-full text-lg">
-                        <option disabled value="">เลือกประเทศ</option>
-                        <option v-for="country in countries" :key="country.alpha2" :value="country.name">
-                          {{ country.name }} ({{ country.enName }})
-                        </option>
-                      </select>
-                    </div> -->
-                    <div class="form-control w-full">
-                      <div class="label">
-                        <span class="label-text text-lg">อำเภอ</span>
-                      </div>
-                      <select v-model="address.district" @change="onDistrictChange"
-                        class="select select-bordered w-full text-lg" :disabled="!districts.length">
-                        <option disabled value="">เลือกอำเภอ</option>
-                        <option v-for="district in districts" :key="district" :value="district">
-                          {{ district }}
-                        </option>
-                      </select>
-                    </div>
-
                     <div class="form-control w-full">
                       <div class="label">
                         <span class="label-text text-lg">จังหวัด</span>
@@ -134,17 +116,22 @@
                         </option>
                       </select>
                     </div>
+
+                    <div class="form-control w-full">
+                      <div class="label">
+                        <span class="label-text text-lg">อำเภอ</span>
+                      </div>
+                      <select v-model="address.district" @change="onDistrictChange"
+                        class="select select-bordered w-full text-lg" :disabled="!districts.length">
+                        <option disabled value="">เลือกอำเภอ</option>
+                        <option v-for="district in districts" :key="district" :value="district">
+                          {{ district }}
+                        </option>
+                      </select>
+                    </div>
                   </div>
 
                   <div class="flex gap-3">
-                    <div class="form-control w-full">
-                      <div class="label">
-                        <span class="label-text text-lg">รหัสไปรษณีย์</span>
-                      </div>
-                      <input v-model="address.postalCode" type="number" placeholder="รหัสไปรษณีย์"
-                        class="input input-bordered w-full text-lg" />
-                    </div>
-
                     <div class="form-control w-full">
                       <div class="label">
                         <span class="label-text text-lg">ตำบล</span>
@@ -156,6 +143,13 @@
                           {{ subdistrict.name }}
                         </option>
                       </select>
+                    </div>
+                    <div class="form-control w-full">
+                      <div class="label">
+                        <span class="label-text text-lg">รหัสไปรษณีย์</span>
+                      </div>
+                      <input v-model="address.postalCode" type="number" placeholder="รหัสไปรษณีย์"
+                        class="input input-bordered w-full text-lg" />
                     </div>
                   </div>
 
@@ -358,5 +352,17 @@ onMounted(async () => {
   await fetchAddresses()
   await fetchCountries()
   await fetchProvinces()
+
+
 })
 </script>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+
+.font-kanit {
+  font-family: 'Kanit', sans-serif;
+}
+</style>

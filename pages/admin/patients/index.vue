@@ -6,10 +6,26 @@ import adminLayouts from '~/layouts/adminLayout2.vue'
 
 const userStore = useUserStore()
 const selectedUser = ref(null)
+const diagnoses = ref([])
 
 const deleteUser = async (id) => {
   await userStore.deleteUser(id)
 }
+
+// Function to format the date
+const formatDateTime = (dateTime) => {
+  const date = new Date(dateTime)
+  const formattedDate = date.toISOString().split('T')[0] // Get YYYY-MM-DD
+  const formattedTime = date.toTimeString().split(' ')[0] // Get HH:MM:SS
+  return `${formattedDate} / ${formattedTime}`
+}
+
+// Function to format the birthdate
+const formatBirthdate = (birthdate) => {
+  const date = new Date(birthdate);
+  const options = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
+  return date.toLocaleDateString('th-TH', options); // Format in Thai locale
+};
 
 const columns = [
   { title: 'หมายเลข', field: 'id' },
@@ -44,13 +60,16 @@ const formAddress = [
 
 const actionsColumn = { title: '', field: 'actions' }
 
-const openModal = (user) => {
+const openModal = async (user) => {
   selectedUser.value = { ...user }
+  await DiagnosisCdnumber(user.cdnumber) // Fetch diagnosis history
 }
 
 const closeModal = () => {
   selectedUser.value = null
+  diagnoses.value = [] // Clear diagnoses when closing modal
 }
+
 
 const fullName = computed({
   get() {
@@ -86,8 +105,30 @@ const exportToExcel = () => {
   writeFile(workbook, 'UserData.xlsx')
 }
 
+const DiagnosisCdnumber = async (cdnumber) => {
+  try {
+    const response = await fetch(`/api/users/diagnosis/${cdnumber}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch diagnoses');
+    }
+
+    const data = await response.json();
+    diagnoses.value = data;
+  } catch (error) {
+    console.error('Error fetching diagnoses:', error);
+  }
+};
+
 onMounted(async () => {
   await userStore.fetchUsers()
+  console.log('user : ', diagnoses.value)
+})
+
+watch(() => {
+  console.log('user : ', diagnoses.value)
 })
 
 definePageMeta({
@@ -163,8 +204,8 @@ definePageMeta({
         </div>
 
         <!-- Scrollable Content Area -->
-        <div class="overflow-y-auto">
-          <div class="flex mt-5">
+        <div class="overflow-y-auto bg-zinc-100">
+          <div class="flex mt-5 gap-2">
 
             <div class="flex-2 p-8">
               <div class="avatar flex justify-center">
@@ -172,12 +213,9 @@ definePageMeta({
                   <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                 </div>
               </div>
-              <div class="bg-zinc-100 h-24 mt-5">
-                asd
-              </div>
             </div>
 
-            <div class="flex-1">
+            <div class="flex-1 bg-white rounded-lg p-4">
               <div>
                 <h1 class=" font-bold text-2xl">ข้อมูลส่วนตัว</h1>
               </div>
@@ -188,7 +226,7 @@ definePageMeta({
                 <h1>อายุ : {{ selectedUser.age }}</h1>
               </div>
               <div class="mt-5">
-                <h1>เกิดวันที่ : {{ selectedUser.birthdate }}</h1>
+                <h1>เกิดวันที่ : {{ formatBirthdate(selectedUser.birthdate) }}</h1>
               </div>
               <div class="mt-5">
                 <h1>น้ำหนัก : {{ selectedUser.weight }}</h1>
@@ -210,7 +248,7 @@ definePageMeta({
               </div>
             </div>
 
-            <div class="flex-1 justify-start">
+            <div class="flex-1 justify-start rounded-lg p-4 bg-white">
               <div>
                 <h1 class=" font-bold text-2xl">ที่อยู่</h1>
               </div>
@@ -240,9 +278,42 @@ definePageMeta({
 
           <div class="divider"></div>
 
-          <div class=" ">
-            <div class="p-4 font-bold text-2xl">
-              <h1>ประวัติการรักษา</h1>
+          <div class="p-4">
+
+            <div class="flex justify-center">
+              <div
+                class="flex justify-center items-center bg-[#FF8128] sm:w-[50%] w-full h-20 shadow-md rounded-full bg-opacity-50">
+                <h2 class="sm:text-4xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">ประวัติการรักษา
+                </h2>
+              </div>
+            </div>
+
+            <div class="bg-white p-3 mt-5">
+
+              <div class="overflow-x-auto">
+                <table class="table">
+                  <!-- head -->
+                  <thead>
+                    <tr>
+                      <th>วันที่การรักษา</th>
+                      <th>อาการ</th>
+                      <th>ทานยา</th>
+                      <th>ระยะการทานยา</th>
+                      <th>แพทย์ผู้รักษา</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- row 1 -->
+                    <tr v-for="diagnosis in diagnoses" :key="diagnosis.id">
+                      <td>{{ formatDateTime(diagnosis.createdAt) }}</td>
+                      <td>{{ diagnosis.diagnosis }}</td>
+                      <td>{{ diagnosis.treatment_plan }}</td>
+                      <td>{{ diagnosis.notes }}</td>
+                      <td>{{ diagnosis.physician.first_name }} {{ diagnosis.physician.last_name }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

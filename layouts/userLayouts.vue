@@ -301,7 +301,6 @@ const handleLoginSuccess = async (response: CredentialResponse) => {
     authStore.login(user);
     showSuccessMessageLogin.value = true;
   }
-
 };
 
 const handleLoginError = () => {

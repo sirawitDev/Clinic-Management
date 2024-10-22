@@ -17,6 +17,7 @@ const activeTab = ref('สินค้าทั้งหมด');
 const selectedDrug = ref(null);
 const selectedDiagnosis = ref(null);
 const searchQuery = ref('');
+const router = useRouter()
 
 const pendingDiagnoses = computed(() => {
   return diagnosesFetch.value.filter(diagnosis => diagnosis.paymentStatus === 'pening');
@@ -164,7 +165,7 @@ const completePayment = async () => {
     localStorage.removeItem('selectedDrugs');
     await updateSuccess()
     alert('ชำระเงินเสร็จสิ้น')
-    router.push('/cashier/list')
+    router.push('/Cashier/list')
   } catch (error) {
     console.error('Error completing payment:', error);
   }
@@ -180,7 +181,7 @@ const updateSuccess = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        diagnosisId: diagnosisIds,
+        diagnosisId: selectedDiagnosis.value  ,
         paymentStatus: 'success',
       }),
     });
@@ -193,7 +194,7 @@ const updateSuccess = async () => {
       console.log('Failed to update');
     }
   } catch (error) {
-    console.error('Error updating CD number:', error);
+    console.error('Error updating CD number:');
     console.error('An error occurred while updating');
   }
 };
@@ -204,15 +205,10 @@ onMounted(async () => {
   await fetchDiagnoses()
   await fetchPatients()
   await fetchPhysicians()
-  console.log(selectedDiagnosis.value)
-  console.log('pee : ' ,pendingDiagnoses.value)
 });
 
-watch(selectedDiagnosis, (newVal) => {
-  console.log('Selected Diagnosis changed:', newVal);
-  pendingDiagnoses.value.forEach(item => {
-    console.log('id: ', item.id);
-});
+definePageMeta({
+  middleware: 'auth',
 });
 </script>
 
@@ -234,10 +230,17 @@ watch(selectedDiagnosis, (newVal) => {
                 <option disabled value="">
                   <p class="text-black">เลือกหนึ่งรายการ</p>
                 </option>
-                <option v-for="diagnosis in pendingDiagnoses">
+                <option v-for="diagnosis in pendingDiagnoses" :key="diagnosis.id" :value="diagnosis.id">
+                  <span class="font-bold">{{ diagnosis.id }}</span>
+                  &nbsp;
                   <span class="text-blue-500">{{ getPatientName(diagnosis.patient_id) }}</span>
                   &nbsp;
                   <span class="font-bold">{{ diagnosis.treatment_plan }}</span>
+                  &nbsp;
+                  <span class="font-bold">{{ diagnosis.diagnosis }}</span>
+                  &nbsp;
+                  <span class="font-bold">{{ diagnosis.updatedAt }}</span>
+
                 </option>
               </select>
             </div>

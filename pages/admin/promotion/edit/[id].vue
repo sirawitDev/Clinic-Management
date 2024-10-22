@@ -113,8 +113,11 @@ const updatePromotion = async () => {
 
 onMounted(async () => {
   await fetchPromotion()
-  console.log('promotion : ', promotion.value)
 })
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

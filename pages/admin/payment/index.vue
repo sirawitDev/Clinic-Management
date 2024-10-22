@@ -105,7 +105,8 @@ definePageMeta({
                 <p class="text-center">{{ payment.paymentMethod }}</p>
               </td>
               <td>
-                <p class="text-center">{{ payment.status }}</p>
+                <p v-if="payment.status === 'pending'" class="text-center">กำลังรอ</p>
+                <p v-else class="text-center">เสร็จสิ้น</p>
               </td>
               <td>
                 <div class="flex gap-2 justify-center">

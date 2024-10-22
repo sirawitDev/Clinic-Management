@@ -83,6 +83,9 @@ const createCourse = async () => {
   }
 };
 
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style>

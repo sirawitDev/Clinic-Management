@@ -221,6 +221,10 @@ onMounted(async () => {
   await fetchCourse(id);
   await userStore.fetchUsers()
 });
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

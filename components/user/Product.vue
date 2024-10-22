@@ -29,7 +29,7 @@ const truncatedText = (product) => product.about.substring(0, maxLength);
             </figure>
             <div class="card-body p-4">
                 <h2 class="card-title text-lg font-semibold">{{ product.name }}</h2>
-                <p class="font-light text-sm mt-2">
+                <p class="font-light text-base mt-2">
                     {{ isExpanded(index) ? product.about : truncatedText(product) }}
                     <span v-if="!isExpanded(index) && isTruncated(product)">...</span>
                     <button v-if="isTruncated(product)" @click="toggleReadMore(index)"
@@ -39,10 +39,10 @@ const truncatedText = (product) => product.about.substring(0, maxLength);
                 </p>
                 <div class="flex justify-between">
                     <div>
-                        <p class=" font-bold text-lg">ราคา : {{ product.price }}</p>
+                        <p class=" font-bold text-lg mt-2">ราคา : {{ product.price }}</p>
                     </div>
-                    <div :class="['badge', product.status === 'close' ? 'badge-error' : 'badge-success']" class="mt-1">
-                        {{ product.status }}
+                    <div :class="['badge', product.status === 'close' ? 'badge-error' : 'badge-success']" class="mt-1 h-8">
+                        <p class="text-white">{{ product.status }}</p>
                     </div>
                 </div>
                 <!-- <div class="card-actions justify-end mt-4">

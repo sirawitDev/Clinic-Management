@@ -3,8 +3,8 @@
     <div class=" container mx-auto font-kanit">
       <div class="flex justify-center items-center">
         <div
-          class="flex bg-[#FFD600] rounded-full sm:w-[27%] w-72 sm:h-20 h-14 justify-center items-center bg-opacity-50 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-          <p class="sm:text-4xl text-3xl font-semibold text-left text-[#fefeff] text-stroke">
+          class="flex bg-[#FFD600] rounded-full sm:w-[35%] w-72 sm:h-20 h-14 justify-center items-center bg-opacity-50 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+          <p class="sm:text-5xl text-3xl font-semibold text-left text-[#fefeff] text-stroke">
             เกี่ยวกับเรา
           </p>
         </div>
@@ -15,9 +15,9 @@
           <div class="flex-1 p-4 flex justify-center bg-white rounded-md shadow-md">
             <div class="flex-col">
               <div>
-                <h1 class="text-2xl text-center font-bold text-slate-600 mt-2">นายแพทย์พิสิษฐ์ ชวินอำนวยกิจ</h1>
+                <h1 class="text-4xl text-center font-bold text-slate-600 mt-2">นายแพทย์พิสิษฐ์ ชวินอำนวยกิจ</h1>
               </div>
-              <div class="bg-white rounded-lg mt-4">
+              <div class="bg-white rounded-lg mt-4 flex justify-center">
                 <img src="https://img5.pic.in.th/file/secure-sv1/b3629422a789b8065d6784c2196c801e.png" alt="logo"
                   class="rounded-lg w-[400px] shadow-md">
               </div>

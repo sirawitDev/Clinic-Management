@@ -3,12 +3,12 @@
     <div class="font-kanit container mx-auto">
       <div class="flex justify-center">
         <div
-          class="font-kanit flex justify-center items-center bg-[#FFD600] sm:w-[27%] w-[60%] sm:h-20 h-14 shadow-md rounded-full mt-5 bg-opacity-50">
+          class="font-kanit flex justify-center items-center bg-[#FFD600] sm:w-[27%] w-[60%] sm:h-20 h-14 shadow-md rounded-full bg-opacity-50">
           <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">โปรโมชั่น</h2>
         </div>
       </div>
-      <div class="grid sm:grid-cols-3 grid-cols-1 gap-4 mt-10">
-        <div v-for="(promotion, index) in promotions" :key="promotion.id" class="card bg-base-100 sm:w-96 w-[full] shadow-xl sm:mx-1 mx-8">
+      <div class="grid sm:grid-cols-4 grid-cols-1 gap-5 mt-10">
+        <div v-for="(promotion, index) in promotions" :key="promotion.id" class="card bg-base-100 sm:w-[95%] w-[full] shadow-xl sm:mx-1 mx-8">
           <figure class="w-full h-48 overflow-hidden rounded-lg">
             <img
               class="w-[200px] h-[200px] object-cover transition-transform duration-500 hover:scale-105 p-2 cursor-pointer"

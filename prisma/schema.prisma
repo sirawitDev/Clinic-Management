@@ -241,3 +241,8 @@ model PatientCourse {
 
   @@id([patientId, courseId])
 }
+
+model AdminDashboard {
+  id              Int      @id @default(autoincrement())
+  toggleOpenClose Boolean  @default(false)
+}

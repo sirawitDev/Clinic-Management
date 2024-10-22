@@ -159,11 +159,9 @@
           </div>
         </div>
 
-
-
         <div class="items-center my-2">
           <button @click="updateProfile"
-            class="btn btn-accent text-white sm:w-full w-full mt-5">ยืนยันการเปลี่ยนข้อมูล</button>
+            class="btn btn-accent text-white sm:w-full w-full mt-5 sm:text-base">ยืนยันการเปลี่ยนข้อมูล</button>
         </div>
       </div>
     </div>

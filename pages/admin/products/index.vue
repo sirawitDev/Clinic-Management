@@ -80,7 +80,7 @@ definePageMeta({
     <div class="bg-white w-full h-full p-2 pt-3 shadow-md rounded-md mt-5">
       <div class="mb-4 flex justify-center">
         <div
-          class="flex justify-center items-center bg-[#FF8128] sm:w-full w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
+          class="flex justify-center items-center bg-[#FF8128] sm:w-full w-full h-20 shadow-md rounded-full bg-opacity-50">
           <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลสินค้า</h2>
         </div>
       </div>
