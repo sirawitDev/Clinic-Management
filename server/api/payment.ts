@@ -1,3 +1,4 @@
+//server/api/payment.ts
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -9,7 +10,7 @@ export default defineEventHandler(async (event) => {
     switch (method) {
       case 'POST': {
         const body = await readBody(event);
-        console.log('Request Body:', body); // Log request body
+        console.log('Request Body:', body);
 
         const { orderNumber, totalAmount, diagnosisId } = body;
 
@@ -54,12 +55,11 @@ export default defineEventHandler(async (event) => {
           return { statusCode: 200, body: payment };
         }
 
-        // Fetch all payments, including related data (diagnosis and patient)
         const payments = await prisma.payment.findMany({
           include: {
             diagnosis: {
               include: {
-                patient: true, // Include patient info
+                patient: true,
               },
             },
           },
@@ -106,7 +106,7 @@ export default defineEventHandler(async (event) => {
         return { statusCode: 405, body: { message: 'Method Not Allowed' } };
     }
   } catch (error) {
-    console.error('Error handling request:', error); // Log error details
+    console.error('Error handling request:', error);
     return { statusCode: 500, body: { message: 'Internal Server Error' } };
   }
 });

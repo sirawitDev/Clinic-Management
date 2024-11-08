@@ -5,8 +5,10 @@ import adminLayouts from '~/layouts/adminLayout2.vue'
 const products = ref([])
 const selectedProduct = ref(null)
 const ToggleTitle = ref(false)
+const isLoading = ref(true)
 
 const fetchProducts = async () => {
+  isLoading.value = true
   try {
     const response = await fetch('/api/product')
     const result = await response.json()
@@ -17,11 +19,13 @@ const fetchProducts = async () => {
     }
   } catch (error) {
     console.error('Unexpected error:', error)
+  }  finally {
+    isLoading.value = false
   }
 }
 
 const deleteProduct = async (id) => {
-  if (confirm('Are you sure you want to delete this product?')) {
+  if (confirm('คุณต้องลบสินค้านี้หรือไม่?')) {
     try {
       const response = await fetch('/api/product', {
         method: 'DELETE',
@@ -89,6 +93,10 @@ definePageMeta({
           class="btn btn-accent w-full font-light text-white">เพิ่มข้อมูลสินค้า</nuxt-link>
       </div>
       <div class="mx-auto p-2 mt-5">
+        <!-- Show loading indicator -->
+        <div v-if="isLoading" class="flex justify-center items-center h-32">
+          <span class="loading loading-spinner text-accent"></span>
+        </div>
 
         <!-- <div class="overflow-x-auto">
           <table class="table">
@@ -134,7 +142,7 @@ definePageMeta({
           </table>
         </div> -->
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <div v-for="product in products" :key="product.id"
             class="card h-[450px] w-full bg-white rounded-lg shadow-lg overflow-hidden">
             <figure class="w-full h-48 overflow-hidden rounded-lg">

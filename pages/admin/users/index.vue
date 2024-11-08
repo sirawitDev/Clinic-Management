@@ -15,35 +15,19 @@
         <table v-else class="table">
           <thead>
             <tr>
-              <th>
-                <p class="text-center">ID</p>
-              </th>
-              <th>
-                <p class="text-center">อีเมล</p>
-              </th>
-              <th>
-                <p class="text-center">ชื่อ</p>
-              </th>
-              <th>
-                <p class="text-center">นามสกุล</p>
-              </th>
-              <th>
-                <p class="text-center">เลขบัตรประชาชน</p>
-              </th>
-              <th>
-                <p class="text-center">Role</p>
-              </th>
+              <th><p class="text-center">ลำดับ</p></th>
+              <th><p class="text-center">อีเมล</p></th>
+              <th><p class="text-center">ชื่อ</p></th>
+              <th><p class="text-center">นามสกุล</p></th>
+              <th><p class="text-center">เลขบัตรประชาชน</p></th>
+              <th><p class="text-center">Role</p></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(user, index) in useres" :key="user.id">
-              <th>
-                <p class="text-center">{{ index + 1 }}</p>
-              </th>
-              <td>
-                <p class="text-center">{{ user.email }} {{ user.id }}</p>
-              </td>
+            <tr v-for="(user, index) in paginatedUsers" :key="user.id">
+              <th><p class="text-center">{{ index + 1 + (currentPage - 1) * itemsPerPage }}</p></th>
+              <td><p class="text-center">{{ user.email }}</p></td>
               <td><p class="text-center">{{ user.firstname }}</p></td>
               <td><p class="text-center">{{ user.lastname }}</p></td>
               <td>
@@ -64,13 +48,24 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- Pagination Controls -->
+        <div v-if="totalPages > 1" class="join mt-4 flex justify-center gap-2">
+          <button 
+            v-for="page in totalPages" 
+            :key="page" 
+            :class="['join-item', 'btn', { 'btn-active': currentPage === page }]" 
+            @click="goToPage(page)">
+            {{ page }}
+          </button>
+        </div>
       </div>
     </div>
   </AdminLayout>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
 
@@ -79,55 +74,67 @@ import Edit from '~/components/admin/Edit.vue';
 
 const router = useRouter();
 const isLoading = ref(true);
-const useres = ref([]); // เก็บข้อมูลผู้ใช้
+const useres = ref([]);
+const currentPage = ref(1);
+const itemsPerPage = ref(8); // Show 5 users per page
 
+// Fetch users on mount
 const fetchUser = async () => {
   isLoading.value = true;
   try {
     const response = await fetch('/api/admin/useres', {
       method: 'GET',
     });
-    if (!response.ok) {
-      throw new Error('Failed to fetch promotions');
-    }
+    if (!response.ok) throw new Error('Failed to fetch users');
     useres.value = await response.json();
   } catch (err) {
-    console.error('Error fetching promotions:', err);
+    console.error('Error fetching users:', err);
   } finally {
     isLoading.value = false;
   }
 };
 
+// Delete user function
 const deleteUser = async (email) => {
   const confirmed = confirm('คุณต้องการลบผู้ใช้นี้หรือไม่?');
   if (!confirmed) return;
-
   try {
     const response = await fetch(`/api/admin/useres?email=${email}`, {
       method: 'DELETE',
     });
-    if (!response.ok) {
-      throw new Error('Failed to delete user');
-    }
-    // ลบผู้ใช้จากรายการ useres ในหน้านี้
+    if (!response.ok) throw new Error('Failed to delete user');
     useres.value = useres.value.filter(user => user.email !== email);
   } catch (err) {
     console.error('Error deleting user:', err);
   }
 };
 
+// Edit user function
 const editUser = (id) => {
-  router.push(`/admin/users/edit/${id}`); // Navigate to the edit page with the user's ID
+  router.push(`/admin/users/edit/${id}`);
 };
 
+// Pagination computed properties
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return useres.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(useres.value.length / itemsPerPage.value);
+});
+
+// Change page function
+const goToPage = (page) => {
+  currentPage.value = page;
+};
 
 definePageMeta({
   middleware: 'auth',
 });
 
-onMounted(async() => {
-  await fetchUser()
-})
+onMounted(fetchUser);
 </script>
 
 <style scoped>
@@ -135,19 +142,15 @@ onMounted(async() => {
   width: 100%;
   border-collapse: collapse;
 }
-
-.table th,
-.table td {
+.table th, .table td {
   padding: 8px;
   border: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
 }
-
 .table th {
   background-color: #f4f4f4;
   font-size: small;
 }
-
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }

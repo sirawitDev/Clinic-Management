@@ -20,7 +20,7 @@
         <table v-else class="table">
           <thead>
             <tr>
-              <th><p class="text-center">ID</p></th>
+              <th><p class="text-center">ลำดับ</p></th>
               <th><p class="text-center">ชื่อโปรโมชั่น</p></th>
               <th><p class="text-center">รูปภาพ</p></th>
               <th><p class="text-center">วันที่เริ่ม</p></th>
@@ -86,8 +86,8 @@ import Edit from '~/components/admin/Edit.vue';
 
 const promotions = ref([]);
 const isLoading = ref(true);
-const isModalOpen = ref(false); // State for modal visibility
-const modalImage = ref(''); // State for the image URL to be displayed in the modal
+const isModalOpen = ref(false);
+const modalImage = ref('');
 const router = useRouter();
 const error = ref(null);
 
@@ -110,6 +110,12 @@ const fetchPromotions = async () => {
 };
 
 const deletePromotion = async (promotionId) => {
+  // Show confirmation dialog
+  const confirmed = confirm("คุณต้องการลบโปรโมชั่นนี้หรือไม่?");
+  if (!confirmed) {
+    return;
+  }
+
   try {
     const response = await fetch(`/api/promotions`, {
       method: 'DELETE',
@@ -121,7 +127,7 @@ const deletePromotion = async (promotionId) => {
     if (!response.ok) {
       throw new Error('Failed to delete promotion');
     }
-    await fetchPromotions(); // Refresh the list after deletion
+    await fetchPromotions(); // Refresh the promotions list
   } catch (err) {
     error.value = err.message;
   }

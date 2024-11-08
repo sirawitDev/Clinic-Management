@@ -1,21 +1,11 @@
 <template>
   <adminLayouts>
     <div class="mx-auto p-4">
-      <div class="mb-4">
-        <div class="flex">
-          <div class="flex-1 mt-4">
-            <div class="divider"></div>
-          </div>
-          <div class="flex-2">
-            <h1 class="font-bold text-3xl p-4">เพิ่มข้อมูลโปรโมชั่น</h1>
-          </div>
-          <div class="flex-1 mt-4">
-            <div class="divider"></div>
-          </div>
-        </div>
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full bg-opacity-50">
+        <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการข้อมูลโปรโมชั่น</h2>
       </div>
 
-      <div class="max-w-2xl mx-auto">
+      <div class="max-w-2xl mx-auto mt-5">
         <!-- Promotion Name -->
         <label class="form-control w-full">
           <div class="label">
@@ -119,3 +109,9 @@ definePageMeta({
   middleware: 'auth',
 });
 </script>
+
+<style scoped>
+.text-stroke {
+  text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
+}
+</style>

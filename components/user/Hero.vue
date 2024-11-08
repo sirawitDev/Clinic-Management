@@ -38,7 +38,7 @@ onMounted(() => {
                 <div class="flex flex-col">
                     <div>
                         <RouterLink to="/user/reservation"
-                            class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 sm:w-48 w-20 hover:bg-slate-50 hover:bg-opacity-50"
+                            class="btn bg-orange-500 hover:-translate-y-1 rounded-md shadow-md hover:shadow-lg active:shadow-inner h-14 sm:w-48 w-28 hover:bg-slate-50 hover:bg-opacity-50"
                             role="button"
                             v-if="authStore.user.email.length > 1"
                             >

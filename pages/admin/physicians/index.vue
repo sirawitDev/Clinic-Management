@@ -27,18 +27,21 @@ const fetchPhysicians = async () => {
 };
 
 async function deletePhysician(id) {
-  try {
-    const response = await fetch(`/api/physician/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error(`Error deleting physician: ${response.statusText}`);
+  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบผู้ใช้นี้?');
+
+  if (confirmed) {
+    try {
+      const response = await fetch(`/api/physician/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error(`Error deleting physician: ${response.statusText}`);
+      }
+      await response.json();
+      await fetchPhysicians();
+    } catch (error) {
+      console.log('error : ' , error);
     }
-    await response.json();
-    // Fetch the updated list of physicians
-    await fetchPhysicians();
-  } catch (error) {
-    console.error(error.message);
   }
 }
 
@@ -46,7 +49,7 @@ const editPhysician = (id: number) => {
   router.push(`/admin/physicians/edit/${id}`);
 };
 
-onMounted(async() => {
+onMounted(async () => {
   await fetchPhysicians()
 });
 
@@ -59,7 +62,8 @@ definePageMeta({
   <AdminLayout>
     <div class="container mx-auto p-4 bg-white">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
-        <h2 class="sm:text-5xl text-2xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการบุคลากรภายในคลินิก</h2>
+        <h2 class="sm:text-5xl text-2xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการบุคลากรภายในคลินิก
+        </h2>
       </div>
 
       <div class="mb-5">
@@ -78,7 +82,7 @@ definePageMeta({
           <thead>
             <tr>
               <th>
-                <p class="text-center">ID</p>
+                <p class="text-center">ลำดับ</p>
               </th>
               <th>
                 <p class="text-center">คำนำหน้า</p>

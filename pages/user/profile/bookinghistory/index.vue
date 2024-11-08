@@ -44,7 +44,7 @@
             </div>
           </div>
           
-          <div class="flex justify-center">
+          <!-- <div class="flex justify-center">
             <label class="form-control w-full max-w-xs">
               <div class="label">
                 <span class="label-text">
@@ -56,10 +56,10 @@
             </label>
           </div>
           <div class="flex justify-center">
-            <div class="btn btn-accent w-36" @click="handleSearch"> <!-- Call handleSearch on click -->
+            <div class="btn btn-accent w-36" @click="handleSearch">
               <p class="text-white font-light">ค้นหา</p>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="overflow-x-auto p-4 mt-2">
@@ -70,13 +70,7 @@
                   <p class="text-center">รายชื่อ</p>
                 </th>
                 <th>
-                  <p class="text-center">อีเมล</p>
-                </th>
-                <th>
                   <p class="text-center">รายการตรวจ</p>
-                </th>
-                <th>
-                  <p class="text-center">เลขบัตรประชาชน</p>
                 </th>
                 <th>
                   <p class="text-center">วัน / เวลา</p>
@@ -93,13 +87,7 @@
                   <p class="text-center">{{ reservation.firstname }} {{ reservation.lastname }}</p>
                 </td>
                 <td>
-                  <p class="text-center">{{ reservation.email }}</p>
-                </td>
-                <td>
                   <p class="text-center">{{ reservation.category }}</p>
-                </td>
-                <td>
-                  <p class="text-center">{{ reservation.cdnumber }}</p>
                 </td>
                 <td>
                   <p class="text-center">{{ formatDate(reservation.date) }} / {{ reservation.time }}</p>
@@ -113,7 +101,7 @@
           </table>
         </div>
 
-        <div>
+        <!-- <div>
           <div class="flex justify-center">
             <div
               class="flex justify-center items-center bg-[#FF8128] sm:w-[60%] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-70">
@@ -168,7 +156,7 @@
               </tbody>
             </table>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </UserLayout>

@@ -25,8 +25,30 @@ const fetchPayments = async () => {
   }
 };
 
+const confirmPayment = async (id: number) => {
+  try {
+    const response = await fetch('/api/payment', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'success' }),
+    });
+    if (response.ok) {
+      // Update the local state for immediate feedback
+      const updatedPayment = await response.json();
+      const index = payment.value.findIndex((p) => p.id === id);
+      if (index !== -1) {
+        payment.value[index].status = updatedPayment.body.status;
+      }
+    } else {
+      console.error('Failed to confirm payment');
+    }
+  } catch (error) {
+    console.error('Error confirming payment:', error);
+  }
+};
+
 const deletePayment = async (id: number) => {
-  if (confirm('Are you sure you want to delete this payment?')) {
+  if (confirm('คุณต้องการลบการชำระเงินนี้หรือไม่?')) {
     try {
       const response = await fetch(`/api/payment?id=${id}`, {
         method: 'DELETE',
@@ -40,7 +62,7 @@ const deletePayment = async (id: number) => {
   }
 };
 
-onMounted(async() => {
+onMounted(async () => {
   await fetchPayments();
 });
 
@@ -67,7 +89,7 @@ definePageMeta({
           <thead>
             <tr>
               <th>
-                <p class="text-center">ID</p>
+                <p class="text-center">ลำดับ</p>
               </th>
               <th>
                 <p class="text-center">ชื่อลูกค้า</p>
@@ -93,7 +115,8 @@ definePageMeta({
                 <p class="text-center">{{ index + 1 }}</p>
               </td>
               <td>
-                <p class="text-center">{{ payment.diagnosis?.patient?.firstname }} {{ payment.diagnosis?.patient?.lastname }}</p>
+                <p class="text-center">{{ payment.diagnosis?.patient?.firstname }} {{
+                  payment.diagnosis?.patient?.lastname }}</p>
               </td>
               <td>
                 <p class="text-center">{{ payment.orderNumber }}</p>
@@ -113,8 +136,12 @@ definePageMeta({
                   <button @click="deletePayment(payment.id)" class="btn">
                     <Trash />
                   </button>
-                  <button class="btn btn-accent">
+                  <!-- <button class="btn btn-accent">
                     <p class="font-light text-white">ดูเพิ่มเติม</p>
+                  </button> -->
+                  <button v-if="payment.status === 'pending'" @click="confirmPayment(payment.id)"
+                    class="btn btn-secondary">
+                    <p class="font-light text-white">ยืนยันการชำระเงิน</p>
                   </button>
                 </div>
               </td>

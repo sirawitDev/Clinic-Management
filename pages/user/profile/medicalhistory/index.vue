@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col justify-center p-4">
+        <!-- <div class="flex flex-col justify-center p-4">
           <div class="flex justify-center">
             <label class="form-control w-full max-w-xs">
               <div class="label">
@@ -60,7 +60,7 @@
               <p class="text-white font-light">ค้นหา</p>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div class="overflow-x-auto p-4 mt-2">
           <table class="table">
@@ -117,14 +117,13 @@
           </table>
         </div>
 
-        <div>
+        <!-- <div>
           <div class="flex justify-center">
             <div
               class="flex justify-center items-center bg-[#FF8128] sm:w-[60%] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-70">
               <h2 class="sm:text-4xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">รายการค้นหา</h2>
             </div>
           </div>
-          <!-- Add this table for displaying search results -->
           <div class="overflow-x-auto p-4 mt-2">
             <table class="table">
               <thead>
@@ -174,7 +173,7 @@
               </tbody>
             </table>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </UserLayout>

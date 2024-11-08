@@ -127,7 +127,7 @@
                 <td>
                   <div class="flex gap-2 justify-center">
                     <button class="btn" @click="deleteDiagnosis(item.id)">
-                      <Trash />
+                      <Trash/>
                     </button>
                   </div>
                 </td>

@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { defineEventHandler, readBody, createError } from 'h3'; // ตรวจสอบการนำเข้า
+import { defineEventHandler, readBody, createError } from 'h3'; 
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const { method } = event.req;
-  const id = event.context.params?.id ? Number(event.context.params.id) : null; // Convert id to a number
+  const id = event.context.params?.id ? Number(event.context.params.id) : null
 
   try {
     switch (method) {

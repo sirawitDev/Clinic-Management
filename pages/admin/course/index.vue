@@ -20,7 +20,7 @@
           <thead>
             <tr>
               <th>
-                <p class="text-center">ID</p>
+                <p class="text-center">ลำดับ</p>
               </th>
               <th>
                 <p class="text-center">ชื่อคอร์ส</p>
@@ -124,20 +124,23 @@ const fetchCourses = async () => {
 };
 
 const deleteCourse = async (courseId) => {
-  try {
-    const response = await fetch(`/api/course`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: courseId }),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete course');
+  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบคอร์สนี้?'); // Confirmation message
+  if (confirmed) {
+    try {
+      const response = await fetch(`/api/course`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: courseId }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete course');
+      }
+      await fetchCourses();
+    } catch (err) {
+      error.value = err.message;
     }
-    await fetchCourses(); // Refresh the list after deletion
-  } catch (err) {
-    error.value = err.message;
   }
 };
 
@@ -153,7 +156,7 @@ const closeModal = () => {
 
 onMounted(async () => {
   await fetchCourses()
-  console.log('cou : ' , courses.value)
+  console.log('cou : ', courses.value)
 })
 
 definePageMeta({

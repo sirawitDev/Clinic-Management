@@ -9,8 +9,11 @@ const selectedUser = ref(null)
 const diagnoses = ref([])
 
 const deleteUser = async (id) => {
-  await userStore.deleteUser(id)
-}
+  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบผู้ใช้?'); // Confirmation message
+  if (confirmed) {
+    await userStore.deleteUser(id);
+  }
+};
 
 // Function to format the date
 const formatDateTime = (dateTime) => {
@@ -28,7 +31,7 @@ const formatBirthdate = (birthdate) => {
 };
 
 const columns = [
-  { title: 'หมายเลข', field: 'id' },
+  { title: 'ลำดับ', field: 'id' },
   { title: 'คำนำหน้า', field: 'title' },
   { title: 'ชื่อ', field: 'firstname' },
   { title: 'นามสกุล', field: 'lastname' },
@@ -38,15 +41,6 @@ const columns = [
   { title: 'กรุปเลือด', field: 'blood_type' },
   { title: 'แพ้ยา', field: 'allergy' },
   { title: 'โรคประจำตัว', field: 'congenital' },
-]
-
-const formFields = [
-  { label: 'อายุ', field: 'age', type: 'number' },
-  { label: 'น้ำหนัก', field: 'weight', type: 'number' },
-  { label: 'ส่วนสูง', field: 'height', type: 'number' },
-  { label: 'กรุปเลือด', field: 'blood_type', type: 'text' },
-  { label: 'แพ้ยา', field: 'allergy', type: 'text' },
-  { label: 'โรคประจำตัว', field: 'congenital', type: 'text' },
 ]
 
 const formAddress = [
