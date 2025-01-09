@@ -9,7 +9,6 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
 
-  // Find user by email
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -21,7 +20,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Compare passwords
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {

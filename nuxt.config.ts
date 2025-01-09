@@ -16,9 +16,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-08-19',
   googleFonts: {
     families: {
-      Sarabun: [400, 700],
-      Inter: [400, 700], 
-      Kanit: [400, 700], 
+      Sarabun: [400,500,600, 700],
+      Inter: [400,500,600, 700], 
+      Kanit: [400,500,600, 700], 
     },
     display: 'swap',
   },

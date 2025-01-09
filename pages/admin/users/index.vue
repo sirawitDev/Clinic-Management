@@ -5,36 +5,56 @@
         <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการผู้ใช้บริการ</h2>
       </div>
 
-      <div class="overflow-x-auto mt-5">
-        <!-- Display Loading message if data is still loading -->
+      <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
         </div>
 
-        <!-- Display table once data is fetched -->
         <table v-else class="table">
           <thead>
-            <tr>
-              <th><p class="text-center">ลำดับ</p></th>
-              <th><p class="text-center">อีเมล</p></th>
-              <th><p class="text-center">ชื่อ</p></th>
-              <th><p class="text-center">นามสกุล</p></th>
-              <th><p class="text-center">เลขบัตรประชาชน</p></th>
-              <th><p class="text-center">Role</p></th>
+            <tr class="bg-slate-500 text-white text-base">
+              <th>
+                <p class="text-center font-medium">ลำดับ</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">อีเมล</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">ชื่อ</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">นามสกุล</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">เลขบัตรประชาชน</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">Role</p>
+              </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(user, index) in paginatedUsers" :key="user.id">
-              <th><p class="text-center">{{ index + 1 + (currentPage - 1) * itemsPerPage }}</p></th>
-              <td><p class="text-center">{{ user.email }}</p></td>
-              <td><p class="text-center">{{ user.firstname }}</p></td>
-              <td><p class="text-center">{{ user.lastname }}</p></td>
+              <th>
+                <p class="text-center">{{ index + 1 + (currentPage - 1) * itemsPerPage }}</p>
+              </th>
+              <td>
+                <p class="text-center">{{ user.email }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ user.firstname }}</p>
+              </td>
+              <td>
+                <p class="text-center">{{ user.lastname }}</p>
+              </td>
               <td>
                 <p v-if="user.cdnumber" class="text-center">{{ user.cdnumber }}</p>
                 <p v-else class="text-center text-red-400 text-sm">ยังไม่ได้เพิ่มเลขบัตร</p>
               </td>
-              <td><p class="text-center">{{ user.role }}</p></td>
+              <td>
+                <p class="text-center">{{ user.role }}</p>
+              </td>
               <td>
                 <div class="flex gap-2 justify-center">
                   <button class="btn" @click="deleteUser(user.email)">
@@ -48,18 +68,15 @@
             </tr>
           </tbody>
         </table>
-
-        <!-- Pagination Controls -->
-        <div v-if="totalPages > 1" class="join mt-4 flex justify-center gap-2">
-          <button 
-            v-for="page in totalPages" 
-            :key="page" 
-            :class="['join-item', 'btn', { 'btn-active': currentPage === page }]" 
-            @click="goToPage(page)">
-            {{ page }}
-          </button>
-        </div>
       </div>
+
+      <div v-if="totalPages > 1" class="join mt-4 flex justify-center gap-2">
+        <button v-for="page in totalPages" :key="page"
+          :class="['join-item', 'btn', { 'btn-active': currentPage === page }]" @click="goToPage(page)">
+          {{ page }}
+        </button>
+      </div>
+
     </div>
   </AdminLayout>
 </template>
@@ -68,6 +85,7 @@
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
+import Swal from 'sweetalert2';
 
 import Trash from '~/components/admin/Trash.vue';
 import Edit from '~/components/admin/Edit.vue';
@@ -76,9 +94,8 @@ const router = useRouter();
 const isLoading = ref(true);
 const useres = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = ref(8); // Show 5 users per page
+const itemsPerPage = ref(8);
 
-// Fetch users on mount
 const fetchUser = async () => {
   isLoading.value = true;
   try {
@@ -94,27 +111,36 @@ const fetchUser = async () => {
   }
 };
 
-// Delete user function
 const deleteUser = async (email) => {
-  const confirmed = confirm('คุณต้องการลบผู้ใช้นี้หรือไม่?');
-  if (!confirmed) return;
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบผู้ใช้นี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '<span class="font-knit">ใช่, ลบเลย!</span>',
+    cancelButtonText: '<span class="font-knit">ยกเลิก</span>',
+  });
+
+  if (!result.isConfirmed) return;
+
   try {
     const response = await fetch(`/api/admin/useres?email=${email}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete user');
+
+    Swal.fire('ลบสำเร็จ!', 'ผู้ใช้ถูกลบเรียบร้อยแล้ว', 'success');
     useres.value = useres.value.filter(user => user.email !== email);
   } catch (err) {
     console.error('Error deleting user:', err);
+    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถลบผู้ใช้ได้', 'error');
   }
 };
 
-// Edit user function
 const editUser = (id) => {
   router.push(`/admin/users/edit/${id}`);
 };
 
-// Pagination computed properties
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
@@ -125,7 +151,6 @@ const totalPages = computed(() => {
   return Math.ceil(useres.value.length / itemsPerPage.value);
 });
 
-// Change page function
 const goToPage = (page) => {
   currentPage.value = page;
 };
@@ -138,19 +163,11 @@ onMounted(fetchUser);
 </script>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
+.font-kanit {
+  font-family: 'Kanit', sans-serif;
 }
-.table th, .table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
+
+
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }

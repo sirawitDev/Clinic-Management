@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = 'your-secret-key'; // ควรเก็บในไฟล์ .env
+const JWT_SECRET = 'your-secret-key';
 
 export const getUserFromToken = async (event) => {
   const authHeader = event.node.req.headers['authorization'];

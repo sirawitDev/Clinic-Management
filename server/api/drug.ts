@@ -25,7 +25,6 @@ export default defineEventHandler(async (event) => {
 
       case 'DELETE':
         const { id: deleteId } = await readBody(event)
-        // ตรวจสอบว่ามี drug ที่ id นั้นอยู่จริง
         const drugToDelete = await prisma.drug.findUnique({ where: { id: deleteId } })
         if (!drugToDelete) {
           return { error: 'Drug not found' }

@@ -19,8 +19,6 @@ export default defineEventHandler(async (event) => {
         error: 'Token is missing',
       };
     }
-
-    // Verify the Google token
     const userPayload = await verify(token);
 
     if (!userPayload || !userPayload.email) {
@@ -42,8 +40,7 @@ export default defineEventHandler(async (event) => {
           email,
           firstname: firstName,
           lastname: lastName,
-          role: 'user', // Assign default role
-          // Google login users may not need passwords, but this can be changed if needed
+          role: 'user',
         },
       });
     }

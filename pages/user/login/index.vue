@@ -96,9 +96,9 @@ const handleLoginSuccess = async (response: CredentialResponse) => {
         token: credential,
       },
     })
+    console.log('user : ' ,user)
     authStore.login(user);
   }
-
 };
 
 const handleLoginError = () => {
