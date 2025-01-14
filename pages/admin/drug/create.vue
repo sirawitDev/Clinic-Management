@@ -1,7 +1,7 @@
 <template>
   <adminLayouts>
     <div class="container mx-auto p-4 bg-zinc-100 rounded-lg">
-      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
+      <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
         <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">เพิ่มข้อมูลยา</h2>
       </div>
       <div class="bg-white rounded-md p-4 mt-5">
@@ -12,14 +12,15 @@
           </div>
 
           <div>
-            <label for="imageUrl" class="block text-base font-medium">URL รูปภาพ</label>
-            <input v-model="imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
+            <label for="image" class="block text-base font-medium">รูปภาพ</label>
+            <input type="file" id="image" @change="handleFileChange" accept="image/*"
+              class="file-input file-input-bordered w-full" />
           </div>
 
           <!-- Image Preview -->
-          <div v-if="imageUrl" class="my-4">
+          <div v-if="imagePreview" class="my-4">
             <div class="flex justify-center">
-              <img :src="imageUrl" alt="" class="w-48 h-auto border rounded" />
+              <img :src="imagePreview" alt="" class="w-48 h-auto border rounded" />
             </div>
           </div>
 
@@ -77,9 +78,11 @@
           </div>
 
           <div class="flex justify-center gap-5 mt-0">
-            <RouterLink to="/admin/drug" class="btn btn-accent font-light text-white mt-5 sm:w-60 w-32">ย้อนกลับ</RouterLink>
+            <RouterLink to="/admin/drug" class="btn btn-accent font-light text-white mt-5 sm:w-60 w-32 text-base">ย้อนกลับ
+            </RouterLink>
             <div class="w-60 mt-5 mb-10">
-              <button @click="submitForm" class="btn btn-accent sm:w-60 w-32 text-white font-light">เพิ่มข้อมูลยา</button>
+              <button @click="submitForm"
+                class="btn btn-accent sm:w-60 w-32 text-white font-light text-base">เพิ่มข้อมูลยา</button>
             </div>
           </div>
         </form>
@@ -92,64 +95,106 @@
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import adminLayouts from '~/layouts/adminLayout2.vue'
+import Swal from 'sweetalert2';
 
 const name = ref('')
-const type = ref('ยาสามัญประจำบ้าน') // Default value
-const customType = ref('') // สำหรับกรอกประเภทอื่นๆ
+const type = ref('ยาสามัญประจำบ้าน')
+const customType = ref('')
 const price = ref('')
 const dosage = ref('')
-const imageUrl = ref('')
 const unit = ref('')
 const about = ref('')
 const status = ref('active')
+const imageFile = ref(null)
+const imagePreview = ref('')
 
 const router = useRouter()
 
-// Watch เมื่อ type เปลี่ยน
 watch(type, (newType) => {
   if (newType !== 'อื่นๆ') {
-    customType.value = '' // เคลียร์ค่าเมื่อไม่ได้เลือก "อื่นๆ"
+    customType.value = ''
   }
 })
 
-const submitForm = async () => {
-  const finalType = type.value === 'อื่นๆ' ? customType.value : type.value
-
-  const data = {
-    name: name.value,
-    type: finalType, // ใช้ finalType ในการบันทึกประเภท
-    dosage: parseInt(dosage.value),
-    imageUrl: imageUrl.value,
-    price: parseInt(price.value),
-    unit: unit.value,
-    status: status.value,
-    about: about.value,
-  }
-  console.log('data', data)
-
-  try {
-    const response = await fetch('/api/drug', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-
-    const result = await response.json()
-
-    if (response.ok) {
-      alert('Drug added successfully')
-      router.push('/admin/drug')
-    } else {
-      console.error('Error adding product:', result)
-      alert('Failed to add drug')
-    }
-  } catch (error) {
-    console.error('Unexpected error:', error)
-    alert('An unexpected error occurred')
+const handleFileChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    imageFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
   }
 }
+
+const submitForm = async () => {
+  const finalType = type.value === 'อื่นๆ' ? customType.value : type.value;
+
+  const formData = new FormData();
+  formData.append('name', name.value);
+  formData.append('type', finalType);
+  formData.append('dosage', dosage.value);
+  formData.append('price', price.value);
+  formData.append('unit', unit.value);
+  formData.append('status', status.value);
+  formData.append('about', about.value);
+
+  if (imageFile.value) {
+    formData.append('image', imageFile.value);
+  }
+
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
+
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการเพิ่มยานี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, เพิ่มเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/api/drug', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: 'เพิ่มยาเรียบร้อยแล้ว',
+        });
+        router.push('/admin/drug');
+      } else {
+        console.error('Error adding drug:', result);
+        await Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถเพิ่มยาได้ กรุณาลองใหม่อีกครั้ง',
+        });
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาดไม่คาดคิด',
+        text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
+      });
+    }
+  }
+};
+
+onUnmounted(() => {
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value)
+  }
+})
 
 definePageMeta({
   middleware: 'auth',

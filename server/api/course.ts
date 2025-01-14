@@ -4,17 +4,15 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const { method } = event.req;
-  const { id } = event.context.params || {}; // Make sure id is fetched from params if available
+  const { id } = event.context.params || {};
 
   try {
     switch (method) {
       case 'GET':
-        // Fetch all courses
         const courses = await prisma.course.findMany();
         return courses;
 
       case 'POST':
-        // Create a new course
         const body = await readBody(event);
         if (!body.title || !body.price) {
           event.res.statusCode = 400;
@@ -31,7 +29,6 @@ export default defineEventHandler(async (event) => {
         return newCourse;
 
       case 'PUT':
-        // Update an existing course
         if (!id) {
           event.res.statusCode = 400;
           return { message: 'Course ID is required for update' };
@@ -49,7 +46,6 @@ export default defineEventHandler(async (event) => {
         return updatedCourse;
 
       case 'DELETE':
-        // Delete a course
         if (!id) {
           event.res.statusCode = 400;
           return { message: 'Course ID is required for deletion' };
@@ -60,16 +56,15 @@ export default defineEventHandler(async (event) => {
         return { message: 'Course deleted successfully' };
 
       default:
-        // Handle unsupported methods
-        event.res.statusCode = 405; // Method Not Allowed
+
+        event.res.statusCode = 405; 
         return { message: 'Method Not Allowed' };
     }
   } catch (error) {
     console.error('Error handling course:', error);
-    event.res.statusCode = 500; // Internal Server Error
+    event.res.statusCode = 500;
     return { message: 'An error occurred', error: error.message };
   } finally {
-    // Ensure Prisma Client is disconnected after each request
     await prisma.$disconnect();
   }
 });

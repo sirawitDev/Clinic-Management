@@ -1,10 +1,19 @@
 <template>
   <div class="flex items-center bg-base-200 p-4 rounded-lg h-4/6 relative overflow-hidden w-full mt-5">
-    <div class="flex space-x-4 transition-transform duration-300 w-[40%]" 
-         :style="{ transform: `translateX(-${index * 372}px)`, transition: isTransitioning ? 'transform 0.3s ease' : 'none' }">
-      <div class="flex space-x-4 ">
-        <!-- Original slides -->
-        <div v-for="(promotion, i) in displayedPromotions" :key="i" class="bg-white p-4 rounded-lg w-[360px] h-[375px] flex-shrink-0">
+    <div 
+      class="flex space-x-4 transition-transform duration-300 w-[40%]"
+      :style="{ 
+        transform: `translateX(-${currentTranslate}px)`,
+        transition: isTransitioning ? 'transform 0.3s ease' : 'none' 
+      }"
+      @transitionend="handleTransitionEnd"
+    >
+      <div class="flex space-x-4">
+        <div 
+          v-for="(promotion, i) in displayedPromotions" 
+          :key="i" 
+          class="bg-white p-4 rounded-lg w-[360px] h-[375px] flex-shrink-0"
+        >
           <img :src="promotion.imageUrl" :alt="promotion.alt" class="object-contain h-full w-full">
         </div>
       </div>
@@ -17,14 +26,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
-const index = ref(0);
+const currentIndex = ref(0);
 const isTransitioning = ref(true);
 const promotions = ref([]);
 const displayedPromotions = ref([]);
-const totalClones = ref(0);
 const interval = ref(null);
+const slideWidth = 372; // Width of each slide including margin
+
+const currentTranslate = computed(() => currentIndex.value * slideWidth);
 
 const fetchPromotions = async () => {
   try {
@@ -37,49 +48,50 @@ const fetchPromotions = async () => {
   }
 };
 
-// Function to prepare the promotions array for infinite loop effect
 const preparePromotions = () => {
+  // Create a triple-length array for smooth infinite scrolling
   displayedPromotions.value = [
     ...promotions.value,
     ...promotions.value,
-  ]; // Duplicate the array to make it infinite loop-like
-  totalClones.value = promotions.value.length;
+    ...promotions.value
+  ];
+  // Start from the middle set to allow backward scrolling
+  currentIndex.value = promotions.value.length;
+};
+
+const handleTransitionEnd = () => {
+  isTransitioning.value = true;
+  // If we've scrolled to the last set, jump to the middle set
+  if (currentIndex.value >= displayedPromotions.value.length - promotions.value.length) {
+    isTransitioning.value = false;
+    currentIndex.value = promotions.value.length;
+  }
+  // If we've scrolled to the first set, jump to the middle set
+  else if (currentIndex.value <= promotions.value.length - 1) {
+    isTransitioning.value = false;
+    currentIndex.value = displayedPromotions.value.length - (promotions.value.length * 2);
+  }
 };
 
 const prevSlide = () => {
   isTransitioning.value = true;
-  index.value--;
-  if (index.value < 0) {
-    index.value = totalClones.value - 1;
-  }
+  currentIndex.value--;
 };
 
 const nextSlide = () => {
   isTransitioning.value = true;
-  index.value++;
-  if (index.value >= totalClones.value) {
-    index.value = 0;
-  }
+  currentIndex.value++;
 };
 
 const startAutoSlide = () => {
   interval.value = setInterval(() => {
     nextSlide();
-  }, 3000); // Change slide every 3 seconds
+  }, 3000);
 };
 
 onMounted(async () => {
   await fetchPromotions();
   startAutoSlide();
-});
-
-watch(index, (newIndex) => {
-  if (newIndex === promotions.value.length) {
-    setTimeout(() => {
-      isTransitioning.value = false;
-      index.value = 0;
-    }, 300); // Quick reset without animation
-  }
 });
 </script>
 

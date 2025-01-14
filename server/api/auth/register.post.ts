@@ -30,11 +30,22 @@ export default defineEventHandler(async (event) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const lastUser = await prisma.user.findFirst({
+    orderBy: { id: 'desc' },
+  });
+
+  let newUuid = 'M0001';
+  if (lastUser) {
+    const lastUuidNumber = parseInt(lastUser.uuid.substring(1), 10);
+    newUuid = `M${String(lastUuidNumber + 1).padStart(4, '0')}`;
+  }
+
   // Create new user
   const newUser = await prisma.user.create({
     data: {
       email,
       password: hashedPassword,
+      uuid: newUuid,
     },
   });
 

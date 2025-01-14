@@ -1,6 +1,7 @@
 <template>
     <UserLayout>
-        <div class="flex flex-col mx-auto border border-base-200 shadow-xl justify-center items-center rounded-xl bg-white ">
+        <div
+            class="flex flex-col max-w-3xl mx-auto border border-base-200 shadow-xl justify-center items-center rounded-xl bg-white ">
             <div class="flex items-center justify-between bg-opacity-80 bg-[#FF8128] rounded-t-lg h-14 px-4 w-full">
                 <RouterLink to="/user" class="btn btn-sm btn-primary text-white  font-light">กลับสู่หน้าหลัก
                 </RouterLink>
@@ -15,7 +16,6 @@
                 </ul>
             </div>
 
-            <!-- หน้าเลือกหมวดหมู่ -->
             <div v-if="currentStep === 1" class="grid grid-col-2  items-center justify-center sm:w-[80%] w-full">
                 <div class="grid gap-2 w-full h-full p-4 ">
 
@@ -31,7 +31,7 @@
                                 @input="useFormData.cdnumber = $event.target.value.replace(/[^0-9]/g, '')"
                                 pattern="[0-9]*" inputmode="numeric" maxlength="13" </div>
 
-                                
+
                         </div>
                     </div>
 
@@ -59,33 +59,33 @@
                     </div>
 
                 </div>
-                
+
 
                 <!-- หน้าเลือกวันที่และเวลา  -->
                 <div v-else-if="currentStep === 2" class="flex flex-col items-center justify-center w-full">
                     <div class="grid sm:grid-cols-2 grid-cols-1 gap-2 w-full p-4">
                         <div>
                             <div class="bg-opacity-5 bg-teal-800 rounded-md shadow-lg">
-                            <!-- Display user-entered data from the first step -->
-                            <div class="p-4">
-                                <div class="flex justify-between mt-2">
-                                    <p>ชื่อ</p>
-                                    <p>{{ useFormData.firstname }}</p>
-                                </div>
-                                <div class="flex justify-between mt-2">
-                                    <p>นามสกุล</p>
-                                    <p>{{ useFormData.lastname }}</p>
-                                </div>
-                                <div class="flex justify-between mt-2">
-                                    <p>เลขประจำตัวประชาชน</p>
-                                    <p>{{ useFormData.cdnumber }}</p>
-                                </div>
-                                <div class="flex justify-between mt-2">
-                                    <p>หมวดหมู่</p>
-                                    <p>{{ useFormData.category }}</p>
+                                <!-- Display user-entered data from the first step -->
+                                <div class="p-4">
+                                    <div class="flex justify-between mt-2">
+                                        <p>ชื่อ</p>
+                                        <p>{{ useFormData.firstname }}</p>
+                                    </div>
+                                    <div class="flex justify-between mt-2">
+                                        <p>นามสกุล</p>
+                                        <p>{{ useFormData.lastname }}</p>
+                                    </div>
+                                    <div class="flex justify-between mt-2">
+                                        <p>เลขประจำตัวประชาชน</p>
+                                        <p>{{ useFormData.cdnumber }}</p>
+                                    </div>
+                                    <div class="flex justify-between mt-2">
+                                        <p>หมวดหมู่</p>
+                                        <p>{{ useFormData.category }}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                         <div class="flex flex-col justify-center items-center shadow-lg rounded-md">
                             <div>
@@ -174,6 +174,8 @@ import { useUserReservatioStore } from '~/stores/reservatio';
 import { useAuthStore } from '~/stores/auth'
 import { ref, reactive } from 'vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import auth from '~/middleware/auth';
 
 const authStore = useAuthStore()
 
@@ -200,6 +202,7 @@ const formData = reactive([
 
 const useFormData = reactive({
     userId: authStore.user.id,
+    userUUID: authStore.user.uuid,
     email: authStore.user.email,
     firstname: '',
     lastname: '',
@@ -223,7 +226,6 @@ const fetchAddresses = async () => {
     }
 };
 
-// Validation function for required fields in step 1
 const validateStepOne = () => {
     return useFormData.firstname && useFormData.lastname && useFormData.cdnumber;
 };
@@ -238,9 +240,9 @@ const nextStepCurrentstep = () => {
         }
     } else if (currentStep.value === 2) {
         currentStep.value++;
-        userReservation.confirm(useFormData); // Confirming data for step 2
+        userReservation.confirm(useFormData)
     } else {
-        nextStep(); // For steps other than step 1
+        nextStep();
     }
 }
 
@@ -257,32 +259,57 @@ const prevStep = () => {
 };
 
 const confirmReservation = async () => {
-    try {
-        // Send reservation data to the backend
-        const response = await axios.post('/api/reservations', {
-            userId: useFormData.userId,
-            firstname: useFormData.firstname,
-            lastname: useFormData.lastname,
-            cdnumber: useFormData.cdnumber,
-            category: useFormData.category,
-            date: useFormData.date,
-            time: useFormData.time,
-            note: useFormData.note,
-            email: useFormData.email
-        });
+    const result = await Swal.fire({
+        title: 'คุณแน่ใจหรือไม่?',
+        text: 'คุณต้องการยืนยันการจองนี้หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ใช่, ยืนยันเลย!',
+        cancelButtonText: 'ยกเลิก',
+    });
 
-        if (response.data.success) {
-            alert('Reservation successful!');
-            router.push('/user');
-        } else {
-            alert('Failed to confirm reservation: ' + response.data.message);
+    if (result.isConfirmed) {
+        try {
+            console.log('form : ' , useFormData)
+            const response = await axios.post('/api/reservations', {
+                userId: useFormData.userId,
+                userUUID: useFormData.userUUID,
+                firstname: useFormData.firstname,
+                lastname: useFormData.lastname,
+                cdnumber: useFormData.cdnumber,
+                category: useFormData.category,
+                date: useFormData.date,
+                time: useFormData.time,
+                note: useFormData.note,
+                email: useFormData.email,
+            });
+
+            if (response.data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'การจองสำเร็จ!',
+                    text: 'การจองของคุณได้รับการยืนยันแล้ว',
+                });
+                router.push('/user');
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถยืนยันการจองได้: ' + response.data.message,
+                });
+            }
+        } catch (error) {
+            console.error('Error confirming reservation:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'เกิดข้อผิดพลาดระหว่างการยืนยันการจอง กรุณาลองใหม่อีกครั้ง',
+            });
         }
-    } catch (error) {
-        console.error('Error confirming reservation:', error);
-        alert('An error occurred while confirming your reservation.');
     }
 };
-
 
 authStore.initializeAuth();
 

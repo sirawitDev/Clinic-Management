@@ -6,7 +6,7 @@
         <div class="bg-white p-4 rounded-md">
           <div
             class="flex justify-center items-center bg-orange-400 bg-opacity-80 rounded-full shadow-sm sm:w-80 w-72 h-16 mt-5 mx-auto">
-            <h1 class="font-bold text-white text-center sm:text-3xl text-2xl text-stroke">ข้อมูลระยะเวลาการใช้ยา</h1>
+            <h1 class="font-bold text-white text-center sm:text-3xl text-2xl text-stroke">ข้อมูลการใช้ยา</h1>
           </div>
           <button class="btn font-light btn-accent text-white mt-3 w-full"
             onclick="my_modal_9.showModal()">เพิ่มระยะการใช้ยา</button>
@@ -73,7 +73,8 @@
         <div class="bg-white p-4 rounded-md">
           <div
             class="flex justify-center items-center bg-orange-400 bg-opacity-80 rounded-full shadow-sm sm:w-80 w-72 h-16 mt-5 mx-auto">
-            <h1 class="font-bold text-white text-center sm:text-3xl text-2xl text-stroke">ข้อมูลการวินิฉัย</h1> <!-- diagnosis-->
+            <h1 class="font-bold text-white text-center sm:text-3xl text-2xl text-stroke">ข้อมูลการวินิฉัย</h1>
+            <!-- diagnosis-->
           </div>
           <button class="btn font-light btn-accent text-white mt-3 w-full"
             onclick="my_modal_10.showModal()">เพิ่มข้อมูลการวินิฉัย</button>
@@ -127,7 +128,7 @@
                 <td>
                   <div class="flex gap-2 justify-center">
                     <button class="btn" @click="deleteDiagnosis(item.id)">
-                      <Trash/>
+                      <Trash />
                     </button>
                   </div>
                 </td>
@@ -220,6 +221,7 @@
 import AdminLayout from '~/layouts/adminLayout2.vue'
 import Trash from '~/components/admin/Trash.vue'
 import Edit from '~/components/admin/Edit.vue'
+import Swal from 'sweetalert2';
 
 const isLoading = ref(true);
 const newPeriodTitle = ref('');
@@ -305,44 +307,89 @@ const fetchPeriods = async () => {
 };
 
 const addPeriod = async () => {
-  try {
-    const response = await fetch('/api/periodOfdrug', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title: newPeriodTitle.value }),
-    });
+  document.getElementById('my_modal_9').close();
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการเพิ่ม ข้อมูลการใช้ยา นี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, เพิ่มเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-    if (!response.ok) {
-      throw new Error('Error adding period');
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/api/periodOfdrug', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: newPeriodTitle.value }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error adding period');
+      }
+      newPeriodTitle.value = '';
+      document.getElementById('my_modal_9')?.close();
+
+      await fetchPeriods();
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'เพิ่ม ข้อมูลการใช้ยา สำเร็จ',
+        text: 'ข้อมูลการใช้ยา ถูกเพิ่มเรียบร้อยแล้ว',
+      });
+    } catch (error) {
+      console.error('Error adding period:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถเพิ่ม ข้อมูลการใช้ยา ได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-
-    newPeriodTitle.value = '';
-    document.getElementById('my_modal_9')?.close();
-
-    // Refresh the periods
-    await fetchPeriods();
-  } catch (error) {
-    console.error('Error adding period:', error);
   }
 };
 
 const deletePeriod = async (id) => {
-  if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบระยะเวลาการใช้ยานี้?')) return;
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบข้อมูลการใช้ยานี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-  try {
-    const response = await fetch(`/api/periodOfdrug?id=${id}`, {
-      method: 'DELETE',
-    });
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch(`/api/periodOfdrug?id=${id}`, {
+        method: 'DELETE',
+      });
 
-    if (!response.ok) {
-      throw new Error('Error deleting period');
+      if (!response.ok) {
+        throw new Error('Error deleting period');
+      }
+      await response.json();
+      await fetchPeriods();
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'ลบ ข้อมูลการใช้ยา สำเร็จ',
+        text: 'ข้อมูลการใช้ยาได้ถูกลบเรียบร้อยแล้ว',
+      });
+    } catch (error) {
+      console.error('Error deleting period:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบข้อมูลการใช้ยาได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-    await response.json();
-    await fetchPeriods();
-  } catch (error) {
-    console.error('Error deleting period:', error);
   }
 };
 
@@ -416,18 +463,6 @@ definePageMeta({
 </script>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }

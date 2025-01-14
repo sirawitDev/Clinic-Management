@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div class="container mx-auto p-4 bg-base-100 rounded-lg">
+    <div class=" mx-auto p-4 bg-base-100 rounded-lg">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full bg-opacity-50">
         <h2 class="sm:text-5xl text-3xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการผู้ใช้บริการ</h2>
       </div>
@@ -43,14 +43,24 @@
                 <p class="text-center">{{ user.email }}</p>
               </td>
               <td>
-                <p class="text-center">{{ user.firstname }}</p>
+                <div v-if="user.firstname">
+                  <p class="text-center">{{ user.firstname }}</p>
+                </div>
+                <div v-else>
+                  <p class="text-red-400 text-center">ยังไม่ได้เพิ่ม</p>
+                </div>
               </td>
               <td>
-                <p class="text-center">{{ user.lastname }}</p>
+                <div v-if="user.lastname">
+                  <p class="text-center">{{ user.lastname }}</p>
+                </div>
+                <div v-else>
+                  <p class="text-red-400 text-center">ยังไม่ได้เพิ่ม</p>
+                </div>
               </td>
               <td>
                 <p v-if="user.cdnumber" class="text-center">{{ user.cdnumber }}</p>
-                <p v-else class="text-center text-red-400 text-sm">ยังไม่ได้เพิ่มเลขบัตร</p>
+                <p v-else class="text-center text-red-400 text-sm">ยังไม่ได้เพิ่ม</p>
               </td>
               <td>
                 <p class="text-center">{{ user.role }}</p>

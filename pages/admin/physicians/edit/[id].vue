@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const route = useRoute();
@@ -15,7 +16,7 @@ const form = ref({
   about: '',
 });
 
-const fetchPhysician = async (id: string) => {
+const fetchPhysician = async (id) => {
   try {
     const response = await axios.get(`/api/physician/${id}`);
     if (response.status !== 200) {
@@ -34,16 +35,41 @@ const fetchPhysician = async (id: string) => {
 const submitForm = async () => {
   try {
     const updatedData = { ...form.value };
-    await axios.put(`/api/physician/${route.params.id}`, updatedData);
-    router.push('/admin/physicians');
+
+    const result = await Swal.fire({
+      title: 'คุณแน่ใจหรือไม่?',
+      text: 'คุณต้องการบันทึกการเปลี่ยนแปลงหรือไม่?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'บันทึก',
+    });
+
+    if (result.isConfirmed) {
+      await axios.put(`/api/physician/${route.params.id}`, updatedData);
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ!',
+        text: 'การเปลี่ยนแปลงถูกบันทึกเรียบร้อยแล้ว',
+      });
+
+      router.push('/admin/physicians');
+    }
   } catch (error) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาด',
+      text: 'ไม่สามารถบันทึกการเปลี่ยนแปลงได้ กรุณาลองอีกครั้ง',
+    });
     console.error('Failed to update physician:', error);
-    // Implement better error handling here, such as showing a message to the user
   }
 };
 
 onMounted(() => {
-  const id = route.params.id as string;
+  const id = route.params.id;
   if (id) {
     fetchPhysician(id);
   }
@@ -58,8 +84,7 @@ definePageMeta({
 
 <template>
   <AdminLayout>
-    <div v-if="loading" class="text-center">Loading...</div>
-    <div class="flex" v-else>
+    <div class="flex">
       <div class="flex-1 mt-4 pl-4">
         <div class="divider"></div>
       </div>

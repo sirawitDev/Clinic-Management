@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") 
+  url = env("DATABASE_URL") 
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
@@ -109,13 +109,13 @@ model Products {
 model Drug {
   id          Int      @id @default(autoincrement())
   name        String   // ชื่อยา
-  type        String   // ประเภทของยา (เช่น ยาฆ่าเชื้อ, ยาแก้ปวด)
-  price       Int      // ราคา
+  type        String?   // ประเภทของยา (เช่น ยาฆ่าเชื้อ, ยาแก้ปวด)
+  price       Float?      // ราคา
   dosage      Float?   // ปริมาณยา (อาจเป็นค่า null ได้)
-  imageUrl    String   // URL ของภาพยา
+  imageUrl    String?   // URL ของภาพยา
   unit        String?  // หน่วยของปริมาณ (เช่น mg, ml)
-  about       String   // ข้อมูลเกี่ยวกับยา
-  status      String   // สถานะ (เช่น active, inactive)
+  about       String?   // ข้อมูลเกี่ยวกับยา
+  status      String?   // สถานะ (เช่น active, inactive)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -137,6 +137,7 @@ model Payment {
 
 model User {
   id          Int      @id @default(autoincrement())
+  uuid        String   @unique
   email       String   @unique
   password    String?
   firstname       String?
@@ -153,6 +154,7 @@ model User {
 model Reservation {
   id          Int      @id @default(autoincrement())
   userId      Int
+  userUUID    String?
   firstname    String
   lastname    String
   cdnumber      String //บัตร ปชช
@@ -171,6 +173,7 @@ model Reservation {
 model Address {
   id          Int      @id @default(autoincrement())
   userId      Int
+  userUUID    String?
   country     String   // ประเทศ
   houseNumber Int // บ้านเลขที่ 
   village     Int // หมู่ 

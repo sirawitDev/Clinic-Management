@@ -43,25 +43,6 @@
           </div>
         </div>
 
-        <!-- <div class="flex flex-col justify-center p-4">
-          <div class="flex justify-center">
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">
-                  <p class="font-light text-base">ค้นหาตามบัตรประชาชน</p>
-                </span>
-              </div>
-              <input type="text" placeholder="ค้นหาตามบัตรประชาชน" class="input input-bordered w-full max-w-xs"
-                v-model="searchCdnumber" />
-            </label>
-          </div>
-          <div class="flex justify-center mt-5">
-            <div class="btn btn-accent ml-2 w-36" @click="handleSearch">
-              <p class="text-white font-light">ค้นหา</p>
-            </div>
-          </div>
-        </div> -->
-
         <div class="overflow-x-auto p-4 mt-2">
           <table class="table">
             <thead>
@@ -116,64 +97,6 @@
             </tbody>
           </table>
         </div>
-
-        <!-- <div>
-          <div class="flex justify-center">
-            <div
-              class="flex justify-center items-center bg-[#FF8128] sm:w-[60%] w-full h-20 shadow-md rounded-full mt-1 bg-opacity-70">
-              <h2 class="sm:text-4xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">รายการค้นหา</h2>
-            </div>
-          </div>
-          <div class="overflow-x-auto p-4 mt-2">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>
-                    <p class="text-center text-base">รายชื่อ</p>
-                  </th>
-                  <th>
-                    <p class="text-center text-base">แพทย์ผู้รักษา</p>
-                  </th>
-                  <th>
-                    <p class="text-center text-base">วินิจฉัย</p>
-                  </th>
-                  <th>
-                    <p class="text-center text-base">การรักษา</p>
-                  </th>
-                  <th>
-                    <p class="text-center text-base">อื่นๆ</p>
-                  </th>
-                  <th>
-                    <p class="text-center text-base">เสร็จสิ้นวันที่</p>
-                  </th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="diagnosis in filteredDiagnoses" :key="diagnosis.id">
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ getPatientName(diagnosis.patient_id) }}</p>
-                  </td>
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ getPhysicianName(diagnosis.physician_id) }}</p>
-                  </td>
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ diagnosis.diagnosis }}</p>
-                  </td>
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ diagnosis.treatment_plan }}</p>
-                  </td>
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ diagnosis.notes }}</p>
-                  </td>
-                  <td>
-                    <p class="text-center sm:text-base text-sm">{{ formatDate(diagnosis.createdAt) }}</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div> -->
       </div>
     </div>
   </UserLayout>
@@ -191,26 +114,8 @@ const diagnoses = ref([]);
 const patients = ref([]);
 const physicians = ref([]);
 
-const searchCdnumber = ref(''); // Variable to store the input cdnumber
-const filteredDiagnoses = ref([]); // Array to store filtered diagnoses
-
-const handleSearch = async () => {
-  const cdnumber = searchCdnumber.value
-  try {
-    const response = await fetch(`/api/users/diagnosis/${cdnumber}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch diagnoses');
-    }
-
-    const data = await response.json();
-    filteredDiagnoses.value = data; // Update with fetched data
-  } catch (error) {
-    console.error('Error fetching diagnoses:', error);
-  }
-};
+const searchCdnumber = ref('');
+const filteredDiagnoses = ref([]);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -238,40 +143,38 @@ const fetchDiagnosesByCdnumber = async () => {
   }
 };
 
+// const fetchPatients = async () => {
+//   try {
+//     const response = await fetch('/api/user', {
+//       method: 'GET',
+//     });
 
+//     if (!response.ok) {
+//       throw new Error('Failed to fetch patients');
+//     }
 
-const fetchPatients = async () => {
-  try {
-    const response = await fetch('/api/user', {
-      method: 'GET',
-    });
+//     patients.value = await response.json();
+//     console.log('Fetched patients:', patients.value);
+//   } catch (error) {
+//     console.error('Error fetching patients:', error);
+//   }
+// };
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch patients');
-    }
+// const fetchPhysicians = async () => {
+//   try {
+//     const response = await fetch('/api/physician', {
+//       method: 'GET',
+//     });
 
-    patients.value = await response.json();
-    console.log('Fetched patients:', patients.value);
-  } catch (error) {
-    console.error('Error fetching patients:', error);
-  }
-};
+//     if (!response.ok) {
+//       throw new Error('Failed to fetch physicians');
+//     }
 
-const fetchPhysicians = async () => {
-  try {
-    const response = await fetch('/api/physician', {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch physicians');
-    }
-
-    physicians.value = await response.json();
-  } catch (error) {
-    console.error('Error fetching physicians:', error);
-  }
-};
+//     physicians.value = await response.json();
+//   } catch (error) {
+//     console.error('Error fetching physicians:', error);
+//   }
+// };
 
 const getPatientName = (id) => {
   const patient = patients.value.find(patient => patient.id === id);
@@ -287,8 +190,8 @@ const getPhysicianName = (id) => {
 authStore.initializeAuth()
 
 onMounted(async () => {
-  await fetchPatients();
-  await fetchPhysicians();
+  // await fetchPatients();
+  // await fetchPhysicians();
   await fetchDiagnosesByCdnumber()
 });
 

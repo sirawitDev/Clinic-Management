@@ -67,6 +67,9 @@
             <thead>
               <tr>
                 <th>
+                  <p class="text-center">เลขUUID</p>
+                </th>
+                <th>
                   <p class="text-center">รายชื่อ</p>
                 </th>
                 <th>
@@ -83,6 +86,9 @@
             </thead>
             <tbody>
               <tr v-for="(reservation, index) in reservations" :key="reservation.id">
+                <td>
+                  <p class="text-center">{{ reservation.userUUID }}</p>
+                </td>
                 <td>
                   <p class="text-center">{{ reservation.firstname }} {{ reservation.lastname }}</p>
                 </td>
@@ -162,49 +168,44 @@
   </UserLayout>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import ProfileAside from '~/components/user/ProfileAside.vue';
 import UserLayout from '~/layouts/userLayouts.vue';
 import { useAuthStore } from '~/stores/auth';
 import { ref, onMounted } from 'vue';
 
+const users = ref(JSON.parse(localStorage.getItem('user')))
+const uuid = users.value.uuid;
+
 const authStore = useAuthStore();
 const reservations = ref([]);
-const searchCdnumber = ref(''); // Variable to store the input cdnumber
-const searchResults = ref([]); // Array to store search results
+const searchCdnumber = ref('');
+const searchResults = ref([]); 
 
-const fetchReservationsByCdnumber = async (cdnumber) => { // Accept cdnumber as parameter
+const fetchReservationsByCdnumber = async () => { 
   try {
-    const response = await fetch(`/api/users/reservations/${cdnumber}`, {
+    const response = await fetch(`/api/users/reservations/${uuid}`, {
       method: 'GET',
     });
     if (!response.ok) {
       throw new Error('Failed to fetch reservations');
     }
     const data = await response.json();
-    reservations.value = data.reservations; // Assuming API returns an array of reservations
+    reservations.value = data.reservations;
   } catch (err) {
     console.error('Error fetching reservations:', err);
   }
 };
 
-const handleSearch = async () => {
-  if (searchCdnumber.value) {
-    await fetchReservationsByCdnumber(searchCdnumber.value); // Fetch reservations based on searched cdnumber
-    searchResults.value = reservations.value; // Update search results with fetched data
-  }
-};
-
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return date.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
+  return date.toISOString().split('T')[0];
 };
 
 authStore.initializeAuth();
 onMounted(async () => {
-  await authStore.initializeAuth();
-  await fetchReservationsByCdnumber(authStore.user.cdnumber); // Fetch initial reservations
-  console.log('user : ', authStore.user.cdnumber);
+  await fetchReservationsByCdnumber()
+  console.log('user : ', reservations.value);
 });
 </script>
 

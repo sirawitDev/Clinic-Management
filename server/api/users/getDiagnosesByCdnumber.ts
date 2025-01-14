@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event);  // รับ query parameter จาก request
+  const query = getQuery(event);
   const cdnumber = query.cdnumber;
 
   if (!cdnumber) {
@@ -12,16 +12,15 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // ใช้ Prisma ในการดึงข้อมูลการวินิจฉัยของคนไข้ที่มี cdnumber ตรงกัน
     const diagnoses = await prisma.diagnosis.findMany({
       where: {
         patient: {
-          cdnumber: cdnumber,  // กรองตาม cdnumber ของคนไข้
+          cdnumber: cdnumber,
         },
       },
       include: {
-        patient: true,  // ดึงข้อมูลคนไข้มาด้วย
-        physician: true,  // ดึงข้อมูลแพทย์มาด้วย
+        patient: true,
+        physician: true, 
       },
     });
 

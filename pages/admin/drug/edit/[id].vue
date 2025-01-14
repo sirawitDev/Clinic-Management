@@ -19,14 +19,15 @@
           </div>
 
           <div>
-            <label class="block text-base font-medium">URL รูปภาพ</label>
-            <input v-model="drug.imageUrl" id="imageUrl" type="text" class="input input-bordered w-full" />
+            <label class="block text-base font-medium">รูปภาพ</label>
+            <input type="file" id="imageUrl" accept="image/*" class=" file-input input-bordered w-full"
+              @change="handleImagePreview" />
           </div>
 
           <!-- Image Preview -->
           <div v-if="drug.imageUrl" class="my-4">
             <div class="flex justify-center">
-              <img :src="drug.imageUrl" alt="" class="w-48 h-auto border rounded" />
+              <img :src="imagePreview || drug.imageUrl" alt="" class="w-48 h-auto border rounded" />
             </div>
           </div>
 
@@ -42,7 +43,7 @@
 
           <div class="mb-5">
             <label class="label">ปริมาณ</label>
-            <input v-model="drug.dosage" type="text" class="input input-bordered w-full" />
+            <input v-model="drug.dosage" type="number" class="input input-bordered w-full" />
           </div>
 
           <div class="mb-5">
@@ -53,6 +54,14 @@
           <div class="mb-5">
             <label class="label">ข้อมูลเพิ่มเติม</label>
             <textarea v-model="drug.about" class="textarea textarea-bordered w-full"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700" for="status">สถานะ</label>
+            <select v-model="drug.status" id="status" class="select select-bordered w-full">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
           </div>
 
           <div class="flex justify-end gap-5">
@@ -67,7 +76,7 @@
   </adminLayouts>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import adminLayouts from '~/layouts/adminLayout2.vue';
@@ -77,14 +86,25 @@ const drug = ref({
   imageUrl: '',
   type: '',
   price: 0,
-  dosage: '',
+  dosage: 0,
   unit: '',
   about: '',
+  status: ''
 });
 
 const isLoading = ref(true);
 const router = useRouter();
 const route = useRoute();
+const imagePreview = ref('')
+
+const handleImagePreview = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    drug.value.imageUrl = file;
+
+    imagePreview.value = URL.createObjectURL(file)
+  }
+};
 
 const fetchDrug = async () => {
   const id = route.params.id;
@@ -106,16 +126,30 @@ const fetchDrug = async () => {
 const updateDrug = async () => {
   const id = route.params.id;
   try {
+    const formData = new FormData();
+
+    formData.append('id', id);
+    formData.append('name', drug.value.name);
+    formData.append('type', drug.value.type);
+    formData.append('price', drug.value.price.toString());
+    formData.append('dosage', drug.value.dosage.toString());
+    formData.append('unit', drug.value.unit);
+    formData.append('about', drug.value.about);
+
+    const imageInput = document.querySelector('#imageUrl');
+    if (imageInput && imageInput.files[0]) {
+      formData.append('image', imageInput.files[0]);
+    }
+
     const response = await fetch(`/api/drug/${id}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(drug.value),
+      body: formData,
     });
+
     if (!response.ok) {
       throw new Error('Error updating drug');
     }
+
     await response.json();
     router.push('/admin/drug');
   } catch (error) {
@@ -123,8 +157,9 @@ const updateDrug = async () => {
   }
 };
 
-onMounted(async() => {
+onMounted(async () => {
   await fetchDrug()
+  console.log('drug : ', drug.value)
 })
 
 definePageMeta({

@@ -1,7 +1,8 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
+import Swal from 'sweetalert2';
 
 import Trash from '~/components/admin/Trash.vue'
 import Edit from '~/components/admin/Edit.vue'
@@ -27,9 +28,18 @@ const fetchPhysicians = async () => {
 };
 
 async function deletePhysician(id) {
-  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบผู้ใช้นี้?');
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบผู้ใช้นี้หรือไม่? การลบไม่สามารถย้อนกลับได้',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-  if (confirmed) {
+  if (result.isConfirmed) {
     try {
       const response = await fetch(`/api/physician/${id}`, {
         method: 'DELETE',
@@ -38,14 +48,26 @@ async function deletePhysician(id) {
         throw new Error(`Error deleting physician: ${response.statusText}`);
       }
       await response.json();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'ลบสำเร็จ!',
+        text: 'ผู้ใช้ถูกลบเรียบร้อยแล้ว',
+      });
+
       await fetchPhysicians();
     } catch (error) {
-      console.log('error : ' , error);
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบผู้ใช้ได้ กรุณาลองอีกครั้ง',
+      });
+      console.error('Error deleting physician:', error);
     }
   }
 }
 
-const editPhysician = (id: number) => {
+const editPhysician = (id) => {
   router.push(`/admin/physicians/edit/${id}`);
 };
 
@@ -60,7 +82,7 @@ definePageMeta({
 
 <template>
   <AdminLayout>
-    <div class="container mx-auto p-4 bg-white">
+    <div class=" mx-auto p-4 bg-white">
       <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-50">
         <h2 class="sm:text-5xl text-2xl font-bold text-[#fefeff] text-stroke tracking-wide">จัดการบุคลากรภายในคลินิก
         </h2>
@@ -71,7 +93,7 @@ definePageMeta({
           class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
@@ -80,46 +102,46 @@ definePageMeta({
         <!-- Display table once data is fetched -->
         <table v-else class="table">
           <thead>
-            <tr>
+            <tr class="bg-slate-500 text-white text-base">
               <th>
-                <p class="text-center">ลำดับ</p>
+                <p class="text-center font-medium">ลำดับ</p>
               </th>
               <th>
-                <p class="text-center">คำนำหน้า</p>
+                <p class="text-center font-medium">คำนำหน้า</p>
               </th>
               <th>
-                <p class="text-center">ชื่อ</p>
+                <p class="text-center font-medium">ชื่อ</p>
               </th>
               <th>
-                <p class="text-center">นามสกุล</p>
+                <p class="text-center font-medium">นามสกุล</p>
               </th>
               <th>
-                <p class="text-center">ตำแหน่ง</p>
+                <p class="text-center font-medium">ตำแหน่ง</p>
               </th>
-              <th class=" hidden sm:block">
-                <p class="text-center">เบอร์โทรศัพท์</p>
+              <th>
+                <p class="text-center font-medium">เบอร์โทรศัพท์</p>
               </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(physician, index) in physicians" :key="physician.id">
-              <th>
+              <th class=" border-slate-500">
                 <p class="text-center">{{ index + 1 }}</p>
               </th>
-              <td>
+              <td class=" border-slate-500">
                 <p class="text-center">{{ physician.title }}</p>
               </td>
-              <td>
+              <td class=" border-slate-500">
                 <p class="text-center">{{ physician.first_name }}</p>
               </td>
-              <td>
+              <td class=" border-slate-500">
                 <p class="text-center">{{ physician.last_name }}</p>
               </td>
-              <td>
+              <td class=" border-slate-500">
                 <p class="text-center">{{ physician.about }}</p>
               </td>
-              <td class="hidden sm:block">
+              <td class=" border-slate-500">
                 <p class="text-center">{{ physician.phone }}</p>
               </td>
               <td>
@@ -141,23 +163,6 @@ definePageMeta({
 </template>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
-
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }

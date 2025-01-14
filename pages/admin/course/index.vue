@@ -9,7 +9,7 @@
           class="btn btn-accent w-full text-white font-light mt-5">เพิ่มข้อมูล</nuxt-link>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
@@ -18,24 +18,24 @@
         <!-- Display table once data is fetched -->
         <table v-else class="table">
           <thead>
-            <tr>
+            <tr class="bg-slate-500 text-white text-base">
               <th>
-                <p class="text-center">ลำดับ</p>
+                <p class="text-center font-medium">ลำดับ</p>
               </th>
               <th>
-                <p class="text-center">ชื่อคอร์ส</p>
+                <p class="text-center font-medium">ชื่อคอร์ส</p>
               </th>
               <th>
-                <p class="text-center">รูปภาพ</p>
+                <p class="text-center font-medium">รูปภาพ</p>
               </th>
               <th>
-                <p class="text-center">รายละเอียด</p>
+                <p class="text-center font-medium">รายละเอียด</p>
               </th>
               <th>
-                <p class="text-center">ราคา</p>
+                <p class="text-center font-medium">ราคา</p>
               </th>
               <th>
-                <p class="text-center">สถานะ</p>
+                <p class="text-center font-medium">สถานะ</p>
               </th>
               <th></th>
             </tr>
@@ -49,8 +49,10 @@
                 <p class="text-center">{{ course.title }}</p>
               </td>
               <td>
-                <img v-if="course.imageUrl" :src="course.imageUrl" alt="Promotion Image"
-                  class="w-16 h-auto cursor-pointer" @click="openModal(promotion.imageUrl)" />
+                <div v-if="course.imageUrl" class="flex justify-center">
+                  <img :src="course.imageUrl" alt="Promotion Image"
+                    class="w-24 h-auto cursor-pointer" @click="openModal(promotion.imageUrl)" />
+                </div>
                 <div v-else class="flex justify-center">
                   <p class=" text-gray-600">ไม่มีรูปภาพ</p>
                 </div>
@@ -97,6 +99,7 @@ import { useRouter } from 'vue-router';
 import adminLayouts from '~/layouts/adminLayout2.vue';
 import Trash from '~/components/admin/Trash.vue';
 import Edit from '~/components/admin/Edit.vue';
+import Swal from 'sweetalert2';
 
 const courses = ref([]);
 const isLoading = ref(true);
@@ -124,8 +127,18 @@ const fetchCourses = async () => {
 };
 
 const deleteCourse = async (courseId) => {
-  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบคอร์สนี้?'); // Confirmation message
-  if (confirmed) {
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบคอร์สนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
     try {
       const response = await fetch(`/api/course`, {
         method: 'DELETE',
@@ -134,12 +147,25 @@ const deleteCourse = async (courseId) => {
         },
         body: JSON.stringify({ id: courseId }),
       });
+
       if (!response.ok) {
         throw new Error('Failed to delete course');
       }
+
       await fetchCourses();
+      await Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ!',
+        text: 'คอร์สนี้ถูกลบเรียบร้อยแล้ว',
+      });
+
     } catch (err) {
-      error.value = err.message;
+      console.error('Error deleting course:', err);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบคอร์สได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
   }
 };
@@ -165,23 +191,6 @@ definePageMeta({
 </script>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
-
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;
 }

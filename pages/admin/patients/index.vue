@@ -3,16 +3,15 @@ import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '~/stores/user.ts'
 import { writeFile, utils } from 'xlsx'
 import adminLayouts from '~/layouts/adminLayout2.vue'
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const selectedUser = ref(null)
 const diagnoses = ref([])
 
 const deleteUser = async (id) => {
-  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบผู้ใช้?'); // Confirmation message
-  if (confirmed) {
-    await userStore.deleteUser(id);
-  }
+
+  await userStore.deleteUser(id);
 };
 
 // Function to format the date
@@ -148,22 +147,22 @@ definePageMeta({
             class="btn btn-accent w-full font-light text-white sm:text-base text-sm">เพิ่มข้อมูลคนไข้</nuxt-link>
         </div>
 
-        <div class="overflow-x-auto mt-5 bg-white">
+        <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
           <table class="table w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th v-for="column in columns" :key="column.field" class="border p-2 text-center">
-                  <p class="sm:text-sm text-[12px]">{{ column.title }}</p>
+              <tr class="bg-slate-500 text-white text-base">
+                <th v-for="column in columns" :key="column.field" class=" p-2 text-center">
+                  <p class="sm:text-base font-medium text-[12px]">{{ column.title }}</p>
                 </th>
-                <th class="border p-2 text-center">{{ actionsColumn.title }}</th>
+                <th class=" p-2 text-center">{{ actionsColumn.title }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="user in userStore.users" :key="user.id">
-                <td v-for="column in columns" :key="column.field" class="border p-2">
+                <td v-for="column in columns" :key="column.field" class=" border-slate-500 p-2">
                   <p class="sm:text-sm text-[13px] text-center">{{ user[column.field] }}</p>
                 </td>
-                <td class="border p-2">
+                <td class=" p-2">
                   <div class="flex justify-center gap-3 p-4">
                     <nuxt-link :to="`/admin/patients/edit/${user.id}`" class="btn btn-primary sm:btn-md btn-sm">
                       <p class="font-light text-white sm:text-base text-[12px]">แก้ไข</p>

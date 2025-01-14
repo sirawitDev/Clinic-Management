@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
         error: 'Token is missing',
       };
     }
+
     const userPayload = await verify(token);
 
     if (!userPayload || !userPayload.email) {
@@ -35,12 +36,25 @@ export default defineEventHandler(async (event) => {
     });
 
     if (!user) {
+      const lastUser = await prisma.user.findFirst({
+        orderBy: { id: 'desc' },
+      });
+      
+      let newUuid = 'M0001';
+      if (lastUser && lastUser.uuid) {
+        const lastUuidNumber = parseInt(lastUser.uuid.substring(1), 10);
+        if (!isNaN(lastUuidNumber)) {
+          newUuid = `M${String(lastUuidNumber + 1).padStart(4, '0')}`;
+        }
+      }
+
       user = await prisma.user.create({
         data: {
           email,
           firstname: firstName,
           lastname: lastName,
           role: 'user',
+          uuid: newUuid,
         },
       });
     }
@@ -56,6 +70,7 @@ export default defineEventHandler(async (event) => {
         firstname: user.firstname,
         lastname: user.lastname,
         role: user.role,
+        uuid: user.uuid, // เพิ่ม UUID ในการตอบกลับ
       },
     };
   } catch (error) {

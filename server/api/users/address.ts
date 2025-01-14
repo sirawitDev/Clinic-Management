@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   const method = event.req.method;
 
   if (method === 'GET') {
-    // Fetch all addresses for a user
     const query = getQuery(event);
     const userId = query.userId ? Number(query.userId) : null;
     const addressId = query.addressId ? Number(query.addressId) : null;
@@ -63,9 +62,8 @@ export default defineEventHandler(async (event) => {
   
 
   if (method === 'POST') {
-    // Create a new address
     const body = await readBody(event);
-    const { userId, houseNumber, village, subdistrict, district, province, postalCode, phoneNumber, country } = body;
+    const { userId, userUUID, houseNumber, village, subdistrict, district, province, postalCode, phoneNumber, country } = body;
 
     if (!userId || !houseNumber || !subdistrict || !district || !province || !postalCode || !phoneNumber) {
       return {
@@ -86,6 +84,7 @@ export default defineEventHandler(async (event) => {
           postalCode,
           phoneNumber,
           country,
+          userUUID
         },
       });
 

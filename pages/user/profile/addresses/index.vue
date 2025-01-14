@@ -175,6 +175,7 @@ import { useAuthStore } from '~/stores/auth';
 import ProfileAside from '~/components/user/ProfileAside.vue';
 import UserLayout from '~/layouts/userLayouts.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 // other imports
 const authStore = useAuthStore();
@@ -235,28 +236,57 @@ const fetchAddresses = async () => {
 };
 
 const submitAddress = async () => {
-  try {
-    const unformattedPhoneNumber = unformatPhoneNumber(address.value.phoneNumber);
-    const response = await $fetch('/api/users/address', {
-      method: 'POST',
-      body: {
-        userId: authStore.user.id,
-        ...address.value,
-        phoneNumber: unformattedPhoneNumber,
-      }
-    });
+  addressModal.value.close();
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการเพิ่มที่อยู่นี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, เพิ่มเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-    if (response.success) {
-      alert('Address added successfully');
-      addressModal.value.close(); // Close the modal
-      router.push('/user/profile/addresses');
-      window.location.reload()
-    } else {
-      alert('Failed to add address');
+  if (result.isConfirmed) {
+    try {
+      const unformattedPhoneNumber = unformatPhoneNumber(address.value.phoneNumber);
+      const response = await $fetch('/api/users/address', {
+        method: 'POST',
+        body: {
+          userId: authStore.user.id,
+          userUUID: authStore.user.uuid,
+          ...address.value,
+          phoneNumber: unformattedPhoneNumber,
+        },
+      });
+
+      if (response.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'เพิ่มที่อยู่สำเร็จ!',
+          text: 'ที่อยู่ของคุณถูกเพิ่มเรียบร้อยแล้ว',
+        });
+
+        addressModal.value.close();
+        router.push('/user/profile/addresses');
+        
+        await fetchAddresses()
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถเพิ่มที่อยู่ได้ กรุณาลองใหม่อีกครั้ง',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding address:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาดไม่คาดคิด',
+        text: 'เกิดข้อผิดพลาดระหว่างการเพิ่มที่อยู่ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-  } catch (error) {
-    console.error('Error adding address:', error);
-    alert('An error occurred while adding the address');
   }
 };
 

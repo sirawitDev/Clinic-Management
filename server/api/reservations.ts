@@ -11,9 +11,8 @@ export default defineEventHandler(async (event) => {
 
         try {
             if (query.cdnumber) {
-                // Filter by cdnumber
                 const reservations = await prisma.reservation.findMany({
-                    where: { cdnumber: query.cdnumber },
+                    where: { userUUID: query.userUUID },
                 });
 
                 return {
@@ -21,7 +20,6 @@ export default defineEventHandler(async (event) => {
                     reservations,
                 };
             } else {
-                // Fetch all reservations if no cdnumber is provided
                 const reservations = await prisma.reservation.findMany();
                 return {
                     success: true,
@@ -38,13 +36,13 @@ export default defineEventHandler(async (event) => {
     }
 
     if (method === 'POST') {
-        // Handle POST request (create a new reservation)
         const body = await readBody(event);
 
         try {
             const newReservation = await prisma.reservation.create({
                 data: {
                     userId: body.userId,
+                    userUUID: body.userUUID,
                     firstname: body.firstname,
                     lastname: body.lastname,
                     cdnumber: body.cdnumber,

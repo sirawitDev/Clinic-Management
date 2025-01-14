@@ -2,7 +2,7 @@
   <AdminLayout>
     <!-- Header -->
     <div class="flex justify-center items-center bg-[#FF8128] w-full h-20 shadow-md rounded-full mt-5 bg-opacity-70">
-      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">วินิฉัย</h2>
+      <h2 class="text-5xl font-bold text-[#fefeff] text-stroke tracking-wide">วินิจฉัย</h2>
     </div>
     <div class="container mx-auto max-w-5xl bg-white p-4 mt-5">
 

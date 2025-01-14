@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const { cdnumber } = event.context.params; // Get the cdnumber from the URL parameter
+  const { uuid } = event.context.params; // Get the cdnumber from the URL parameter
 
   if (!cdnumber) {
     throw createError({ statusCode: 400, message: 'cdnumber is required' });

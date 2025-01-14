@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto">
+  <div class=" mx-auto">
 
     <div
       class="navbar mb-5 bg-[#FAFAFA] rounded-full mx-1 my-3 shadow-lg sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
@@ -163,13 +163,30 @@
 
                     <div class="form-control mt-5">
                       <label class="text-lg mx-1">รหัสผ่าน</label>
-                      <input v-model="registerPassword" type="password" placeholder="" class="input input-bordered" />
+                      <div class="relative">
+                        <input v-model="registerPassword" :type="showPassword ? 'text' : 'password'"
+                          class="input input-bordered w-full" />
+                        <button type="button" @click="togglePasswordVisibility"
+                          class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                          <span v-if="showPassword">👁️</span>
+                          <span v-else>🙈</span>
+                        </button>
+                      </div>
                     </div>
 
                     <div class="form-control mt-5">
                       <label class="text-lg mx-1">รหัสผ่านอีกครั้ง</label>
-                      <input v-model="confirmPassword" type="password" placeholder="" class="input input-bordered" />
+                      <div class="relative">
+                        <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+                          class="input input-bordered w-full" />
+                        <button type="button" @click="toggleConfirmPasswordVisibility"
+                          class="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                          <span v-if="showConfirmPassword">👁️</span>
+                          <span v-else>🙈</span>
+                        </button>
+                      </div>
                     </div>
+
                     <div class="form-control mt-5">
                       <button type="submit" class="btn btn-accent text-white font-light">สร้างบัญชี</button>
                     </div>
@@ -253,7 +270,7 @@
                   <form method="dialog">
                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                   </form>
-                  <h3 class="text-lg font-bold text-black font-light">เบอร์โทรศัพท์</h3>
+                  <h3 class="text-lg text-black font-light">เบอร์โทรศัพท์</h3>
                   <p class="py-4 text-accent text-2xl">084-170-8459</p>
                 </div>
               </dialog>
@@ -270,11 +287,13 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import auth from '~/middleware/auth';
-import { useAuthStore } from '~/stores/auth.ts';
+import { useAuthStore } from '~/stores/auth';
 import {
   GoogleSignInButton,
   type CredentialResponse,
 } from "vue3-google-signin";
+
+import Swal from 'sweetalert2';
 
 import Facebook from '~/components/user/Facebook.vue';
 import Line from '~/components/user/Line.vue';
@@ -321,7 +340,20 @@ const registerPassword = ref('');
 const confirmPassword = ref('');
 const loginError = ref('')
 
+const showConfirmPassword = ref(false);
+const showPassword = ref(false);
+
+const toggleConfirmPasswordVisibility = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
+
 const register = async () => {
+  document.getElementById('my_modal_3').close();
+  
   const emailRegex = /^[a-zA-Z0-9._%+-]+@(hotmail\.com|gmail\.com)$/;
 
   if (!emailRegex.test(registerEmail.value)) {
@@ -330,7 +362,11 @@ const register = async () => {
   }
 
   if (registerPassword.value !== confirmPassword.value) {
-    alert('Passwords do not match.');
+    Swal.fire({
+      icon: 'error',
+      title: 'รหัสผ่านไม่ตรงกัน',
+      text: 'กรุณากรอกรหัสผ่านให้ตรงกัน',
+    });
     return;
   }
 
@@ -344,11 +380,19 @@ const register = async () => {
       },
     });
 
-    showSuccessMessageRegister.value = true;
+    Swal.fire({
+      icon: 'success',
+      title: 'ลงทะเบียนสำเร็จ',
+      text: 'ยินดีต้อนรับ! โปรดเข้าสู่ระบบเพื่อเริ่มใช้งาน',
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+
     setTimeout(() => {
-      showSuccessMessageRegister.value = false;
-      window.location.reload()
+      window.location.reload();
     }, 3000);
+
     console.log('User registered successfully', response);
   } catch (error) {
     console.error('Registration failed', error);

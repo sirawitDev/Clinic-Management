@@ -52,6 +52,7 @@
 import adminLayout from '~/layouts/adminLayout2.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const route = useRoute();
@@ -89,26 +90,53 @@ const fetchUser = async (id) => {
 onMounted(() => {
   const id = route.params.id;
   if (id) {
-    fetchUser(id); // Fetch user details using the ID from route params
+    fetchUser(id);
   }
 });
 
 const submitForm = async () => {
   const id = route.params.id;
-  try {
-    const response = await fetch(`/api/users/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(form.value),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to update user');
+
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: "คุณต้องการอัปเดตข้อมูลผู้ใช้นี้หรือไม่?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, ฉันต้องการอัปเดต!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form.value),
+      });
+
+      if (!response.ok) {
+        throw new Error('ไม่สามารถอัปเดตผู้ใช้ได้');
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'อัปเดตสำเร็จ!',
+        text: 'ข้อมูลผู้ใช้ถูกอัปเดตเรียบร้อยแล้ว',
+      }).then(() => {
+        router.push('/admin/users')
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถอัปเดตข้อมูลผู้ใช้ได้ กรุณาลองอีกครั้ง',
+      });
+      console.error('Error updating user:', error);
     }
-    router.push('/admin/users'); // Redirect back to the user list after successful update
-  } catch (error) {
-    console.error('Error updating user:', error);
   }
 };
 

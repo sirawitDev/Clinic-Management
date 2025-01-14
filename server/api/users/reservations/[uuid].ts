@@ -3,12 +3,12 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-    const { cdnumber } = event.context.params; // Get cdnumber from the route
+    const { uuid } = event.context.params;
 
     try {
         // Find reservations by cdnumber
         const reservations = await prisma.reservation.findMany({
-            where: { cdnumber: cdnumber },
+            where: { userUUID: uuid },
         });
 
         if (reservations.length > 0) {

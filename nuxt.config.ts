@@ -28,6 +28,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       googleClientId: '557530570894-634cp3f1j2epod3e2supi6bhcl3nohj7.apps.googleusercontent.com',
+      domain: process.env.DOMAIN || 'http://localhost:3000',
     },
   },
 });
