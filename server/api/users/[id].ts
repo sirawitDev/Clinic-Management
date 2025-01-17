@@ -14,9 +14,8 @@ export default defineEventHandler(async (event) => {
       return { message: 'User ID is required' };
     }
 
-    const userId = Number(id); // Convert id to a number, assuming it is numeric
+    const userId = Number(id);
 
-    // Handle GET request: Fetch a single user by ID
     if (method === 'GET') {
       const user = await prisma.user.findUnique({
         where: { id: userId },

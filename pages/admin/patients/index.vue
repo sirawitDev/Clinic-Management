@@ -14,15 +14,13 @@ const deleteUser = async (id) => {
   await userStore.deleteUser(id);
 };
 
-// Function to format the date
 const formatDateTime = (dateTime) => {
   const date = new Date(dateTime)
-  const formattedDate = date.toISOString().split('T')[0] // Get YYYY-MM-DD
-  const formattedTime = date.toTimeString().split(' ')[0] // Get HH:MM:SS
+  const formattedDate = date.toISOString().split('T')[0]
+  const formattedTime = date.toTimeString().split(' ')[0]
   return `${formattedDate} / ${formattedTime}`
 }
 
-// Function to format the birthdate
 const formatBirthdate = (birthdate) => {
   const date = new Date(birthdate);
   const options = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
@@ -55,12 +53,12 @@ const actionsColumn = { title: '', field: 'actions' }
 
 const openModal = async (user) => {
   selectedUser.value = { ...user }
-  await DiagnosisCdnumber(user.cdnumber) // Fetch diagnosis history
+  await DiagnosisCdnumber(user.cdnumber)
 }
 
 const closeModal = () => {
   selectedUser.value = null
-  diagnoses.value = [] // Clear diagnoses when closing modal
+  diagnoses.value = []
 }
 
 

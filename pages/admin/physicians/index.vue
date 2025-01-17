@@ -146,7 +146,7 @@ definePageMeta({
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deletePhysician(physician.id)">
+                  <button class="btn bg-red-500 hover:bg-red-300" @click="deletePhysician(physician.id)">
                     <Trash />
                   </button>
                   <button class="btn btn-accent" @click="editPhysician(physician.id)">

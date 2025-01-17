@@ -9,40 +9,46 @@ export default defineEventHandler(async (event) => {
     switch (method) {
       case 'POST': {
         const body = await readBody(event);
-        console.log('Request Body:', body); // Log request body
+        console.log('Request Body:', body);
 
-        const { orderNumber, totalAmount, diagnosisId } = body;
+        const { products, orderNumber, totalAmount, diagnosisId, quantity, paymentMethod } = body;
 
-        // Validate request data
         if (!orderNumber || !totalAmount) {
           return { statusCode: 400, body: { message: 'Missing orderNumber or totalAmount' } };
         }
 
-        // Create a new payment
-        const payment = await prisma.payment.create({
-          data: {
-            orderNumber,
-            totalAmount,
-            diagnosisId,
-            status: 'pending',
-          },
-        });
-
-        return { statusCode: 200, body: payment };
+        try {
+          const payment = await prisma.payment.create({
+            data: {
+              orderNumber,
+              products: products ? { set: products } : null,
+              totalAmount,
+              diagnosisId,
+              quantity: quantity || (products?.reduce((sum, product) => sum + product.quantity, 0) ?? 0),
+              paymentMethod: paymentMethod || null,
+              status: 'pending',
+            },
+          });
+          console.log('Payment Creation Result:', payment);
+          return { statusCode: 200, body: JSON.stringify(payment) };
+        } catch (error) {
+          console.error('Error creating payment:', error);
+          return { statusCode: 500, body: { message: 'Internal Server Error', error: error.message } };
+        }
       }
+
 
       case 'GET': {
         const query = getQuery(event);
         const { id } = query;
 
         if (id) {
-          // Fetch a single payment by ID, including related data (diagnosis and patient)
           const payment = await prisma.payment.findUnique({
             where: { id: Number(id) },
             include: {
               diagnosis: {
                 include: {
-                  patient: true, // Include patient info
+                  patient: true,
                 },
               },
             },
@@ -55,12 +61,11 @@ export default defineEventHandler(async (event) => {
           return { statusCode: 200, body: payment };
         }
 
-        // Fetch all payments, including related data (diagnosis and patient)
         const payments = await prisma.payment.findMany({
           include: {
             diagnosis: {
               include: {
-                patient: true, // Include patient info
+                patient: true,
               },
             },
           },

@@ -4,6 +4,7 @@ import adminLayouts from '~/layouts/adminLayout2.vue';
 import { useUserStore } from '~/stores/user.ts';
 import Trash from '~/components/admin/Trash.vue';
 import Edit from '~/components/admin/Edit.vue';
+import Swal from 'sweetalert2';
 
 const userStore = useUserStore();
 const totalPatients = ref(0);
@@ -57,41 +58,91 @@ const fetchPayments = async () => {
   }
 };
 
-// Delete a payment
+
 const deletePayment = async (id) => {
-  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบการชำระเงินนี้?'); // Confirmation message
-  if (confirmed) {
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบการชำระเงินนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
     try {
       const response = await fetch(`/api/payment/${id}`, {
         method: 'DELETE',
       });
+
       if (response.ok) {
         payment.value = payment.value.filter((p) => p.id !== id);
         totalRevenue.value = payment.value.reduce((sum, p) => sum + p.totalAmount, 0);
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: 'ลบการชำระเงินเรียบร้อยแล้ว',
+        });
       } else {
         console.error('Error deleting payment');
+        await Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถลบการชำระเงินได้',
+        });
       }
     } catch (error) {
       console.error('Error deleting payment:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาดไม่คาดคิด',
+        text: 'เกิดข้อผิดพลาดในการลบ กรุณาลองใหม่อีกครั้ง',
+      });
     }
   }
 };
 
 const deleteReservation = async (id) => {
-  const confirmed = window.confirm('คุณแน่ใจหรือว่าต้องการลบนัดหมายนี้?'); // Confirmation message
-  if (confirmed) {
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบนัดหมายนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
     try {
       const response = await fetch(`/api/reservations?id=${id}`, {
         method: 'DELETE',
       });
+
       if (!response.ok) {
-        throw new Error(`Error deleting reservations: ${response.statusText}`);
+        throw new Error(`Error deleting reservation: ${response.statusText}`);
       }
+
       await response.json();
-      // Optionally, remove the deleted reservation from the reservations list
+      
       reservations.value = reservations.value.filter((res) => res.id !== id);
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'ลบสำเร็จ!',
+        text: 'นัดหมายถูกลบเรียบร้อยแล้ว',
+      });
     } catch (error) {
       console.error(error.message);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบการนัดหมายได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
   }
 };
@@ -129,8 +180,9 @@ onMounted(async () => {
     </div>
     <div class="flex justify-center mt-5 p-5 bg-white shadow-md rounded-md">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-        <div class="card bg-[#2584FF] w-full shadow-xl h-44 transform-transition bg-opacity-65">
-          <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">รายได้ทั้งหมด</h2>
+
+        <div class="card bg-[#2584FF] w-full shadow-xl h-44 transform-transition bg-opacity-65 cursor-pointer">
+          <h2 class=" text-white font-light text-3xl pl-5 pt-5">รายได้ทั้งหมด</h2>
           <div class="flex mt-8">
             <div class="flex ml-5 w-full mt-8">
               <p class="text-white text-4xl mt-1" :class="{ 'text-xl': loadingRevenue }">
@@ -143,7 +195,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="card bg-[#00AC97] w-full h-44 shadow-xl transform-transition bg-opacity-65">
+        <div class="card bg-[#00AC97] w-full h-44 shadow-xl transform-transition bg-opacity-65 cursor-pointer">
           <h2 class="card-title text-white font-light text-3xl pl-5 pt-5">นัดหมายวันนี้</h2>
           <div class="flex mt-8">
             <div class="flex-1 ml-5 mt-8">
@@ -157,7 +209,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65">
+        <div class="card bg-[#515262] w-full h-44 shadow-xl transform-transition bg-opacity-65 cursor-pointer">
           <h2 class="card-title text-white font-light text-2xl pl-5 pt-5">รวมผู้ป่วยทั้งหมด</h2>
           <div class="flex mt-8">
             <div class="flex-1 ml-5 mt-8">
@@ -173,7 +225,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="bg-white rounded-lg h-[400px] shadow-lg">
+    <div class="bg-white rounded-lg h-[400px] shadow-lg mt-5">
       <div class="bg-[#FF8128] rounded-t-lg h-14 flex justify-center items-center bg-opacity-95 shadow-sm">
         <h1 class="text-white text-3xl">นัดหมายวันนี้</h1>
       </div>
@@ -198,16 +250,15 @@ onMounted(async () => {
 
             <div class="flex gap-2 justify-center mb-2 mt-2">
               <button @click="deleteReservation(reservation.id)"
-                class="btn sm:w-28 w-16 shadow-md bg-red-500 text-white">
+                class="btn sm:w-28 w-16 shadow-md bg-red-500 hover:bg-red-300 text-white">
                 <Trash />
-                <p class="font-light hidden sm:block">ลบ</p>
               </button>
-              <button class="btn btn-accent sm:w-28 w-16">
+              <!-- <button class="btn btn-accent sm:w-28 w-16">
                 <div class="flex">
                   <Edit />
                   <h1 class="font-light text-white mt-1 hidden sm:block">เพิ่มเติม</h1>
                 </div>
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -218,13 +269,13 @@ onMounted(async () => {
       <div class="bg-[#FF8128] rounded-t-lg h-14 flex justify-center items-center bg-opacity-95">
         <h1 class="text-white text-3xl">รายการล่าสุด</h1>
       </div>
-      <div class="overflow-x-auto mt-3">
+      <div class="overflow-x-auto rounded-lg border-4 border-[#FF8836] mb-5 mt-5">
         <div v-if="loadingPayments" class="flex justify-center p-4">
           <p class="text-gray-500">กำลังโหลดข้อมูล...</p>
         </div>
         <table v-else class="table">
           <thead>
-            <tr>
+            <tr class="bg-[#FF8836] text-white text-base">
               <th>
                 <p class="text-center">ID</p>
               </th>
@@ -232,7 +283,7 @@ onMounted(async () => {
                 <p class="text-center">ชื่อลูกค้า</p>
               </th>
               <th>
-                <p class="text-center">รหัสสินค้า</p>
+                <p class="ml-5">สินค้า</p>
               </th>
               <th>
                 <p class="text-center">ราคา</p>
@@ -267,7 +318,11 @@ onMounted(async () => {
                 </div>
               </td>
               <td>
-                <p class="text-center">{{ payment.orderNumber }}</p>
+                <div v-for="product in payment.products">
+                  <p class="ml-5">{{ product.name }} จำนวน <span class="text-red-500">{{ product.quantity
+                      }}</span>
+                    ชิ้น</p>
+                </div>
               </td>
               <td>
                 <p class="text-center">{{ payment.totalAmount }} บาท</p>
@@ -276,11 +331,13 @@ onMounted(async () => {
                 <p class="text-center">พร้อมเพย์</p>
               </td>
               <td>
-                <p class="text-center">{{ payment.status }}</p>
+                <p class="text-center">
+                  {{ payment.status === 'success' ? 'จ่ายแล้ว' : payment.status }}
+                </p>
               </td>
               <th>
                 <div class="flex gap-2">
-                  <button @click="deletePayment(payment.id)" class="btn btn-md btn-danger font-light">
+                  <button @click="deletePayment(payment.id)" class="btn bg-red-500 hover:bg-red-300 font-light">
                     <Trash />
                   </button>
                   <button class="btn btn-md btn-accent font-light text-white">เพิ่มเติม</button>

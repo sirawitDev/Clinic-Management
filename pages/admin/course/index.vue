@@ -69,7 +69,7 @@
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn sm:btn-md btn-sm" @click="deleteCourse(course.id)">
+                  <button class="btn bg-red-500 hover:bg-red-300 sm:btn-md btn-sm" @click="deleteCourse(course.id)">
                     <Trash />
                   </button>
                   <!-- You can open the modal using ID.showModal() method -->

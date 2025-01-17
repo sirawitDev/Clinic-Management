@@ -4,6 +4,8 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
 const authStore = useAuthStore()
+const selectPayment = ref("")
+const amount = ref("")
 
 
 import Search from '~/components/cashier/Search.vue';
@@ -19,12 +21,21 @@ const selectedDiagnosis = ref(null);
 const searchQuery = ref('');
 const router = useRouter()
 
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('th-TH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 const pendingDiagnoses = computed(() => {
-  return diagnosesFetch.value.filter(diagnosis => diagnosis.paymentStatus === 'pening');
+  return diagnosesFetch.value.filter(diagnosis => diagnosis.paymentStatus === 'pending');
 });
 
 const filteredDrugs = computed(() => {
-  // Step 2: Filter drugs based on the search query
   return drugs.value.filter(drug =>
     drug.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
@@ -125,29 +136,45 @@ const totalPrice = computed(() => {
   return selectedDrugs.value.reduce((total, drug) => total + (drug.price * drug.quantity), 0);
 });
 
+const changeAmount = computed(() => {
+  if (amount.value && selectPayment.value === 'เงินสด') {
+    const change = parseFloat(amount.value) - totalPrice.value;
+    return change >= 0 ? change : 0;
+  }
+  return 0;
+});
+
 const getPatientName = (id) => {
   const patient = patientsFetch.value.find(patient => patient.id === id);
   return patient ? `${patient.firstname} ${patient.lastname}` : 'Unknown Patient';
 };
-
 const completePayment = async () => {
   try {
     const diagnosisId = pendingDiagnoses.value.length > 0 ? pendingDiagnoses.value[0].id : null;
     const storedSelectedDrugs = JSON.parse(localStorage.getItem('selectedDrugs')) || [];
+    const orderNumber = storedSelectedDrugs.map(drug => drug.id).join(',');
 
-    const orderNumber = storedSelectedDrugs.map(drug => drug.id).join(','); // Join IDs with commas
+    const products = storedSelectedDrugs.map(drug => ({
+      id: drug.id,
+      name: drug.name,
+      quantity: drug.quantity,
+      price: drug.price
+    }));
+
     const totalAmount = storedSelectedDrugs.reduce((total, drug) => total + (drug.price * drug.quantity), 0);
 
-    // Prepare the payment data
     const paymentData = {
+      products: products,
       orderNumber,
       totalAmount,
-      diagnosisId: diagnosisId, // Include the selected diagnosis ID
+      diagnosisId: diagnosisId,
+      quantity: products.reduce((total, product) => total + product.quantity, 0),
+      paymentMethod: 'promptpay',
     };
 
-    console.log('Payment Data:', paymentData); // Log payment data for debugging
+    console.log('Payment Data:', paymentData);
 
-    const response = await fetch('/api/payment', {
+    const response = await fetch('/api/admin/createpayment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -163,9 +190,9 @@ const completePayment = async () => {
     console.log('Payment completed:', result);
     selectedDrugs.value = [];
     localStorage.removeItem('selectedDrugs');
-    await updateSuccess()
-    alert('ชำระเงินเสร็จสิ้น')
-    router.push('/Cashier/list')
+    await updateSuccess();
+    alert('ชำระเงินเสร็จสิ้น');
+    router.push('/Cashier/list');
   } catch (error) {
     console.error('Error completing payment:', error);
   }
@@ -181,7 +208,7 @@ const updateSuccess = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        diagnosisId: selectedDiagnosis.value  ,
+        diagnosisId: selectedDiagnosis.value,
         paymentStatus: 'success',
       }),
     });
@@ -205,6 +232,8 @@ onMounted(async () => {
   await fetchDiagnoses()
   await fetchPatients()
   await fetchPhysicians()
+
+  console.log('dia : ', diagnosesFetch.value)
 });
 
 definePageMeta({
@@ -231,7 +260,7 @@ definePageMeta({
                   <p class="text-black">เลือกหนึ่งรายการ</p>
                 </option>
                 <option v-for="diagnosis in pendingDiagnoses" :key="diagnosis.id" :value="diagnosis.id">
-                  <span class="font-bold">{{ diagnosis.id }}</span>
+                  <span class="font-bold">รายการที่ {{ diagnosis.id }}</span>
                   &nbsp;
                   <span class="text-blue-500">{{ getPatientName(diagnosis.patient_id) }}</span>
                   &nbsp;
@@ -239,7 +268,7 @@ definePageMeta({
                   &nbsp;
                   <span class="font-bold">{{ diagnosis.diagnosis }}</span>
                   &nbsp;
-                  <span class="font-bold">{{ diagnosis.updatedAt }}</span>
+                  <span class="font-bold">{{ formatDate(diagnosis.updatedAt) }}</span>
 
                 </option>
               </select>
@@ -418,6 +447,34 @@ definePageMeta({
                     ✕
                   </button>
                 </form>
+
+                <div>
+                  <label class="form-control w-full">
+                    <div class="label">
+                      <span class="label-text">รูปแบบการจ่ายเงิน</span>
+                    </div>
+                    <select v-model="selectPayment" class="select select-bordered">
+                      <option disabled selected>เลือกรูปแบบการจ่ายเงิน</option>
+                      <option>เงินสด</option>
+                      <option>โอนเงิน</option>
+                    </select>
+                  </label>
+
+                  <div v-if="selectPayment === 'เงินสด'">
+                    <label class="form-control w-full mt-5">
+                      <div class="label">
+                        <span class="label-text text-lg">จำนวนเงินที่รับมา</span>
+                      </div>
+                      <input type="number" class="input input-bordered w-full" v-model="amount"
+                        placeholder="กรอกจำนวนเงิน">
+                    </label>
+
+                    <div class="mt-4 flex justify-between">
+                      <p class="text-lg">จำนวนเงินที่ต้องทอน</p>
+                      <p class="text-xl font-semibold text-red-500">{{ changeAmount.toFixed(2) }} ฿</p>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="flex justify-between p-1 mt-5">
                   <h3 class="text-lg font-bold mb-4">ยอดรวมทั้งหมด</h3>

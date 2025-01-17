@@ -71,7 +71,7 @@
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deleteDrug(drug.id)">
+                  <button class="btn bg-red-500 hover:bg-red-300" @click="deleteDrug(drug.id)">
                     <Trash />
                   </button>
                   <!-- <button class="btn btn-accent" @click="editDrug(drug.id)">

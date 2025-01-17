@@ -28,7 +28,7 @@ model patients {
   province    String
   postalCode  Int // เลขไปรษณีย์ 
   phoneNumber String // เบอร์โทรศัพท์ 
-  cdnumber    String?
+  cdnumber    String?  @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -77,6 +77,7 @@ model Physician {
 model Diagnosis {
   id             Int      @id @default(autoincrement())
   patient_id     Int
+  patient_cdnumber   String? @unique
   createdAt      DateTime @default(now())
   patientHistoryId Int?
   updatedAt      DateTime @updatedAt
@@ -123,10 +124,12 @@ model Drug {
 model Payment {
   id             Int      @id @default(autoincrement())
   orderNumber    String
+  products       Json?
   totalAmount    Int
   quantity       Int?
   paymentMethod  String?  
   status         String   @default("pending")
+  
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

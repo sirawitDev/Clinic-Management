@@ -7,6 +7,8 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const cdnumber = query.cdnumber;
 
+  console.log('cdnumber : ' , cdnumber)
+
   if (!cdnumber) {
     throw createError({ statusCode: 400, message: 'cdnumber is required' });
   }
@@ -14,9 +16,7 @@ export default defineEventHandler(async (event) => {
   try {
     const diagnoses = await prisma.diagnosis.findMany({
       where: {
-        patient: {
-          cdnumber: cdnumber,
-        },
+        patient_cdnumber: cdnumber
       },
       include: {
         patient: true,

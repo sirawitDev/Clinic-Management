@@ -87,7 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
   const updateUserName = (firstname, lastname) => {
     user.value.firstname = firstname;
     user.value.lastname = lastname;
-    localStorage.setItem('user', JSON.stringify(user.value)); // Save updated user to localStorage
+    localStorage.setItem('user', JSON.stringify(user.value));
   };
 
   const updateCdnumber = (cdnumber) => {

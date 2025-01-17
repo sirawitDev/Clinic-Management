@@ -5,19 +5,34 @@
         <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">รายการตรวจเสร็จ</h2>
       </div>
 
-      <div class="overflow-x-auto p-4">
+      <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
         <table class="table">
-          <!-- head -->
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>รายชื่อคนไข้</th>
-              <th>แพทย์ผู้รักษา</th>
-              <th>วินิจฉัย</th>
-              <th>การรักษา</th>
-              <th>อื่นๆ</th>
-              <th>เสร็จสิ้นวันที่</th>
-              <th>สถานะ</th>
+            <tr class="bg-slate-500 text-white text-base">
+              <th>
+                <p class="text-center font-medium">ลำดับ</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">รายชื่อคนไข้</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">แพทย์ผู้รักษา</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">วินิจฉัย</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">การรักษา</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">อื่นๆ</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">เสร็จสิ้นวันที่</p>
+              </th>
+              <th>
+                <p class="text-center font-medium">สถานะ</p>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -31,12 +46,14 @@
               <td>{{ diagnosis.treatment_plan }}</td>
               <td>{{ diagnosis.notes }}</td>
               <td>{{ formatDate(diagnosis.createdAt) }}</td>
-              <td>{{ formatDate(diagnosis.paymentStatus) }}</td>
+              <td>{{ diagnosis.paymentStatus === 'pending' ? 'รอจ่ายเงิน' : diagnosis.paymentStatus }}</td>
               <td>
                 <div class="flex justify-center gap-2 p-2">
-                  <button @click="deleteDiagnosis(diagnosis.id)" class="btn btn-accent text-white font-light sm:btn-md btn-sm">ลบ</button>
+                  <button @click="deleteDiagnosis(diagnosis.id)"
+                    class="btn btn-accent text-white font-light sm:btn-md btn-sm">ลบ</button>
                   <button class="btn btn-accent text-white font-light sm:btn-md btn-sm">แก้ไข</button>
-                  <RouterLink to='/cashier' class="btn btn-accent text-white font-light sm:btn-md btn-sm">จ่ายยา</RouterLink>
+                  <RouterLink to='/cashier' class="btn btn-accent text-white font-light sm:btn-md btn-sm">จ่ายยา
+                  </RouterLink>
                 </div>
               </td>
             </tr>
@@ -47,7 +64,7 @@
   </AdminLayout>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, onMounted } from 'vue';
 import AdminLayout from '~/layouts/adminLayout2.vue';
 
@@ -56,10 +73,10 @@ const patients = ref([]);
 const physicians = ref([]);
 
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString) => {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
@@ -112,17 +129,17 @@ const fetchPhysicians = async () => {
   }
 };
 
-const getPatientName = (id: number) => {
+const getPatientName = (id) => {
   const patient = patients.value.find(patient => patient.id === id);
   return patient ? `${patient.firstname} ${patient.lastname}` : 'Unknown Patient';
 };
 
-const getPhysicianName = (id: number) => {
+const getPhysicianName = (id) => {
   const physician = physicians.value.find(physician => physician.id === id);
   return physician ? `${physician.first_name} ${physician.last_name}` : 'Unknown Physician';
 };
 
-const deleteDiagnosis = async (id: number) => {
+const deleteDiagnosis = async (id) => {
   try {
     const response = await fetch('/api/diagnosis', {
       method: 'DELETE',
@@ -159,13 +176,6 @@ definePageMeta({
 </script>
 
 <style scoped>
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
 
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;

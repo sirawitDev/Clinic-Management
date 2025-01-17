@@ -107,8 +107,12 @@ import { ref, onMounted } from 'vue';
 import ProfileAside from '~/components/user/ProfileAside.vue';
 import UserLayout from '~/layouts/userLayouts.vue';
 import { useAuthStore } from '~/stores/auth';
+import axios from 'axios'
 
 const authStore = useAuthStore()
+
+const users = ref(JSON.parse(localStorage.getItem('user')))
+const cdnumberlocal = users.value.cdnumber;
 
 const diagnoses = ref([]);
 const patients = ref([]);
@@ -116,6 +120,30 @@ const physicians = ref([]);
 
 const searchCdnumber = ref('');
 const filteredDiagnoses = ref([]);
+
+const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/api/user')
+      patients.value = response.data
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    }
+  }
+
+
+const fetchPhysicians = async () => {
+  try {
+    const response = await fetch('/api/physician', {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    physicians.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching physicians:', error);
+  }
+};
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -127,9 +155,8 @@ const formatDate = (dateString) => {
 
 const fetchDiagnosesByCdnumber = async () => {
   try {
-    const cdnumber = authStore.user.cdnumber;
 
-    const response = await fetch(`/api/users/getDiagnosesByCdnumber?cdnumber=${cdnumber}`, {
+    const response = await fetch(`/api/users/getDiagnosesByCdnumber?cdnumber=${cdnumberlocal}`, {
       method: 'GET',
     });
 
@@ -137,44 +164,14 @@ const fetchDiagnosesByCdnumber = async () => {
       throw new Error('Failed to fetch diagnoses');
     }
 
-    diagnoses.value = await response.json();
+    console.log('response : ' , response)
+
+    const data = await response.json();
+    diagnoses.value = data;
   } catch (error) {
     console.error('Error fetching diagnoses:', error);
   }
 };
-
-// const fetchPatients = async () => {
-//   try {
-//     const response = await fetch('/api/user', {
-//       method: 'GET',
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch patients');
-//     }
-
-//     patients.value = await response.json();
-//     console.log('Fetched patients:', patients.value);
-//   } catch (error) {
-//     console.error('Error fetching patients:', error);
-//   }
-// };
-
-// const fetchPhysicians = async () => {
-//   try {
-//     const response = await fetch('/api/physician', {
-//       method: 'GET',
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch physicians');
-//     }
-
-//     physicians.value = await response.json();
-//   } catch (error) {
-//     console.error('Error fetching physicians:', error);
-//   }
-// };
 
 const getPatientName = (id) => {
   const patient = patients.value.find(patient => patient.id === id);
@@ -190,9 +187,10 @@ const getPhysicianName = (id) => {
 authStore.initializeAuth()
 
 onMounted(async () => {
-  // await fetchPatients();
-  // await fetchPhysicians();
+  await fetchUsers()
+  await fetchPhysicians();
   await fetchDiagnosesByCdnumber()
+  console.log('diagnoses : ' , patients.value)
 });
 
 </script>
