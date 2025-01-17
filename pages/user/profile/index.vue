@@ -59,7 +59,6 @@
             </div>
 
             <div class="ml-4">
-              <!-- Edit button when not editing, Save/Cancel buttons when editing -->
               <p class="link link-secondary" v-if="!editingName" @click="toggleEditName">แก้ไข</p>
               <div v-else>
                 <button @click="saveName" class="btn btn-primary btn-sm">บันทึก</button>
@@ -71,7 +70,7 @@
 
         <div class="flex w-full font-kanit mt-10">
           <div class=" w-52">
-            <p class=" text-gray-500">เลขประชาชน</p>
+            <p class=" text-gray-500">เลขบัตรประชาชน</p>
           </div>
           <div class="flex justify-between w-full">
             <div class="flex-grow">
@@ -79,7 +78,7 @@
                 {{ cdnumber }}
               </div>
               <div v-else>
-                <input v-model="cdnumber" type="text" placeholder="cdnumber" class="input input-bordered w-full" />
+                <input v-model="cdnumber" type="text" placeholder="เลขบัตรประชาชน" class="input input-bordered w-full" />
               </div>
             </div>
 
@@ -175,6 +174,7 @@ import UserLayout from '~/layouts/userLayouts.vue';
 import ProfileAside from '~/components/user/ProfileAside.vue';
 import { useAuthStore } from '~/stores/auth';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const authStore = useAuthStore();
 const email = ref('');
@@ -182,7 +182,7 @@ const firstname = ref('');
 const lastname = ref('');
 const cdnumber = ref('')
 const addresses = ref([])
-const editingName = ref(false); // State to track editing mode
+const editingName = ref(false);
 const editingCdNumber = ref(false);
 
 const newPassword = ref('');
@@ -190,7 +190,7 @@ const confirmPassword = ref('');
 
 const changePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    alert('New passwords do not match');
+    alert('New passwords do not match')
     return;
   }
 
@@ -226,42 +226,94 @@ const toggleEditName = () => {
 
 const cancelEditName = () => {
   editingName.value = false;
-  fetchUserProfile(); // Reset to original values
+  fetchUserProfile()
 };
 
 const saveName = async () => {
-  await updateProfile(); // Update the profile with new values
-  authStore.updateUserName(firstname.value, lastname.value); // Update store and localStorage
-  editingName.value = false;
-}
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการบันทึกชื่อของคุณหรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, บันทึกเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-//cdnumber
+  if (result.isConfirmed) {
+    try {
+      await updateProfile();
+      authStore.updateUserName(firstname.value, lastname.value);
+      editingName.value = false;
+      await Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ!',
+        text: 'ชื่อของคุณได้รับการบันทึกเรียบร้อยแล้ว',
+      });
+    } catch (error) {
+      console.error('Error saving name:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถบันทึกชื่อได้ กรุณาลองใหม่อีกครั้ง',
+      });
+    }
+  }
+};
+
 const toggleEditCdNumber = () => {
   editingCdNumber.value = !editingCdNumber.value;
 };
 
 const cancelEditCdNumber = () => {
   editingCdNumber.value = false;
-  fetchUserProfile(); // Reset to original values
+  fetchUserProfile();
 };
 
 
 const saveCdNumber = async () => {
-  try {
-    const response = await axios.put('/api/users/updateCdNumber', {
-      userId: authStore.user.id,
-      cdnumber: cdnumber.value,
-    });
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการอัปเดต หมายเลขบัตรประชาชน หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, อัปเดตเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-    if (response.data.success) {
-      alert('CD number updated successfully');
-      authStore.updateCdnumber(cdnumber.value);
-      editingCdNumber.value = false;
-    } else {
-      alert('Failed to update CD number');
+  if (result.isConfirmed) {
+    try {
+      const response = await axios.put('/api/users/updateCdNumber', {
+        userId: authStore.user.id,
+        cdnumber: cdnumber.value,
+      });
+
+      if (response.data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'สำเร็จ!',
+          text: 'หมายเลขบัตรประชาชน ของคุณได้รับการอัปเดตแล้ว',
+        });
+        authStore.updateCdnumber(cdnumber.value);
+        editingCdNumber.value = false;
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถอัปเดต หมายเลขบัตรประชาชน ได้',
+        });
+      }
+    } catch (error) {
+      console.error('Error updating CD number:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาดไม่คาดคิด',
+        text: 'เกิดข้อผิดพลาดในการอัปเดต หมายเลขบัตรประชาชน กรุณาลองใหม่อีกครั้ง',
+      });
     }
-  } catch (error) {
-    alert('An error occurred while updating the CD number');
   }
 };
 
@@ -311,9 +363,7 @@ const updateProfile = async () => {
       lastname: lastname.value,
       address: addresses.value,
     });
-
     if (response.data.success) {
-      alert('Profile updated successfully');
       fetchUserProfile();
     } else {
       alert('Failed to update profile');

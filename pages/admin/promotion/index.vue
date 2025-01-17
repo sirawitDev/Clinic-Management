@@ -48,8 +48,8 @@
                 <p class="text-center">{{ promotion.name }}</p>
               </td>
               <td class="flex justify-center border-slate-500">
-                <img :src="`${configDomain}${promotion.imageUrl}`" alt="Promotion Image" class="w-16 h-auto cursor-pointer"
-                  @click="openModal(`${configDomain}${promotion.imageUrl}`)" @error="onImageError"/>
+                <img :src="`${promotion.imageUrl}`" alt="Promotion Image" class="w-16 h-auto cursor-pointer"
+                  @click="openModal(`${promotion.imageUrl}`)" @error="onImageError"/>
               </td>
               <td class=" border-slate-500">
                 <p class="text-center">{{ new Date(promotion.startDate).toLocaleDateString() }}</p>
@@ -62,7 +62,7 @@
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deletePromotion(promotion.id)">
+                  <button class="btn bg-red-500 hover:bg-red-300" @click="deletePromotion(promotion.id)">
                     <Trash />
                   </button>
                   <button class="btn btn-accent" @click="editPromotion(promotion.id)">

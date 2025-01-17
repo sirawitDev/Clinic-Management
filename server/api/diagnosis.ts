@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   try {
     if (method === 'POST') {
       const body = await readBody(event);
-      const { patient_id, patientHistoryId, diagnosis, treatment_plan, notes, physician_id , paymentStatus } = body;
+      const { patient_id, patientHistoryId, diagnosis, treatment_plan, notes, physician_id , paymentStatus , patient_cdnumber } = body;
 
       if (!patient_id || !physician_id || !diagnosis) {
         return { statusCode: 400, body: { error: 'Missing required fields' } };
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       }
 
       const newDiagnosis = await prisma.diagnosis.create({
-        data: { patient_id, diagnosis, treatment_plan, notes, physician_id, patientHistoryId, paymentStatus},
+        data: { patient_id, diagnosis, treatment_plan, notes, physician_id, patientHistoryId, paymentStatus , patient_cdnumber},
       });
 
       return { statusCode: 201, body: newDiagnosis };

@@ -70,7 +70,8 @@ export default defineEventHandler(async (event) => {
         firstname: user.firstname,
         lastname: user.lastname,
         role: user.role,
-        uuid: user.uuid, // เพิ่ม UUID ในการตอบกลับ
+        uuid: user.uuid,
+        cdnumber: user.cdnumber
       },
     };
   } catch (error) {

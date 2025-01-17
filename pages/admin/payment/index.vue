@@ -1,7 +1,8 @@
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminLayout from '~/layouts/adminLayout2.vue';
+import Swal from 'sweetalert2';
 
 import Trash from '~/components/admin/Trash.vue'
 import Edit from '~/components/admin/Edit.vue'
@@ -25,29 +26,52 @@ const fetchPayments = async () => {
   }
 };
 
-const confirmPayment = async (id: number) => {
-  try {
-    const response = await fetch('/api/payment', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'success' }),
-    });
-    if (response.ok) {
-      // Update the local state for immediate feedback
-      const updatedPayment = await response.json();
-      const index = payment.value.findIndex((p) => p.id === id);
-      if (index !== -1) {
-        payment.value[index].status = updatedPayment.body.status;
+const confirmPayment = async (id) => {
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการยืนยันการชำระเงินนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, ยืนยัน!',
+    cancelButtonText: 'ยกเลิก',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/api/payment', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'success' }),
+      });
+
+      if (response.ok) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'การชำระเงินสำเร็จ!',
+          text: 'การชำระเงินของคุณได้รับการยืนยันแล้ว',
+        });
+      } else {
+        console.error('Failed to confirm payment');
+        await Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถยืนยันการชำระเงินได้ กรุณาลองใหม่อีกครั้ง',
+        });
       }
-    } else {
-      console.error('Failed to confirm payment');
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'เกิดข้อผิดพลาดในการยืนยันการชำระเงิน',
+      });
     }
-  } catch (error) {
-    console.error('Error confirming payment:', error);
   }
 };
 
-const deletePayment = async (id: number) => {
+const deletePayment = async (id) => {
   if (confirm('คุณต้องการลบการชำระเงินนี้หรือไม่?')) {
     try {
       const response = await fetch(`/api/payment?id=${id}`, {
@@ -64,6 +88,7 @@ const deletePayment = async (id: number) => {
 
 onMounted(async () => {
   await fetchPayments();
+  console.log('payment :' , payment.value)
 });
 
 definePageMeta({
@@ -78,33 +103,32 @@ definePageMeta({
         <h2 class="sm:text-5xl text-4xl font-bold text-[#fefeff] text-stroke tracking-wide">การชำระเงิน</h2>
       </div>
 
-      <div class="overflow-x-auto mt-5">
+      <div class="overflow-x-auto rounded-lg border-4 border-slate-500 mb-5 mt-5">
         <!-- Display Loading message if data is still loading -->
         <div v-if="isLoading" class="flex justify-center items-center h-32">
           <span class="loading loading-spinner text-accent"></span>
         </div>
 
-        <!-- Display table once data is fetched -->
-        <table v-else class="table mt-5">
+        <table v-else class="table">
           <thead>
-            <tr>
+            <tr class="bg-slate-500 text-white text-base">
               <th>
-                <p class="text-center">ลำดับ</p>
+                <p class="text-center font-medium">ลำดับ</p>
               </th>
               <th>
-                <p class="text-center">ชื่อลูกค้า</p>
+                <p class="text-center font-medium">ชื่อลูกค้า</p>
               </th>
               <th>
-                <p class="text-center">หมายเลขสินค้า</p>
+                <p class="text-center font-medium">สินค้า</p>
               </th>
               <th>
-                <p class="text-center">ราคาทั้งหมด</p>
+                <p class="text-center font-medium">ราคาทั้งหมด</p>
               </th>
               <th>
-                <p class="text-center">จ่ายแบบ</p>
+                <p class="text-center font-medium">จ่ายแบบ</p>
               </th>
               <th>
-                <p class="text-center">สถานะ</p>
+                <p class="text-center font-medium">สถานะ</p>
               </th>
               <th></th>
             </tr>
@@ -119,7 +143,11 @@ definePageMeta({
                   payment.diagnosis?.patient?.lastname }}</p>
               </td>
               <td>
-                <p class="text-center">{{ payment.orderNumber }}</p>
+                <div v-for="product in payment.products">
+                  <p class="">{{ product.name }} จำนวน <span class="text-red-500">{{ product.quantity
+                      }}</span>
+                    ชิ้น</p>
+                </div>
               </td>
               <td>
                 <p class="text-center">{{ payment.totalAmount }} บาท</p>
@@ -133,7 +161,7 @@ definePageMeta({
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button @click="deletePayment(payment.id)" class="btn">
+                  <button @click="deletePayment(payment.id)" class="btn bg-red-500 hover:bg-red-300">
                     <Trash />
                   </button>
                   <!-- <button class="btn btn-accent">
@@ -155,22 +183,6 @@ definePageMeta({
 </template>
 
 <style scoped>
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.table th {
-  background-color: #f4f4f4;
-  font-size: small;
-}
 
 .text-stroke {
   text-shadow: -5px -1px 0 #FF8128, 1px -1px 0 #FF8128, -5px 1px 0 #FF8128, 1px 1px 0 #FF8128;

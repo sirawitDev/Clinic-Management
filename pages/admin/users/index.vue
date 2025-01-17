@@ -67,7 +67,7 @@
               </td>
               <td>
                 <div class="flex gap-2 justify-center">
-                  <button class="btn" @click="deleteUser(user.email)">
+                  <button class="btn bg-red-500 hover:bg-red-300" @click="deleteUser(user.email)">
                     <Trash />
                   </button>
                   <button class="btn btn-accent" @click="editUser(user.id)">

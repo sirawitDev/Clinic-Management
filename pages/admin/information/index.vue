@@ -59,7 +59,7 @@
                 </td>
                 <td>
                   <div class="flex gap-2 justify-center">
-                    <button class="btn" @click="deletePeriod(item.id)">
+                    <button class="btn bg-red-500 hover:bg-red-300" @click="deletePeriod(item.id)">
                       <Trash />
                     </button>
                   </div>
@@ -127,7 +127,7 @@
                 </td>
                 <td>
                   <div class="flex gap-2 justify-center">
-                    <button class="btn" @click="deleteDiagnosis(item.id)">
+                    <button class="btn bg-red-500 hover:bg-red-300" @click="deleteDiagnosis(item.id)">
                       <Trash />
                     </button>
                   </div>
@@ -200,7 +200,7 @@
                 </td>
                 <td>
                   <div class="flex gap-2 justify-center">
-                    <button class="btn" @click="deleteTreatment(item.id)">
+                    <button class="btn bg-red-500 hover:bg-red-300" @click="deleteTreatment(item.id)">
                       <Trash />
                     </button>
                   </div>
@@ -249,48 +249,96 @@ const fetchinfoDiagnosis = async () => {
 };
 
 const addinfoDiagnosis = async () => {
-  try {
-    const response = await fetch('/api/infodiagnosis', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title: newInfoDiagnosis.value }),
-    });
+  document.getElementById('my_modal_10').close();
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการเพิ่มข้อมูลการวินิจฉัยนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, เพิ่มเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-    if (!response.ok) {
-      throw new Error('Error adding period');
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/api/infodiagnosis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: newInfoDiagnosis.value }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error adding diagnosis information');
+      }
+
+      newInfoDiagnosis.value = '';
+      document.getElementById('my_modal_10')?.close();
+
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'เพิ่มข้อมูลสำเร็จ!',
+        text: 'ข้อมูลการวินิจฉัยได้รับการเพิ่มเรียบร้อยแล้ว',
+      });
+
+      await fetchinfoDiagnosis();
+    } catch (error) {
+      console.error('Error adding diagnosis information:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถเพิ่มข้อมูลการวินิจฉัยได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-
-    newInfoDiagnosis.value = '';
-    document.getElementById('my_modal_10')?.close();
-
-    // Refresh the periods
-    await fetchinfoDiagnosis()
-  } catch (error) {
-    console.error('Error adding period:', error);
   }
 };
 
 const deleteDiagnosis = async (id) => {
-  if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบการวินิฉัยนี้?')) return;
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบการวินิจฉัยนี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-  try {
-    const response = await fetch(`/api/infodiagnosis?id=${id}`, {
-      method: 'DELETE',
-    });
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch(`/api/infodiagnosis?id=${id}`, {
+        method: 'DELETE',
+      });
 
-    if (!response.ok) {
-      throw new Error('Error deleting period');
+      if (!response.ok) {
+        throw new Error('Error deleting diagnosis');
+      }
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'ลบสำเร็จ!',
+        text: 'การวินิจฉัยถูกลบเรียบร้อยแล้ว',
+      });
+
+      await fetchinfoDiagnosis();
+    } catch (error) {
+      console.error('Error deleting diagnosis:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบการวินิจฉัยได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-    await response.json();
-    await fetchinfoDiagnosis();
-  } catch (error) {
-    console.error('Error deleting period:', error);
   }
 };
 
-//Periods Function
 const fetchPeriods = async () => {
   try {
     const response = await fetch('/api/periodOfdrug', {
@@ -410,44 +458,91 @@ const fetchinfoTreatment = async () => {
 };
 
 const addinfoTreatment = async () => {
-  try {
-    const response = await fetch('/api/infotreatment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title: newInfoTreatment.value }),
-    });
+  document.getElementById('my_modal_11').close();
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการเพิ่มข้อมูลการรักษานี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'ใช่, เพิ่มเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-    if (!response.ok) {
-      throw new Error('Error adding period');
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/api/infotreatment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: newInfoTreatment.value }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error adding treatment information');
+      }
+      newInfoTreatment.value = '';
+      document.getElementById('my_modal_11')?.close();
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'เพิ่มข้อมูลสำเร็จ!',
+        text: 'ข้อมูลการรักษาได้รับการเพิ่มเรียบร้อยแล้ว',
+      });
+
+      await fetchinfoTreatment();
+    } catch (error) {
+      console.error('Error adding treatment information:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถเพิ่มข้อมูลการรักษาได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-
-    newInfoTreatment.value = '';
-    document.getElementById('my_modal_11')?.close();
-
-    // Refresh the periods
-    await fetchinfoTreatment()
-  } catch (error) {
-    console.error('Error adding period:', error);
   }
 };
 
 const deleteTreatment = async (id) => {
-  if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบแผนการรักษา?')) return;
+  const result = await Swal.fire({
+    title: 'คุณแน่ใจหรือไม่?',
+    text: 'คุณต้องการลบแผนการรักษานี้หรือไม่?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ใช่, ลบเลย!',
+    cancelButtonText: 'ยกเลิก',
+  });
 
-  try {
-    const response = await fetch(`/api/infotreatment?id=${id}`, {
-      method: 'DELETE',
-    });
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch(`/api/infotreatment?id=${id}`, {
+        method: 'DELETE',
+      });
 
-    if (!response.ok) {
-      throw new Error('Error deleting infotreatment');
+      if (!response.ok) {
+        throw new Error('Error deleting treatment');
+      }
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'ลบสำเร็จ!',
+        text: 'แผนการรักษาถูกลบเรียบร้อยแล้ว',
+      });
+
+      await fetchinfoTreatment();
+    } catch (error) {
+      console.error('Error deleting treatment:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: 'ไม่สามารถลบแผนการรักษาได้ กรุณาลองใหม่อีกครั้ง',
+      });
     }
-    await response.json();
-    await fetchinfoTreatment();
-  } catch (error) {
-    console.error('Error deleting infotreatment:', error);
   }
 };
 
